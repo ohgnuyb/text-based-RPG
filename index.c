@@ -21,22 +21,49 @@ enum {
 	WHITE,
 };
 
-void setColor(unsigned short text) {
+void setColor(unsigned short text) { //cmd창 글자색 설정
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), text);
+}
+
+void printSlowly(const char* text, int delay) { //print 문자열 하나하나 천천히
+	for (int i = 0; text[i] != '\0'; i++) {
+		putchar(text[i]);
+		Sleep(delay);
+	}
+
+}
+
+char* StringvalueOf(int num) {
+	char* str = malloc(sizeof(char) * 11); 
+	if (str == NULL) {
+		return NULL;
+	}
+	sprintf(str, "%d", num);
+	return str;
 }
 
 struct character {
 	char name[20];
 	char skill[20];
+	char charState[100];
 	int hp;
 	int attack;
 	int defense;
-
 };
 
-struct character characterInfo[3] = { {"Warrior", "Strong Slash", 120, 20, 10}, {"Mage", "Fireball", 100, 30, 0}, {"Rogue", "Evade", 80, 40, 0}};
+struct character characterInfo[3] = {
+	{"전사", "파괴의 일격", "강인한 체력과 뛰어난 검술 실력을 가진 전사입니다.", 120, 20, 10},
+	{"마법사", "화염구", "강력한 마법을 사용하는 마법사입니다.", 100, 30, 0},
+	{"도적", "은신", "민첩한 움직임과 은밀한 행동에 능숙한 도적입니다.", 80, 40, 0}
+};
 
-
+struct {
+	char name[20];
+	char skill[20];
+	int hp;
+	int attack;
+	int defense;
+} monster[100];
 
 
 
@@ -58,12 +85,17 @@ void main() {
 	int choice = -1;
 	int st_ex = -1;
 	int charSel = -1;
-	char title[50] = "Secrets of the Forgotten Kingdom";
-	int totalWidth = 47; // 전체 출력 너비
-	int strWidth = strlen(title); // 문자열 길이
-	int padding = (totalWidth - strWidth) / 2; // 양쪽 패딩 계산
-
+	char title[50] = "잊혀진 왕국의 비밀";
+	int totalWidth = 47;
+	int strWidth = strlen(title);
+	int padding = (totalWidth - strWidth) / 2;
 	
+	strcpy(monster[0].name, "펜리르"); //첫 번째 몬스터
+	strcpy(monster[0].skill, "내려찍기");
+	monster[0].hp = 100;
+	monster[0].attack = 20;
+	monster[0].defense = 20;
+
 	setColor(RED);
 	printf("     ,      ,\n");
 	printf("      (\\____/)\n");
@@ -85,128 +117,176 @@ void main() {
 	printf("                              '.____.'\n");
 	printf("                                ||||\n");
 	setColor(WHITE);
-	printf("1. Start\n2. Exit\n");
+	printf("1. 시작\n2. 종료\n");
 	printf("Enter: ");
 	scanf("%d", &st_ex);
 	if (st_ex == 1) {
 		printf("------------------------------------------------------------------------------------------\n");
-		printf("Enter the player name: \n");
+		printf("이름을 입력하세요: \n");
 		printf("Enter: ");
 		scanf("%s", playerInfo.playerName);
-		printf("Hello! %s\n", playerInfo.playerName);
+		printSlowly("안녕하세요, ", 100);
+		printSlowly(playerInfo.playerName, 200);
+		printf("님!");
+		printf("\n");
 		while (1) {
 		printf("------------------------------------------------------------------------------------------\n");
 		setColor(RED);
-		printf("Start!\n");
+		printf("시작...\n");
+
 		setColor(WHITE);
-		printf("Beginning Deep within a vast forest lies the ancient kingdom of Arcadia. Once a prosperous land,\nit fell to ruin under the curse of the dark sorcerer, Maleficent, \nfading from the memories of all who once knew it.\n");
+		printSlowly("깊은 숲 속에 숨겨진 고대 왕국, '아르카디아'. 한때 번영했던 이 왕국은 어둠의 마법사 '말레피센트'의 저주로 인해 멸망하고, 사람들의 기억 속에서 잊혀졌습니다. 당신은 우연히 아르카디아의 존재를 알게 된 모험가입니다.잊혀진 왕국의 비밀을 밝혀내고 말레피센트의 저주를 풀어 아르카디아를 부활시킬 수 있을까요?\n", 70);
 		printf("------------------------------------------------------------------------------------------\n");
-		printf("Select character: ");
-		setColor(GREEN);
-		printf("\n1. Warrior: ");
+
+		printSlowly("캐릭터 선택: \n", 200);
+		for (int i = 0; i < 3; i++) {
+			setColor(i == 0 ? GREEN : i == 1 ? BLUE : RED);
+			printSlowly(i == 0 ? "1. ": i == 1 ? "2. " : "3. ", 200);
+			printSlowly(characterInfo[i].name, 200);
+			printf(": ");
+			setColor(WHITE);
+			printSlowly(characterInfo[i].charState, 100);
+			printf("\n");
+		}
 		setColor(WHITE);
-		printf("A mighty warrior with strong physique and exceptional swordsmanship.");
-		setColor(BLUE);
-		printf("\n2. Mage: ");
-		setColor(WHITE);
-		printf("A skilled mage wielding powerful magic spells.");
-		setColor(RED);
-		printf("\n3. Rogue: ");
-		setColor(WHITE);
-		printf("A cunning rogue with agile movements and expertise in stealth.\n");
-		setColor(WHITE);
-		
 		
 		printf("Enter: ");
 		scanf("%d", &charSel);
 	
 		if (charSel == 1) {
-			strcpy(playerInfo.name, "Warrior");
-			strcpy(playerInfo.skill, "Strong Slash");
+			strcpy(playerInfo.name, "전사");
+			strcpy(playerInfo.skill, "파괴의 일격");
+			strcpy(playerInfo.charState, "강인한 체력과 뛰어난 검술 실력을 가진 전사입니다.");
 			playerInfo.hp = 120;
 			playerInfo.attack = 20;
 			playerInfo.defense = 10;
-			printf("------------------------------------------------------------------------------------------\n");
-			printf("You chose %s!\n");
-			setColor(RED);
-			printf("  - HP: 120\n");
-			setColor(WHITE);
-			printf("  - Skills: Strong Slash\n");
-			printf("  - Attack: 20\n");
-			setColor(BLUE);
-			printf("  - Defense: 10\n");
-			setColor(WHITE);
+			
 			break;
 			
 		}
 		else if (charSel == 2) {
-			strcpy(playerInfo.name, "Mage");
-			strcpy(playerInfo.skill, "Fireball");
+			strcpy(playerInfo.name, "마법사");
+			strcpy(playerInfo.skill, "화염구");
+			strcpy(playerInfo.charState, "강력한 마법을 사용하는 마법사입니다.");
 			playerInfo.hp = 100;
 			playerInfo.attack = 30;
 			playerInfo.defense = 0;
-			printf("------------------------------------------------------------------------------------------\n");
-			printf("You chose Mage!\n");
-			setColor(RED);
-			printf("  - HP: 100\n");
-			setColor(WHITE);
-			printf("  - Skills: Fireball\n");
-			printf("  - Attack: 30\n");
-			setColor(BLUE);
-			printf("  - Defense: 0\n");
-			setColor(WHITE);
+			
 			break;
 			
 		}
 		else if (charSel == 3) {
-			strcpy(playerInfo.name, "Rogue");
-			strcpy(playerInfo.skill, "Evade");
+			strcpy(playerInfo.name, "도적");
+			strcpy(playerInfo.skill, "은신");
+			strcpy(playerInfo.charState, "민첩한 움직임과 은밀한 행동에 능숙한 도적입니다.");
 			playerInfo.hp = 80;
 			playerInfo.attack = 40;
 			playerInfo.defense = 0;
-			printf("------------------------------------------------------------------------------------------\n");
-			printf("You chose Rogue!\n");
-			setColor(RED);
-			printf("  - HP: 80\n");
-			setColor(WHITE);
-			printf("  - Skills: Evade\n");
-			printf("  - Attack: 40\n");
-			setColor(BLUE);
-			printf("  - Defense: 0\n");
-			setColor(WHITE);
+			
 			break;
 			
 		}
 		else {
 			printf("------------------------------------------------------------------------------------------\n");
-			printf("Invalid choice. Please select again!\n");
+			printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
 			while (getchar() != '\n');
 		
 		}
 		}
 		printf("------------------------------------------------------------------------------------------\n");
+
+		printSlowly(playerInfo.playerName, 200);
+		printSlowly("님의 선택: ", 200);
+		printSlowly(playerInfo.name, 200);
+		printf("!\n");
+
 		setColor(RED);
-		printf("The Path to Arcadia...\n");
+		printSlowly("  - HP: ", 100);
+		printSlowly(StringvalueOf(playerInfo.hp), 100);
+		printf("\n");
+
 		setColor(WHITE);
-		printf("Lost in the dense forest, you come across an ancient stone tablet. \nFaint etchings on the tablet reveal the path to Arcadia.\n");
-		printf("'Through the cursed woods, find the forgotten temple.Defeat the guardian, and open the gates of Arcadia.'\n\n");
+		printSlowly("  - 스킬: ", 100);
+		printSlowly(playerInfo.skill, 100);
+		printf("\n");
+
+		printSlowly("  - 공격력: ", 100);
+		printSlowly(StringvalueOf(playerInfo.attack), 100);
+		printf("\n");
+
+		setColor(BLUE);
+		printSlowly("  - 방어력: ", 100);
+		printSlowly(StringvalueOf(playerInfo.defense), 100);
+		printf("\n");
+		setColor(WHITE);
+		printf("------------------------------------------------------------------------------------------\n");
+		setColor(RED);
+		printSlowly("아르카디아로 향하는 길...\n", 200);
+		setColor(WHITE);
+		printSlowly("울창한 숲 속에서 길을 잃은 당신은 오래된 석판을 발견합니다.\n석판에는 아르카디아로 향하는 길에 대한 희미한 글귀가 새겨져 있습니다.\n", 70);
+		printSlowly("\"저주받은 숲을 지나, 잊혀진 신전을 찾아라. 신전의 수호자를 물리치고, 아르카디아의 문을 열어라.\"\n\n", 70);
+		
 		while (1) {
-	
-		printf("Choice: \n");
-		printf("1. Venture into the cursed woods.\n");
-		printf("2. Ignore the tablet and seek another path.\n");
+		setColor(RED);
+		printf("선택: \n");
+		setColor(WHITE);
+		printSlowly("1. 저주받은 숲으로 향한다.\n", 100);
+		printSlowly("2. 석판을 무시하고 다른 길을 찾는다.\n", 100);
 		printf("Enter: ");
 		scanf("%d", &choice);
-		
-		if (choice == 1) {
+		printf("------------------------------------------------------------------------------------------\n");
+		if (choice == 1) { //1번 스토리
 			
-		}
-		else if (choice == 2) {
+			printSlowly("당신은 석판의 가르침에 따라 깊은 숲 속으로 들어섰다.\n저주받은 숲은 음산한 기운으로 가득하다... 나무들은 기괴하게 뒤틀려 있고, 숲 속에는 알 수 없는 생명체들의 울음소리가 울려 퍼진다.\n", 70);
+			//아이템 획득: 60프로 확률로 체력 포션 / 40프로 확률로 공격력 증가 포션
 
+			break;
 		}
+		else if (choice == 2) { //2번 스토리
+			
+			setColor(RED);
+			printSlowly("숲의 수호자\n", 50);
+			setColor(WHITE);
+			//몬스터 마주침
+			printSlowly("석판의 가르침을 의심하며 다른 길을 선택한 당신은 숲을 헤매던 당신은 거대한 늑대, '펜리르'와 마주칩니다. 펜리르는 숲의 수호자로, 아르카디아로 향하는 길을 막고 있습니다.\n\n", 70);
+			setColor(YELLOW);
+			printf("       /\\_/\\ \n");
+			printf("      ( o o )\n");
+			printf("      /   *   \\ \n");
+			printf("     /________\\ \n");
+			printf("    |          | \n");
+			printf("    |  || ||  | \n");
+			printf("    |  || ||  | \n");
+			printf("    |          | \n");
+			printf("    \\________/ \n");
+			printf("       || || \n");
+			printf("       || || \n\n");
+			setColor(WHITE);
+			printSlowly("이름: ", 50);
+			printSlowly(monster[0].name, 50);
+			printf("\n");
+			printSlowly("체력: ", 50);
+			printSlowly(StringvalueOf(monster[0].hp), 50);
+			printf("\n");
+			printSlowly("스킬: ", 50);
+			printSlowly(monster[0].skill, 50);
+			printf("\n");
+			printSlowly("공격력: ", 50);
+			printSlowly(StringvalueOf(monster[0].attack), 50);
+			printf("\n");
+			printSlowly("방어력: ", 50);
+			printSlowly(StringvalueOf(monster[0].defense), 50);
+			printf("\n");
+			
+
+
+			break;
+		}
+
+		
 		else {
 			printf("------------------------------------------------------------------------------------------\n");
-			printf("Invalid choice. Please select again!\n");
+			printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
 			while (getchar() != '\n');
 		}
 		} 
@@ -221,7 +301,7 @@ void main() {
 
 
 	else {
-		printf("Game is closed!");
+		printSlowly("Game is closed!", 100);
 	}
 	
 
