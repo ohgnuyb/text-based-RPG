@@ -88,30 +88,84 @@ struct {
 
 
 void displayInventory() {
-
+	int j = 0;
+	setColor(YELLOW);
 	printf("===== 인벤토리 =====\n");
+	setColor(WHITE);
 	for (int i = 0; i < 100; i++) {
 		if(playerInfo.inventory[i].quantity > 0)
-			if (playerInfo.inventory[0].isEquipped == 1) {
-				printf("%d. %s: %d개 / 장착 중\n", i+1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity, playerInfo.inventory[0].isEquipped);
+			if (playerInfo.inventory[i].isEquipped == 1) {
+				printf("%d. %s: %d개 / 장착 중\n", i+1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity, playerInfo.inventory[i].isEquipped);
+				j++;
 			}
 			else {
-				printf("%d. %s: %d개 / 미장착 중\n", i+1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity, playerInfo.inventory[0].isEquipped);
+				printf("%d. %s: %d개 / 미장착 중\n", i+1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity, playerInfo.inventory[i].isEquipped);
+				j++;
 			}
 			}
 
-	int temp = 0; //하다 말았음 **여기 해야됨**
-	printSlowly("몇 번째 아이템을 선택하시겠습니까?", 100);
+	int temp = 0;
+	printf("------------------------------------------------------------------------------------------\n");
+	printSlowly("몇 번째 아이템을 선택하시겠습니까?\n0. 나가기\n", 100);
+	while (1) {
 	printf("Enter: ");
 	scanf("%d", &temp);
+	if (temp <= j && temp != 0) {
+	printf("------------------------------------------------------------------------------------------\n");
 	printSlowly("선택한 아이템: ", 100);
-	printSlowly(playerInfo.inventory[temp].item, 100);
+	printSlowly(playerInfo.inventory[temp-1].item, 100);
 	printf("\n");
-	printf("1. 장착\n2.취소\n");
-	printf("Enter: ");
-	scanf("%d", &temp);
-	playerInfo.inventory[temp].isEquipped = 1; 
-	
+	printf("------------------------------------------------------------------------------------------\n");
+	printf("1. 장착/사용\n2. 취소\n");
+
+	while (1) {
+		printf("Enter: ");
+		scanf("%d", &temp);
+		if (temp == 1) {
+			if (playerInfo.inventory[temp - 1].isEquipped == 1) {
+				printSlowly("이미 장착 중입니다.\n", 100);
+				displayInventory();
+				break;
+			}
+			else {
+				playerInfo.inventory[temp - 1].isEquipped = 1;
+			}
+		
+		printSlowly("장착/사용되었습니다.\n", 100);
+		if (playerInfo.inventory[temp-1].isEquipped == 1) {
+			printf("------------------------------------------------------------------------------------------\n");
+			printf("%s: %d개 / 장착 중\n", playerInfo.inventory[temp - 1].item, playerInfo.inventory[temp - 1].quantity, playerInfo.inventory[temp - 1].isEquipped);
+			printf("------------------------------------------------------------------------------------------\n");
+		}
+		else {
+			printf("------------------------------------------------------------------------------------------\n");
+			printf("%s: %d개 / 미장착 중\n", playerInfo.inventory[temp - 1].item, playerInfo.inventory[temp - 1].quantity, playerInfo.inventory[temp - 1].isEquipped);
+			printf("------------------------------------------------------------------------------------------\n");
+		}
+		displayInventory();
+		break;
+		}
+		else if (temp == 2) {
+			printf("취소되었습니다.\n");
+			printf("------------------------------------------------------------------------------------------\n");
+			displayInventory();
+			break;
+		}else {
+			printf("------------------------------------------------------------------------------------------\n");
+			printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
+			while (getchar() != '\n');
+		}
+	}
+	}
+	else if (temp == 0) {
+		break;
+	}else {
+		printf("------------------------------------------------------------------------------------------\n");
+		printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
+		while (getchar() != '\n');
+	}
+	break;
+	}
 }
 
 
@@ -230,6 +284,22 @@ void main() {
 						playerInfo.inventory[0].quantity = 1;
 						playerInfo.inventory[0].type = 1;
 						playerInfo.inventory[0].isEquipped = 0;
+						while (1) {
+
+
+							printf("Enter: ");
+							scanf("%d", &use);
+							if (use == 1) {
+								displayInventory();
+								break;
+							}
+							else {
+								printf("------------------------------------------------------------------------------------------\n");
+								printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
+								while (getchar() != '\n');
+							}
+
+						}
 						break;
 
 					}
@@ -239,6 +309,22 @@ void main() {
 						playerInfo.inventory[0].quantity = 1;
 						playerInfo.inventory[0].type = 1;
 						playerInfo.inventory[0].isEquipped = 0;
+						while (1) {
+
+
+							printf("Enter: ");
+							scanf("%d", &use);
+							if (use == 1) {
+								displayInventory();
+								break;
+							}
+							else {
+								printf("------------------------------------------------------------------------------------------\n");
+								printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
+								while (getchar() != '\n');
+							}
+
+						}
 						break;
 
 					}
