@@ -3,6 +3,9 @@
 #include <string.h>
 #include <windows.h>
 #include <conio.h>
+#include <time.h>
+
+#define MAX_INVENTORY_SIZE 10
 enum {
 	BLACK,
 	DARK_BLUE,
@@ -86,7 +89,7 @@ struct {
 struct {
 	char playerName[20];
 	struct character playerScharacterInfo;
-	struct inventoryItem inventory[100];
+	struct inventoryItem inventory[MAX_INVENTORY_SIZE];
 } playerInfo;
 
 
@@ -131,18 +134,30 @@ void displayInventory() {
 				break;
 			}
 			else {
-				playerInfo.inventory[temp - 1].isEquipped = 1;
+				playerInfo.playerScharacterInfo.attack += playerInfo.inventory[temp - 1].addAttack;
+				playerInfo.playerScharacterInfo.defense += playerInfo.inventory[temp - 1].addDefense;
+				playerInfo.playerScharacterInfo.hp += playerInfo.inventory[temp - 1].addHp;
+				playerInfo.playerScharacterInfo.mana += playerInfo.inventory[temp - 1].addMana;
+				
+
 				if (playerInfo.inventory[temp - 1].type == 2) {
 					playerInfo.inventory[temp - 1].quantity--;
+					printSlowly("포션을 사용했습니다. / 지속시간 5분\n", 100);
+					//타임 설정
+					Usepotion();
+					playerInfo.playerScharacterInfo.attack += playerInfo.inventory[temp - 1].addAttack;
+					playerInfo.playerScharacterInfo.defense += playerInfo.inventory[temp - 1].addDefense;
+					playerInfo.playerScharacterInfo.hp += playerInfo.inventory[temp - 1].addHp;
+					playerInfo.playerScharacterInfo.mana += playerInfo.inventory[temp - 1].addMana;
 
+				}
+				else if (playerInfo.inventory[temp - 1].type == 1) {
+					playerInfo.inventory[temp - 1].isEquipped = 1;
+					printSlowly("장비를 착용했습니다.\n", 100);
 				}
 			}
 		
-		printSlowly("장착/사용되었습니다.\n", 100);
-		playerInfo.playerScharacterInfo.attack += playerInfo.inventory[temp - 1].addAttack;
-		playerInfo.playerScharacterInfo.defense += playerInfo.inventory[temp - 1].addDefense;
-		playerInfo.playerScharacterInfo.hp += playerInfo.inventory[temp - 1].addHp;
-		playerInfo.playerScharacterInfo.mana += playerInfo.inventory[temp - 1].addMana;
+		
 		displayInventory();
 		break;
 		}
