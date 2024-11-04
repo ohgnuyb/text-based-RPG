@@ -28,7 +28,7 @@ void setColor(unsigned short text) { //cmd창 글자색 설정
 
 void printSlowly(const char* text, int delay) { //print 문자열 하나하나 천천히
 	for (int i = 0; text[i] != '\0'; i++) {
-		putchar(text[i]);
+		putchar(text[i]);	
 		Sleep(delay);
 	}
 
@@ -58,7 +58,10 @@ struct inventoryItem {
 	int  quantity;
 	int type; //1: 장비, 2: 물약
 	int isEquipped;
-
+	int addAttack;
+	int addDefense;
+	int addHp;
+	int addMana;
 };
 
 struct character characterInfo[3] = {
@@ -88,7 +91,7 @@ struct {
 
 
 void displayInventory() {
-	int j = 0;
+	int selected = 0;
 	setColor(YELLOW);
 	printf("===== 인벤토리 =====\n");
 	setColor(WHITE);
@@ -96,11 +99,11 @@ void displayInventory() {
 		if(playerInfo.inventory[i].quantity > 0)
 			if (playerInfo.inventory[i].isEquipped == 1) {
 				printf("%d. %s: %d개 / 장착 중\n", i+1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity, playerInfo.inventory[i].isEquipped);
-				j++;
+				selected++;
 			}
 			else {
 				printf("%d. %s: %d개 / 미장착 중\n", i+1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity, playerInfo.inventory[i].isEquipped);
-				j++;
+				selected++;
 			}
 			}
 
@@ -110,7 +113,7 @@ void displayInventory() {
 	while (1) {
 	printf("Enter: ");
 	scanf("%d", &temp);
-	if (temp <= j && temp != 0) {
+	if (temp <= selected && temp != 0) {
 	printf("------------------------------------------------------------------------------------------\n");
 	printSlowly("선택한 아이템: ", 100);
 	printSlowly(playerInfo.inventory[temp-1].item, 100);
@@ -129,19 +132,17 @@ void displayInventory() {
 			}
 			else {
 				playerInfo.inventory[temp - 1].isEquipped = 1;
+				if (playerInfo.inventory[temp - 1].type == 2) {
+					playerInfo.inventory[temp - 1].quantity--;
+
+				}
 			}
 		
 		printSlowly("장착/사용되었습니다.\n", 100);
-		if (playerInfo.inventory[temp-1].isEquipped == 1) {
-			printf("------------------------------------------------------------------------------------------\n");
-			printf("%s: %d개 / 장착 중\n", playerInfo.inventory[temp - 1].item, playerInfo.inventory[temp - 1].quantity, playerInfo.inventory[temp - 1].isEquipped);
-			printf("------------------------------------------------------------------------------------------\n");
-		}
-		else {
-			printf("------------------------------------------------------------------------------------------\n");
-			printf("%s: %d개 / 미장착 중\n", playerInfo.inventory[temp - 1].item, playerInfo.inventory[temp - 1].quantity, playerInfo.inventory[temp - 1].isEquipped);
-			printf("------------------------------------------------------------------------------------------\n");
-		}
+		playerInfo.playerScharacterInfo.attack += playerInfo.inventory[temp - 1].addAttack;
+		playerInfo.playerScharacterInfo.defense += playerInfo.inventory[temp - 1].addDefense;
+		playerInfo.playerScharacterInfo.hp += playerInfo.inventory[temp - 1].addHp;
+		playerInfo.playerScharacterInfo.mana += playerInfo.inventory[temp - 1].addMana;
 		displayInventory();
 		break;
 		}
@@ -204,12 +205,11 @@ void main() {
 
 	printf("                               .--\"\"--.\n");
 	printf("                              /        \\\n");
-	printf("                             |   ^  ^  |\n");
+	printf("                             |   *  *  |\n");
 	printf("                             \\  .--.  /\n");
 	printf("                              '.____.'\n");
 	printf("                                ||||\n");
 	setColor(WHITE);
-
 
 		printf("1. 시작\n2. 종료\n");
 		while (1) {
@@ -235,7 +235,7 @@ void main() {
 				setColor(WHITE);
 				printSlowly("깊은 숲 속에 숨겨진 고대 왕국, '아르카디아'. 한때 번영했던 이 왕국은 어둠의 마법사 '말레피센트'의 저주로 인해 멸망하고, 사람들의 기억 속에서 잊혀졌습니다. 당신은 우연히 아르카디아의 존재를 알게 된 모험가입니다. 잊혀진 왕국의 비밀을 밝혀내고 말레피센트의 저주를 풀어 아르카디아를 부활시킬 수 있을까요?\n", 70);
 				printf("------------------------------------------------------------------------------------------\n");
-
+				
 				printSlowly("캐릭터 선택: \n", 200);
 				for (int i = 0; i < 3; i++) {
 					setColor(i == 0 ? GREEN : i == 1 ? BLUE : RED);
@@ -251,6 +251,14 @@ void main() {
 					printf("Enter: ");
 					scanf("%d", &charSel);
 					int use = -1;
+					strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+					strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+					strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+					playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+					playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+					playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+					playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+
 					if (charSel == 1) {
 						printSlowly("검사를 위한 \'목검\'이 지급되었습니다.\n", 100);
 						
@@ -258,6 +266,10 @@ void main() {
 						playerInfo.inventory[0].quantity = 1;
 						playerInfo.inventory[0].type = 1;
 						playerInfo.inventory[0].isEquipped = 0;
+						playerInfo.inventory[0].addAttack = 10;
+						playerInfo.inventory[0].addDefense = 0;
+						playerInfo.inventory[0].addHp = 0;
+						playerInfo.inventory[0].addMana = 0;
 						printSlowly("1. 인벤토리\n", 100);
 						while (1) {
 
@@ -279,11 +291,16 @@ void main() {
 
 					}
 					else if (charSel == 2) {
-						printSlowly("마법사를 위한 \'마법사의 목걸이가 지급되었습니다.\'", 100);
+						printSlowly("마법사를 위한 \'마법사의 목걸이\'가 지급되었습니다.\n", 100);
 						strcpy(playerInfo.inventory[0].item, "마법사의 목걸이");
 						playerInfo.inventory[0].quantity = 1;
 						playerInfo.inventory[0].type = 1;
 						playerInfo.inventory[0].isEquipped = 0;
+						playerInfo.inventory[0].addAttack = 0;
+						playerInfo.inventory[0].addDefense = 10;
+						playerInfo.inventory[0].addHp = 0;
+						playerInfo.inventory[0].addMana = 0;
+						printSlowly("1. 인벤토리\n", 100);
 						while (1) {
 
 
@@ -304,11 +321,16 @@ void main() {
 
 					}
 					else if (charSel == 3) {
-						printSlowly("도적를 위한 \'도적의 망토가 지급되었습니다.\'", 100);
+						printSlowly("도적를 위한 \'도적의 망토\'가 지급되었습니다.\n", 100);
 						strcpy(playerInfo.inventory[0].item, "도적의 망토");
 						playerInfo.inventory[0].quantity = 1;
 						playerInfo.inventory[0].type = 1;
 						playerInfo.inventory[0].isEquipped = 0;
+						playerInfo.inventory[0].addAttack = 0;
+						playerInfo.inventory[0].addDefense = 0;
+						playerInfo.inventory[0].addHp = 10;
+						playerInfo.inventory[0].addMana = 0;
+						printSlowly("1. 인벤토리\n", 100);
 						while (1) {
 
 
@@ -335,13 +357,7 @@ void main() {
 
 					}
 				}
-				strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel-1].name);
-				strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel-1].skill);
-				strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel-1].charState);
-				playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
-				playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
-				playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
-				playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+			
 				printf("------------------------------------------------------------------------------------------\n");
 
 				printSlowly(playerInfo.playerName, 200);
@@ -363,9 +379,13 @@ void main() {
 				printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.attack), 100);
 				printf("\n");
 
-				setColor(BLUE);
 				printSlowly("  - 방어력: ", 100);
 				printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.defense), 100);
+				printf("\n");
+
+				setColor(BLUE);
+				printSlowly("  - 마나: ", 100);
+				printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.mana), 100);
 				printf("\n");
 				setColor(WHITE);
 				printf("------------------------------------------------------------------------------------------\n");
@@ -449,7 +469,7 @@ void main() {
 
 
 
-
+			
 
 			}
 
@@ -465,6 +485,6 @@ void main() {
 			}
 		}
 
-		
+	
 	
 }
