@@ -98,7 +98,7 @@ void displayInventory() {
 	setColor(YELLOW);
 	printf("===== 인벤토리 =====\n");
 	setColor(WHITE);
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 10; i++) {
 		if(playerInfo.inventory[i].quantity > 0)
 			if (playerInfo.inventory[i].isEquipped == 1) {
 				printf("%d. %s: %d개 / 장착 중\n", i+1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity, playerInfo.inventory[i].isEquipped);
@@ -144,7 +144,7 @@ void displayInventory() {
 					playerInfo.inventory[temp - 1].quantity--;
 					printSlowly("포션을 사용했습니다. / 지속시간 5분\n", 100);
 					//타임 설정
-					Usepotion();
+					
 					playerInfo.playerScharacterInfo.attack += playerInfo.inventory[temp - 1].addAttack;
 					playerInfo.playerScharacterInfo.defense += playerInfo.inventory[temp - 1].addDefense;
 					playerInfo.playerScharacterInfo.hp += playerInfo.inventory[temp - 1].addHp;
@@ -184,6 +184,29 @@ void displayInventory() {
 	}
 }
 
+void printMonster1() {
+	printf("              .-\"\"\"\"\"-.\n");
+	printf("            .'          '.\n");
+	printf("           /   O      O   \\\n");
+	printf("          :           `    :\n");
+	printf("          |                |\n");
+	printf("          :    .------.    :\n");
+	printf("           \\  '        '  /\n");
+	printf("            '.          .'\n");
+	printf("              '-......-'\n");
+	printf("               /        \\\n");
+	printf("              |          |\n");
+	printf("              |  .------.| \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("             /    |    |  \\ \n");
+	printf("            |     |    |   |\n");
+	printf("            |_____|____|___|\n");
+	printf("           (_____(_____)____)\n\n");
+}
 
 
 
@@ -423,8 +446,74 @@ void main() {
 					if (choice == 1) { //1번 스토리
 
 						printSlowly("당신은 석판의 가르침에 따라 깊은 숲 속으로 들어섰다.\n저주받은 숲은 음산한 기운으로 가득하다... 나무들은 기괴하게 뒤틀려 있고, 숲 속에는 알 수 없는 생명체들의 울음소리가 울려 퍼진다.\n", 70);
-						//아이템 획득: 60프로 확률로 갑옷(방어력 +10) 획득 / 40프로 확률로 공격력 증가 포션
+						printSlowly("깊은 숲을 헤치고 나아가던 중, 갑자기 시야에 오래된 유적지가 나타났다. 이곳은 분명 인간의 손길이 닿지 않은 듯한 모습이다.\n", 70);
+						printSlowly("유적 한가운데 작은 제단이 놓여 있고, 그 위에는 오래된 갑옷과 빛나는 포션이 놓여 있다.\n", 70);
+						int use = -1;
+						
+						// 아이템 획득 확률 계산
+						int itemChance = rand() % 100; // 0에서 99 사이의 랜덤 숫자
+						if (itemChance < 60) { // 60% 확률로 갑옷 획득
+							printSlowly("갑옷을 조심스레 손에 들었다. 낡아 보이지만 아직 견고해 보인다.\n", 70);
+							strcpy(playerInfo.inventory[0].item, "낡은 갑옷");
+							playerInfo.inventory[0].quantity = 1;
+							playerInfo.inventory[0].type = 1;
+							playerInfo.inventory[0].isEquipped = 0;
+							playerInfo.inventory[0].addAttack = 0;
+							playerInfo.inventory[0].addDefense = 10;
+							playerInfo.inventory[0].addHp = 0;
+							playerInfo.inventory[0].addMana = 0;
+							printSlowly("1. 인벤토리\n", 100);
+							while (1) {
 
+
+								printf("Enter: ");
+								scanf("%d", &use);
+								if (use == 1) {
+									displayInventory();
+									break;
+								}
+								else {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
+									while (getchar() != '\n');
+								}
+
+							}
+							break;
+						}
+						else { // 40% 확률로 공격력 증가 포션 획득
+							printSlowly("빛나는 포션을 발견했다.\n", 70);
+							strcpy(playerInfo.inventory[0].item, "빨간 포션");
+							playerInfo.inventory[0].quantity = 1;
+							playerInfo.inventory[0].type = 2;
+							playerInfo.inventory[0].isEquipped = 0;
+							playerInfo.inventory[0].addAttack = 10;
+							playerInfo.inventory[0].addDefense = 00;
+							playerInfo.inventory[0].addHp = 0;
+							playerInfo.inventory[0].addMana = 0;
+							printSlowly("1. 인벤토리\n", 100);
+							while (1) {
+
+
+								printf("Enter: ");
+								scanf("%d", &use);
+								if (use == 1) {
+									displayInventory();
+									break;
+								}
+								else {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
+									while (getchar() != '\n');
+								}
+
+							}
+							break;
+						}
+						printSlowly("아이템을 획득한 당신은 숲 속에서 빠져나가려 하지만, 여전히 음산한 기운이 주위를 감싸고 있다...\n", 70);
+						printSlowly("숲 속에서 무언가가 움직이는 소리가 들린다. 당신은 발걸음을 재촉해 이곳을 빠져나가기로 한다.\n", 70);
+
+						//1번 스토리 추가해야됨.
 						break;
 					}
 					else if (choice == 2) { //2번 스토리
@@ -435,17 +524,7 @@ void main() {
 						//몬스터 마주침
 						printSlowly("석판의 가르침을 의심하며 다른 길을 선택한 당신은 숲을 헤매던 도중 거대한 늑대, '펜리르'와 마주칩니다. 펜리르는 숲의 수호자로, 아르카디아로 향하는 길을 막고 있습니다.\n\n", 70);
 						setColor(YELLOW);
-						printf("       /\\_/\\ \n");
-						printf("      ( o o )\n");
-						printf("      /   *   \\ \n");
-						printf("     /________\\ \n");
-						printf("    |          | \n");
-						printf("    |  || ||  | \n");
-						printf("    |  || ||  | \n");
-						printf("    |          | \n");
-						printf("    \\________/ \n");
-						printf("       || || \n");
-						printf("       || || \n\n");
+						printMonster1();
 						setColor(WHITE);
 						printSlowly("이름: ", 50);
 						printSlowly(monster[0].name, 50);
