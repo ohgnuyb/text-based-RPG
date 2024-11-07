@@ -4,8 +4,25 @@
 #include <windows.h>
 #include <conio.h>
 #include <time.h>
+#include <stdbool.h>
 #define MAX_INVENTORY_SIZE 10
 #define DEFENSE_RATE 0.2
+
+void setConsoleSize(int width, int height) {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SMALL_RECT windowSize;
+	COORD bufferSize;
+
+	windowSize.Left = 0;
+	windowSize.Top = 0;
+	windowSize.Right = width - 1;
+	windowSize.Bottom = height - 1;
+	bufferSize.X = width;
+	bufferSize.Y = height;
+
+	SetConsoleWindowInfo(hConsole, TRUE, &windowSize);
+	SetConsoleScreenBufferSize(hConsole, bufferSize);
+}
 
 enum {
 	BLACK,
@@ -73,7 +90,14 @@ struct {
 
 
 void drawWarrior() {
+	setColor(SKYBLUE);
+	for (int i = 0; i < 10; i++) {
+		if (strcmp(playerInfo.inventory[i].item, "목검") == 0 && playerInfo.inventory[i].isEquipped == 1) {
+			setColor(YELLOW);
+		}
+	}
 	printf("==|==>>\n");
+	setColor(WHITE);
 	printf("\\  O\n");
 	printf("  \\|\\\n");
 	printf("  / \\\n");
@@ -83,9 +107,17 @@ void drawWarrior() {
 }
 
 void drawMage() {
+	setColor(YELLOW);
 	printf("==== *\n");
+	setColor(WHITE);
 	printf("\\  O\n");
+	for (int i = 0; i < 10; i++) {
+		if (strcmp(playerInfo.inventory[i].item, "마법사의 목걸이") == 0 && playerInfo.inventory[i].isEquipped == 1) {
+			setColor(SKYBLUE);
+		}
+	}
 	printf("  \\|\\\n");
+	setColor(WHITE);
 	printf("  / \\\n");
 	printf(" /   \\\n");
 	printf("\n");
@@ -93,7 +125,15 @@ void drawMage() {
 
 void drawRogue() {
 	printf("   O\n");
-	printf("  /|-- * * *\n");
+	for (int i = 0; i < 10; i++) {
+		if (strcmp(playerInfo.inventory[i].item, "마법사의 목걸이") == 0 && playerInfo.inventory[i].isEquipped == 1) {
+			setColor(RED);
+		}
+	}
+	printf("  /|-- ");
+	setColor(RED);
+	printf("* * *\n");
+	setColor(WHITE);
 	printf("  / \\\n");
 	printf(" /   \\\n");
 	printf("\n");
@@ -170,7 +210,7 @@ void displayInventory() {
 		while (1) {
 			printf("Enter: ");
 			scanf("%d", &selectedIndex);
-
+			
 			if (selectedIndex <= selected && selectedIndex != 0) {
 				printf("------------------------------------------------------------------------------------------\n");
 				printSlowly("선택한 아이템: ", 30);
@@ -402,6 +442,7 @@ void displayInventory() {
 
 
 void printMonster1() {
+	setColor(VIOLET);
 	printf("              .-\"\"\"\"\"-.\n");
 	printf("            .'          '.\n");
 	printf("           /   O      O   \\\n");
@@ -423,6 +464,7 @@ void printMonster1() {
 	printf("            |     |    |   |\n");
 	printf("            |_____|____|___|\n");
 	printf("           (_____(_____)____)\n\n");
+	setColor(WHITE);
 }
 
 void printstatus() {
@@ -481,7 +523,7 @@ void useSkill(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐�
 	printSlowly("!\n", 100);
 	printSlowly(monster[monsterIndex].name, 50);
 	printSlowly("에게 스킬을 사용했습니다. \n데미지: ", 50);
-	setColor(RED);
+	setColor(DARK_RED);
 	printSlowly(StringvalueOf(damage), 100);
 	printf("\n");
 	setColor(WHITE);
@@ -516,7 +558,7 @@ void useSkill(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐�
 			printSlowly("-10", 50);
 			setColor(WHITE);
 			printSlowly("\n데미지: ", 50);
-			setColor(RED);
+			setColor(DARK_RED);
 			printSlowly(StringvalueOf(damage), 100);
 			printf("\n");
 			setColor(WHITE);
@@ -548,7 +590,7 @@ void useSkill(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐�
 	}
 
 }
-int battle(int monsterIndex) {
+bool battle(int monsterIndex) {
 	int turn = 0;
 	int defenseTurn = 0; //0. 방어 안 함, 1. 방어 상태
 	int skillIndex = 0;
@@ -559,14 +601,13 @@ int battle(int monsterIndex) {
 		setColor(YELLOW);
 		printf("===== 전투 시작 =====\n");
 		setColor(WHITE);
-
+		turn = 0;
 		while (1) {
 			int playerChoice;
-			turn = 0;
 			if (turn > 0) {
 			printf("------------------------------------------------------------------------------------------\n");
 			setColor(YELLOW);
-			printf("다음 턴\n");
+			printf("-- 다음 턴 --\n");
 			}
 			setColor(WHITE);
 			con = 0;
@@ -583,7 +624,7 @@ int battle(int monsterIndex) {
 			printSlowly(monster[monsterIndex].name, 100);
 			setColor(WHITE);
 			printSlowly("에게 공격하였습니다.\n데미지: ", 100);
-			setColor(RED);
+			setColor(DARK_RED);
 			printSlowly(StringvalueOf(damage), 100);
 			printf("\n");
 			setColor(WHITE);
@@ -608,8 +649,11 @@ int battle(int monsterIndex) {
 			// 플레이어 방어
 			defenseTurn = 1;
 			printf("------------------------------------------------------------------------------------------\n");
-			printf("플레이어가 방어 자세를 취했습니다.\n");
-			playerInfo.playerScharacterInfo.defense += 20;
+			printSlowly("플레이어가 방어 자세를 취했습니다.\n", 50);
+			setColor(SKYBLUE);
+			printSlowly("임시 방어력: +50\n", 50);
+			playerInfo.playerScharacterInfo.defense += 50;
+			setColor(WHITE);
 		}
 		else if (playerChoice == 3) {
 			
@@ -627,8 +671,10 @@ int battle(int monsterIndex) {
 			playerInfo.playerScharacterInfo.hp -= monsterDamage;
 			if (monster[monsterIndex].hp > 0 ) {
 				if (con == -1) {
-					continue;
+					
 				}
+				else {
+
 			setColor(WHITE);
 			printf("------------------------------------------------------------------------------------------\n");
 			setColor(YELLOW);
@@ -637,7 +683,7 @@ int battle(int monsterIndex) {
 			printSlowly("가 ", 100);
 			printSlowly(playerInfo.playerName, 100);
 			printSlowly("님에게 공격하였습니다.\n데미지: ", 100);
-			setColor(RED);
+			setColor(DARK_RED);
 			printSlowly(StringvalueOf(monsterDamage), 100);
 			printf("\n");
 			setColor(WHITE);
@@ -649,23 +695,27 @@ int battle(int monsterIndex) {
 				printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.hp), 50);
 			}
 			else {
-				printSlowly("0", 50);
+				printSlowly("0\n", 50);
+				setColor(WHITE);
 				break;
 			}
 			printf("\n");
 			setColor(WHITE);
 			printf("------------------------------------------------------------------------------------------\n");
+			if (defenseTurn == 1) {
+				playerInfo.playerScharacterInfo.defense -= 50;
+			}
+			defenseTurn = 0;
+			turn++;
+				}
 
 			}
 			else {
 				break;
 			}
 		}
-		if (defenseTurn == 1) {
-			playerInfo.playerScharacterInfo.defense -= 20;
-		}
-		defenseTurn = 0;
-		turn++;
+
+		
 		
 	}
 
@@ -675,7 +725,7 @@ int battle(int monsterIndex) {
 		printSlowly("승리!\n", 40);
 		setColor(WHITE);
 		printf("------------------------------------------------------------------------------------------\n");
-		return 1;
+		return true;
 	}
 	else {
 		printf("------------------------------------------------------------------------------------------\n");
@@ -686,16 +736,21 @@ int battle(int monsterIndex) {
 		printSlowly("에게 패배...\n", 100);
 		setColor(WHITE);
 		printf("------------------------------------------------------------------------------------------\n");
-		return 0;
+		return false;
 	}
 }
 
 
+
+
 void main() {
+	
+	system("title 문제해결기법 / 11조");
+
 	playerInfo.playerScharacterInfo.hp = 1;
 	while(playerInfo.playerScharacterInfo.hp > 0){
 	srand(time(NULL));
-	setColor(WHITE);
+	setColor(BLACK);
 	int choice = -1;
 	int st_ex = -1;
 	int charSel = -1;
@@ -764,7 +819,7 @@ void main() {
 				
 				printSlowly("캐릭터 선택: \n", 300);
 				for (int i = 0; i < 3; i++) {
-					setColor(i == 0 ? GREEN : i == 1 ? BLUE : RED);
+					setColor(i == 0 ? SKYBLUE : i == 1 ? YELLOW : RED);
 					printSlowly(i == 0 ? "1. " : i == 1 ? "2. " : "3. ", 200);
 					printSlowly(characterInfo[i].name, 200);
 					printf(": ");
@@ -1031,9 +1086,7 @@ void main() {
 						setColor(WHITE);
 						//몬스터 마주침
 						printSlowly("석판의 가르침을 의심하며 다른 길을 선택한 당신은 숲을 헤매던 도중 거대한 몬스터, '펜리르'와 마주칩니다. \n펜리르는 숲의 수호자로, 아르카디아로 향하는 길을 막고 있습니다.\n\n", 20);
-						setColor(YELLOW);
 						printMonster1();
-						setColor(WHITE);
 						printSlowly("이름: ", 50);
 						printSlowly(monster[0].name, 50);
 						printf("\n");
@@ -1097,18 +1150,16 @@ void main() {
 						int tempD = playerInfo.playerScharacterInfo.defense;
 						int tempM = playerInfo.playerScharacterInfo.mana;
 
-						int end = battle(0);
-						if (end == 0) {
-							break;
-						}
-						else {
+						if (battle(0)) { //0 = 몬스터 인덱스
 							//승리일 경우 스토리 지속
-							
 							playerInfo.playerScharacterInfo.hp = tempH;
 							playerInfo.playerScharacterInfo.attack = tempA;
 							playerInfo.playerScharacterInfo.defense = tempD;
 							playerInfo.playerScharacterInfo.mana = tempM;
-						
+							//전투에서 변경된 능력치 복구
+						}
+						else {
+							break; //패배시 return False
 						}
 						
 					
@@ -1147,7 +1198,6 @@ void main() {
 
 	
 	}
-	printf("------------------------------------------------------------------------------------------\n");
 	printSlowly("플레이어가 사망했습니다.\n", 100);
 	printSlowly("Game is closed!", 100);
 }
