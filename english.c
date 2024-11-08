@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include "color.h"
 #include "rpg_struct.h"
-#include "string.h"
+#include "stringFunc.h"
 
 void drawWarrior_en() {
     setColor(SKYBLUE);

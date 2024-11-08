@@ -9,7 +9,7 @@
 #include "korean.c"
 #include "english.c"
 #include "rpg_struct.h"
-#include "string.h"
+#include "stringFunc.h"
 
 
 typedef void (*drawWarrior_ptr)();
