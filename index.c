@@ -509,7 +509,458 @@ void main() {
 	}
 	else if (lang == 2) {
 		//영어 부분
-		printf("영어 부분");
+		system("title 문제해결기법 / 11조");
+
+		playerInfo.playerScharacterInfo.hp = 1;
+		while (playerInfo.playerScharacterInfo.hp > 0) {
+			srand(time(NULL));
+			setColor(BLACK);
+			int choice = -1;
+			int charSel = -1;
+			int itemIndex = 0;
+			char title[50] = "The Secret of the Forgotten Kingdom"; //잊혀진 왕국의 비밀
+			int totalWidth = 47;
+			int strWidth = strlen(title);
+			int padding = (totalWidth - strWidth) / 2;
+
+			strcpy(monster[0].name, "Fenrir"); //첫 번째 몬스터(펜리르)
+			strcpy(monster[0].skill, "Take it down"); //내려찍기
+			monster[0].hp = 80;
+			monster[0].attack = 20;
+			monster[0].defense = 20;
+
+			//두 번째 몬스터
+
+			printf("------------------------------------------------------------------------------------------\n");
+			setColor(RED);
+			printf("     ,      ,\n");
+			printf("      (\\____/)\n");
+			printf("       (_oo_)\n");
+			printf("        (oo)\n");
+			printf("      /------\\/`\n");
+			printf("     / |    ||\n");
+			printf("    *  /\\---/\\\n");
+			printf("       ~~   ~~\n");
+
+			setColor(DARK_VOILET);
+			for (int i = 0; i < padding; i++) {
+				printf(" ");
+			}
+			printSlowly(title, 250);
+			for (int i = 0; i < padding; i++) {
+				printf(" ");
+			}
+
+			printSlowly("\n\n", 150);
+			setColor(DARK_GREEN);
+
+			printf("                               .--\"\"--.\n");
+			printf("                              /        \\\n");
+			printf("                             |   *  *  |\n");
+			printf("                             \\  .--.  /\n");
+			printf("                              '.____.'\n");
+			printf("                                ||||\n");
+			setColor(WHITE);
+
+			printf("1. Start\n2. End\n"); //1.시작 2.종료
+			while (1) {
+
+
+
+				printf("Enter: ");
+				scanf("%d", &st_ex);
+				if (st_ex == 1) {
+					printf("------------------------------------------------------------------------------------------\n");
+					printf("Please enter your name: \n"); //이름을 입력하세요: 
+					printf("Enter: ");
+					scanf("%s", playerInfo.playerName);
+					printf("------------------------------------------------------------------------------------------\n");
+					printSlowly("Hello, ", 30); //안녕하세요,
+					printSlowly(playerInfo.playerName, 200);
+					//printf("님!\n");
+					printf("\n");
+					printf("------------------------------------------------------------------------------------------\n");
+					setColor(SKYBLUE);
+					printSlowly("Tip. Open inventory is only possible when you acquire an item, so be careful!\n", 30); //Tip. 인벤토리 열기는 아이템을 획득하였을 때만 가능하니 주의하세요!
+					setColor(WHITE);
+					printf("------------------------------------------------------------------------------------------\n");
+					setColor(RED);
+					printSlowly("Start...\n", 300); //시작
+
+					setColor(WHITE);
+					printSlowly("Arcadia, an ancient kingdom hidden in a deep forest. This once prosperous kingdom is a dark wizard \nDestroyed by the curse of Maleficent, forgotten in people's memory. \nYou are an adventurer who happens to know Arcadia's existence. \nCan we uncover the secrets of the forgotten kingdom and unlock the curse of Maleficent to resurrect Arcadia?\n", 30);
+					//깊은 숲 속에 숨겨진 고대 왕국, '아르카디아'. 한때 번영했던 이 왕국은 어둠의 마법사 \n'말레피센트'의 저주로 인해 멸망하고, 사람들의 기억 속에서 잊혀졌습니다. \n당신은 우연히 아르카디아의 존재를 알게 된 모험가입니다. \n잊혀진 왕국의 비밀을 밝혀내고 말레피센트의 저주를 풀어 아르카디아를 부활시킬 수 있을까요?
+					printf("------------------------------------------------------------------------------------------\n");
+					setColor(SKYBLUE);
+					printSlowly("Tip. Warriors and bandits can use one skill per battle and the wizard consumes Mana 10 per skill.\n", 100); //Tip. 전사와 도적은 전투당 한 번의 스킬을 사용할 수 있고 마법사는 스킬 한 번당 마나 10을 소모합니다.
+					setColor(WHITE);
+					printf("------------------------------------------------------------------------------------------\n");
+					printSlowly("Select a character:\n", 300); //캐릭터 선택:
+					for (int i = 0; i < 3; i++) {
+						setColor(i == 0 ? SKYBLUE : i == 1 ? YELLOW : RED);
+						printSlowly(i == 0 ? "1. " : i == 1 ? "2. " : "3. ", 200);
+						printSlowly(characterInfo[i].name, 200);
+						printf(": ");
+						setColor(WHITE);
+						printSlowly(characterInfo[i].charState, 30);
+						printf("\n");
+					}
+					while (1) {
+						printf("Enter: ");
+						scanf("%d", &charSel);
+						int use = -1;
+						strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+						strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+						strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+						playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+						playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+						playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+						playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+
+						if (charSel == 1) {
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("A \'wooden sword'\ was provided for sword fighter.\n", 30); //검사를 위한 \'목검\'이 지급되었습니다.
+							printf("------------------------------------------------------------------------------------------\n");
+
+							strcpy(playerInfo.inventory[0].item, "A wooden sword"); //목검
+							playerInfo.inventory[itemIndex].quantity = 1;
+							playerInfo.inventory[itemIndex].type = 1;
+							playerInfo.inventory[itemIndex].isEquipped = 0;
+							playerInfo.inventory[itemIndex].addAttack = 5;
+							playerInfo.inventory[itemIndex].addDefense = 0;
+							playerInfo.inventory[itemIndex].addHp = 0;
+							playerInfo.inventory[itemIndex].addMana = 0;
+							printstatus();
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. 인벤토리\n2. 취소
+							while (1) {
+
+
+								printf("Enter: ");
+								scanf("%d", &use);
+								if (use == 1) {
+									displayInventory();
+									break;
+								}
+								else if (use == 2) {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("Canceled.\n", 100); //취소되었습니다.
+									break;
+								}
+								else {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("It's a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+									while (getchar() != '\n');
+								}
+
+							}
+							break;
+
+						}
+						else if (charSel == 2) {
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("A \'Wizard's Necklace\' has been provided for wizards.\n", 100); //마법사를 위한 \'마법사의 목걸이\'가 지급되었습니다.
+							printf("------------------------------------------------------------------------------------------\n");
+							strcpy(playerInfo.inventory[0].item, "The Wizard's Necklace"); //마법사의 목걸이
+							playerInfo.inventory[itemIndex].quantity = 1;
+							playerInfo.inventory[itemIndex].type = 1;
+							playerInfo.inventory[itemIndex].isEquipped = 0;
+							playerInfo.inventory[itemIndex].addAttack = 0;
+							playerInfo.inventory[itemIndex].addDefense = 0;
+							playerInfo.inventory[itemIndex].addHp = 0;
+							playerInfo.inventory[itemIndex].addMana = 10;
+							printstatus();
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("1. Inventory\n2. Cancellation\n", 100); //1.인벤토리 2.취소
+							while (1) {
+
+
+								printf("Enter: ");
+								scanf("%d", &use);
+								if (use == 1) {
+									displayInventory();
+									break;
+								}
+								else if (use == 2) {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("Canceled.\n", 100); //취소되었습니다.
+									break;
+								}
+								else {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("It's a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+									while (getchar() != '\n');
+								}
+
+							}
+							break;
+
+						}
+						else if (charSel == 3) {
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("A 'Cloak of the Rogue' has been granted to the rogue.\n", 100); //도적를 위한 \'도적의 망토\'가 지급되었습니다.
+							printf("------------------------------------------------------------------------------------------\n");
+							strcpy(playerInfo.inventory[0].item, "A bandit's cloak"); //도적의 망토
+							playerInfo.inventory[itemIndex].quantity = 1;
+							playerInfo.inventory[itemIndex].type = 1;
+							playerInfo.inventory[itemIndex].isEquipped = 0;
+							playerInfo.inventory[itemIndex].addAttack = 0;
+							playerInfo.inventory[itemIndex].addDefense = 0;
+							playerInfo.inventory[itemIndex].addHp = 10;
+							playerInfo.inventory[itemIndex].addMana = 0;
+							printstatus();
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. 인벤토리\n2. 취소\n
+							while (1) {
+
+
+								printf("Enter: ");
+								scanf("%d", &use);
+								if (use == 1) {
+									displayInventory();
+									break;
+								}
+								else if (use == 2) {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("Canceled.\n", 100); //취소되었습니다.
+									break;
+								}
+								else {
+									printf("------------------------------------------------------------------------------------------\n");
+									printSlowly("It's a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+									while (getchar() != '\n');
+								}
+
+							}
+							break;
+
+						}
+						else {
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("It's a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+							while (getchar() != '\n');
+
+						}
+					}
+					itemIndex++;
+
+
+
+					setColor(WHITE);
+					printf("------------------------------------------------------------------------------------------\n");
+					setColor(RED);
+					printSlowly("On the way to Arcadia...\n", 200); //아르카디아로 향하는 길...
+					setColor(WHITE);
+					printSlowly("Lost in the dense forest, you find an old lithograph.\nThere is a faint inscription on the stone tablet about the path to Arcadia.\n\n", 20); //울창한 숲 속에서 길을 잃은 당신은 오래된 석판을 발견합니다.\n석판에는 아르카디아로 향하는 길에 대한 희미한 글귀가 새겨져 있습니다.\n
+					printSlowly("Through the cursed forest, find a forgotten temple. \nDefeat the guardian of the temple, and open the door of Arcadia.\"\"\n\n", 20); //저주받은 숲을 지나, 잊혀진 신전을 찾아라. \n신전의 수호자를 물리치고, 아르카디아의 문을 열어라.
+
+
+					setColor(RED);
+					printf("Select: \n"); //선택
+					setColor(WHITE);
+					printSlowly("1. Head to the cursed forest.\n", 100); //1. 저주받은 숲으로 향한다.
+					printSlowly("2. Ignore the stone slab and find another path.\n", 100); //2. 석판을 무시하고 다른 길을 찾는다.
+					while (1) {
+						printf("Enter: ");
+						scanf("%d", &choice);
+						printf("------------------------------------------------------------------------------------------\n");
+						if (choice == 1) { //1번 스토리
+							setColor(YELLOW);
+							printSlowly("the treasure of the forest\n", 50); //숲의 보물
+							setColor(WHITE);
+							printSlowly("You have entered the deep forest following the instructions of the lithograph.\nCursed forests are full of dreary energy...\nThe trees are grotesquely twisted, and the cries of unknown creatures echo through the forest.\n", 20);
+							//당신은 석판의 가르침에 따라 깊은 숲 속으로 들어섰다.\n저주받은 숲은 음산한 기운으로 가득하다...\n나무들은 기괴하게 뒤틀려 있고, 숲 속에는 알 수 없는 생명체들의 울음소리가 울려 퍼진다.
+							printSlowly("While wading through the deep forest, an old ruin suddenly appeared in sight. This place clearly appears to have been untouched by humans.\n", 20);
+							//깊은 숲을 헤치고 나아가던 중, 갑자기 시야에 오래된 유적지가 나타났다. 이곳은 분명 인간의 손길이 닿지 않은 듯한 모습이다.
+							printSlowly("There is a small altar in the middle of the ruins, and an unknown box is placed on top of it.\n", 20); //유적 한가운데 작은 제단이 놓여 있고, 그 위에는 뭔지모를 상자가 놓여있다.
+							setColor(YELLOW);
+							printSlowly("60%: Armor, 40%: Potion\n", 100); //60% : 갑옷, 40 % : 포션
+							setColor(WHITE);
+							int use = -1;
+
+							// 아이템 획득 확률 계산
+							int itemChance = rand() % 100; // 0에서 99 사이의 랜덤 숫자
+							if (itemChance < 60) { // 60% 확률로 갑옷 획득
+								printSlowly("When I opened the box, there was armor inside.\nIt looks old, but still seems sturdy.\n", 30); //상자를 열어보니 갑옷이 들어있다.\n낡아 보이지만 아직 견고해 보인다.\n
+								strcpy(playerInfo.inventory[itemIndex].item, "A old armor"); //낡은 갑옷
+								playerInfo.inventory[itemIndex].quantity = 1;
+								playerInfo.inventory[itemIndex].type = 1;
+								playerInfo.inventory[itemIndex].isEquipped = 0;
+								playerInfo.inventory[itemIndex].addAttack = 0;
+								playerInfo.inventory[itemIndex].addDefense = 5;
+								playerInfo.inventory[itemIndex].addHp = 0;
+								playerInfo.inventory[itemIndex].addMana = 0;
+								printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. 인벤토리\n2. 취소\n
+								while (1) {
+
+
+									printf("Enter: ");
+									scanf("%d", &use);
+									if (use == 1) {
+										displayInventory();
+										break;
+									}
+									else if (use == 2) {
+										printf("------------------------------------------------------------------------------------------\n");
+										printSlowly("Canceled.\n", 100); //취소되었습니다.
+										break;
+									}
+									else {
+										printf("------------------------------------------------------------------------------------------\n");
+										printSlowly("It's a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+										while (getchar() != '\n');
+									}
+
+								}
+
+							}
+							else { // 40% 확률로 공격력 증가 포션 획득
+								printSlowly("When I opened the box, there was a glowing potion inside.\n", 70); //상자를 열어보니 빛나는 포션이 들어있다.
+								strcpy(playerInfo.inventory[itemIndex].item, "A glowing potion"); //빛나는 포션(마시는 물약)
+								playerInfo.inventory[itemIndex].quantity = 1;
+								playerInfo.inventory[itemIndex].type = 2;
+								playerInfo.inventory[itemIndex].isEquipped = 0;
+								playerInfo.inventory[itemIndex].addAttack = 10;
+								playerInfo.inventory[itemIndex].addDefense = 0;
+								playerInfo.inventory[itemIndex].addHp = 0;
+								playerInfo.inventory[itemIndex].addMana = 0;
+								printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. 인벤토리\n2. 취소\n
+								while (1) {
+
+
+									printf("Enter: ");
+									scanf("%d", &use);
+									if (use == 1) {
+										displayInventory();
+										break;
+									}
+									else if (use == 2) {
+										printf("------------------------------------------------------------------------------------------\n");
+										printSlowly("Canceled.\n", 100); //취소되었습니다.
+										break;
+									}
+									else {
+										printf("------------------------------------------------------------------------------------------\n");
+										printSlowly("It's a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+										while (getchar() != '\n');
+									}
+
+								}
+
+
+							}
+							itemIndex++;
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("After acquiring the item, you try to escape from the forest, but a gloomy energy still surrounds you...\n", 20); //아이템을 획득한 당신은 숲 속에서 빠져나가려 하지만, 여전히 음산한 기운이 주위를 감싸고 있다...
+							printSlowly("I hear something moving in the forest. You decide to hurry up and get out of here.\n", 20); //숲 속에서 무언가가 움직이는 소리가 들린다. 당신은 발걸음을 재촉해 이곳을 빠져나가기로 한다.
+
+							//***1번 스토리 추가해야됨.***
+
+							break;
+						}
+						else if (choice == 2) { //2번 스토리
+
+							setColor(RED);
+							printSlowly("guardian of the forest\n", 50); //숲의 수호자
+							setColor(WHITE);
+							//몬스터 마주침
+							printSlowly("Doubting the teachings of the stone tablets and choosing a different path, you encounter the huge monster ‘Fenrir’ while wandering through the forest. \nFenrir is the guardian of the forest, blocking the road to Arcadia.\n\n", 20);
+							//석판의 가르침을 의심하며 다른 길을 선택한 당신은 숲을 헤매던 도중 거대한 몬스터, '펜리르'와 마주칩니다. \n펜리르는 숲의 수호자로, 아르카디아로 향하는 길을 막고 있습니다.
+							printMonster1();
+							printSlowly("Name: ", 50);
+							printSlowly(monster[0].name, 50);
+							printf("\n");
+							setColor(RED);
+							printSlowly(" - HP: ", 50);
+							printSlowly(StringvalueOf(monster[0].hp), 50);
+							setColor(WHITE);
+							printf("\n");
+							printSlowly(" - Skill: ", 50);
+							printSlowly(monster[0].skill, 50);
+							printf("\n");
+							setColor(DARK_RED);
+							printSlowly(" - ATK: ", 50); //Attack라고 쓸지 고민
+							printSlowly(StringvalueOf(monster[0].attack), 50);
+							setColor(WHITE);
+							printf("\n");
+							setColor(SKYBLUE);
+							printSlowly(" - DEF: ", 50); //Defense라고 쓸지 고민
+							printSlowly(StringvalueOf(monster[0].defense), 50);
+							setColor(WHITE);
+							printf("\n\n");
+
+
+							//그림 추가: 전사, 마법사, 도적
+							drawChar();
+							printstatus();
+
+							//원래 체력, 공격력, 방어력, 마나 기록
+							int tempH = playerInfo.playerScharacterInfo.hp;
+							int tempA = playerInfo.playerScharacterInfo.attack;
+							int tempD = playerInfo.playerScharacterInfo.defense;
+							int tempM = playerInfo.playerScharacterInfo.mana;
+
+							if (battle(0) == true) { //0 = 몬스터 인덱스
+								//승리일 경우 스토리 지속
+								playerInfo.playerScharacterInfo.hp = tempH;
+								playerInfo.playerScharacterInfo.attack = tempA;
+								playerInfo.playerScharacterInfo.defense = tempD;
+								playerInfo.playerScharacterInfo.mana = tempM;
+								//전투에서 변경된 능력치 복구
+
+
+
+
+								break;
+							}
+							else {
+								break; //패배시 return False
+							}
+
+
+							break;
+						}
+
+
+						else {
+							printf("------------------------------------------------------------------------------------------\n");
+							printSlowly("It's a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+							while (getchar() != '\n');
+						}
+						break; //
+					}
+
+
+
+
+
+
+					break; //게임 종료
+				}
+				//스토리 통합: 임시
+
+
+				else if (st_ex == 2) {
+					printf("------------------------------------------------------------------------------------------\n");
+					printSlowly("Game is closed!", 100);
+					break;
+				}
+				else {
+					printf("------------------------------------------------------------------------------------------\n");
+					printSlowly("It\'s a wrong choice. Please select again.\n", 100); //잘못된 선택입니다. 다시 선택해주세요.
+					while (getchar() != '\n');
+				}
+				break; //게임 종료 2번 선택/루프 종료
+			}
+			break; //hp 조건/루프 종료
+
+		}
+
+		if (st_ex != 2) {
+			printSlowly("The player has died.\n", 100);
+			printSlowly("Game is closed!", 100);
+			break;//게임 종료/언어 선택 루프 종료
+		}
 
 
 
@@ -520,7 +971,7 @@ void main() {
 		}
 		else {
 		printf("------------------------------------------------------------------------------------------\n");
-		printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
+		printSlowly("잘못된 선택입니다. 다시 선택해주세요. / It\'s a wrong choice. Please select again.\n", 100);
 		while (getchar() != '\n');
 		}
 		break; //게임 종료/모든 루프 종료

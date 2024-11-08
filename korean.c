@@ -14,7 +14,7 @@
 
 struct character {
 	char name[20];
-	char skill[20];
+	char skill[50];
 	char charState[100];
 	int hp;
 	int attack;
@@ -659,6 +659,7 @@ bool battle(int monsterIndex) {
 					break;
 				}
 				setColor(WHITE);
+				damage = defenseDamage;
 			}
 			else if (playerChoice == 2) {
 				// 플레이어 방어
