@@ -6,54 +6,12 @@
 #include <time.h>
 #include <stdbool.h>
 #include "color.h"
-
-#define MAX_INVENTORY_SIZE 10
-#define DEFENSE_RATE 0.2
-
+#include "rpg_struct.h"
+#include "string.h"
 
 
-struct character {
-	char name[20];
-	char skill[50];
-	char charState[100];
-	int hp;
-	int attack;
-	int defense;
-	int mana;
-};
 
-struct inventoryItem {
-	char item[20];
-	int  quantity;
-	int type; //1: 장비, 2: 물약
-	int isEquipped;
-	int addAttack;
-	int addDefense;
-	int addHp;
-	int addMana;
-};
-struct character characterInfo[3] = {
-	{"전사", "파괴의 일격", "강인한 체력과 뛰어난 검술 실력을 가진 전사입니다.", 120, 10, 10, 0}, //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
-	{"마법사", "백만볼트", "강력한 마법을 사용하는 마법사입니다.", 90, 20, 0, 10}, //스킬 사용시 마나 -10
-	{"도적", "은신", "민첩한 움직임과 은밀한 행동에 능숙한 도적입니다.", 60, 30, 0, 0} //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
-}; //스킬 데미지는 캐릭터의 현재 공격력 * 2
-
-struct {
-	char name[20];
-	char skill[20];
-	int hp;
-	int attack;
-	int defense;
-} monster[100];
-
-struct {
-	char playerName[20];
-	struct character playerScharacterInfo;
-	struct inventoryItem inventory[MAX_INVENTORY_SIZE];
-} playerInfo;
-
-
-void drawWarrior() {
+void drawWarrior_ko() {
 	setColor(SKYBLUE);
 	for (int i = 0; i < 10; i++) {
 		if (strcmp(playerInfo.inventory[i].item, "목검") == 0 && playerInfo.inventory[i].isEquipped == 1) {
@@ -70,7 +28,7 @@ void drawWarrior() {
 	printf("\n");
 }
 
-void drawMage() {
+void drawMage_ko() {
 	setColor(YELLOW);
 	printf("==== *\n");
 	setColor(WHITE);
@@ -87,7 +45,7 @@ void drawMage() {
 	printf("\n");
 }
 
-void drawRogue() {
+void drawRogue_ko() {
 	printf("   O\n");
 	for (int i = 0; i < 10; i++) {
 		if (strcmp(playerInfo.inventory[i].item, "도적의 망토") == 0 && playerInfo.inventory[i].isEquipped == 1) {
@@ -103,39 +61,24 @@ void drawRogue() {
 	printf("\n");
 }
 
-void drawChar() {
+void drawChar_ko() {
 	if (strcmp(playerInfo.playerScharacterInfo.name, "전사") == 0) {
-		drawWarrior();
+		drawWarrior_ko();
 	}
 	else if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
-		drawMage();
+		drawMage_ko();
 	}
 	else if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
-		drawRogue();
+		drawRogue_ko();
 	}
 	else {
 		//추가 캐릭터
 	}
 }
 
-void printSlowly(const char* text, int delay) { //print 문자열 하나하나 천천히
-	for (int i = 0; text[i] != '\0'; i++) {
-		putchar(text[i]);
-		Sleep(delay);
-	}
 
-}
 
-char* StringvalueOf(int num) {
-	char* str = malloc(sizeof(char) * 11);
-	if (str == NULL) {
-		return NULL;
-	}
-	sprintf(str, "%d", num);
-	return str;
-}
-
-void displayInventory() {
+void displayInventory_ko() {
 	int selected = 0;
 
 	while (1) { // while 루프를 사용하여 반복
@@ -170,7 +113,6 @@ void displayInventory() {
 		int selectedIndex = 0;
 		printf("------------------------------------------------------------------------------------------\n");
 		printSlowly("몇 번째 아이템을 선택하시겠습니까?\n0. 나가기\n", 30);
-
 		while (1) {
 			printf("Enter: ");
 			scanf("%d", &selectedIndex);
@@ -360,7 +302,7 @@ void displayInventory() {
 			}
 			else if (selectedIndex == 0) {
 				printf("------------------------------------------------------------------------------------------\n");
-				drawChar();
+				drawChar_ko();
 				printSlowly(playerInfo.playerName, 200);
 				printSlowly("님: ", 200);
 				printSlowly(playerInfo.playerScharacterInfo.name, 200);
@@ -405,34 +347,8 @@ void displayInventory() {
 
 
 
-void printMonster1() {
-	setColor(VIOLET);
-	printf("              .-\"\"\"\"\"-.\n");
-	printf("            .'          '.\n");
-	printf("           /   O      O   \\\n");
-	printf("          :           `    :\n");
-	printf("          |                |\n");
-	printf("          :    .------.    :\n");
-	printf("           \\  '        '  /\n");
-	printf("            '.          .'\n");
-	printf("              '-......-'\n");
-	printf("               /        \\\n");
-	printf("              |          |\n");
-	printf("              |  .------.| \n");
-	printf("              |  |      ||  \n");
-	printf("              |  |      ||  \n");
-	printf("              |  |      ||  \n");
-	printf("              |  |      ||  \n");
-	printf("              |  |      ||  \n");
-	printf("             /    |    |  \\ \n");
-	printf("            |     |    |   |\n");
-	printf("            |_____|____|___|\n");
-	printf("           (_____(_____)____)\n\n");
-	setColor(WHITE);
-}
-
-void printstatus() {
-	drawChar();
+void printstatus_ko() {
+	drawChar_ko();
 	printSlowly(playerInfo.playerName, 200);
 	printSlowly("님의 선택: ", 200);
 	printSlowly(playerInfo.playerScharacterInfo.name, 200);
@@ -467,7 +383,7 @@ void printstatus() {
 }
 
 
-void useSkill(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐릭터의 현재 공격력 * 2
+void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐릭터의 현재 공격력 * 2
 	//마법사는 마나 -=10 / 도적은 공격이 아니라 방어력 100으로 은신 구현
 	if (*skillIndex == 0 && strcmp(playerInfo.playerScharacterInfo.name, "마법사") != 0) {
 		printf("------------------------------------------------------------------------------------------\n");
@@ -572,7 +488,7 @@ void useSkill(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐�
 	}
 
 }
-bool battle(int monsterIndex) {
+bool battle_ko(int monsterIndex) {
 	int turn = 0;
 	int defenseTurn = 0; //0. 방어 안 함, 1. 방어 상태
 	int skillIndex = 0;
@@ -701,7 +617,7 @@ bool battle(int monsterIndex) {
 			}
 			else if (playerChoice == 3) {
 
-				useSkill(monsterIndex, &skillIndex, &con);
+				useSkill_ko(monsterIndex, &skillIndex, &con);
 
 
 			}

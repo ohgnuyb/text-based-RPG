@@ -6,54 +6,10 @@
 #include <time.h>
 #include <stdbool.h>
 #include "color.h"
+#include "rpg_struct.h"
+#include "string.h"
 
-#define MAX_INVENTORY_SIZE 10
-#define DEFENSE_RATE 0.2
-
-
-
-struct character {
-    char name[20];
-    char skill[50];
-    char charState[100];
-    int hp;
-    int attack;
-    int defense;
-    int mana;
-};
-
-struct inventoryItem {
-    char item[20];
-    int  quantity;
-    int type; //1: 장비, 2: 물약
-    int isEquipped;
-    int addAttack;
-    int addDefense;
-    int addHp;
-    int addMana;
-};
-struct character characterInfo[3] = {
-   {"Warrior", "A blow to destruction", "A warrior with strong physical strength and excellent swordsmanship.", 120, 10, 10, 0}, //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
-   {"Wizard", "Million Volts", "Wizard using powerful magic.", 90, 20, 0, 10}, //스킬 사용시 마나 -10
-   {"Rogue", "The Grace", "The Bandit is adept at agile movements and covert actions.", 60, 30, 0, 0} //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
-}; //스킬 데미지는 캐릭터의 현재 공격력 * 2
-
-struct {
-    char name[20];
-    char skill[20];
-    int hp;
-    int attack;
-    int defense;
-} monster[100];
-
-struct {
-    char playerName[20];
-    struct character playerScharacterInfo;
-    struct inventoryItem inventory[MAX_INVENTORY_SIZE];
-} playerInfo;
-
-
-void drawWarrior() {
+void drawWarrior_en() {
     setColor(SKYBLUE);
     for (int i = 0; i < 10; i++) {
         if (strcmp(playerInfo.inventory[i].item, "A wooden sword") == 0 && playerInfo.inventory[i].isEquipped == 1) {
@@ -70,7 +26,7 @@ void drawWarrior() {
     printf("\n");
 }
 
-void drawMage() {
+void drawMage_en() {
     setColor(YELLOW);
     printf("==== *\n");
     setColor(WHITE);
@@ -87,7 +43,7 @@ void drawMage() {
     printf("\n");
 }
 
-void drawRogue() {
+void drawRogue_en() {
     printf("   O\n");
     for (int i = 0; i < 10; i++) {
         if (strcmp(playerInfo.inventory[i].item, "A bandit's cloak") == 0 && playerInfo.inventory[i].isEquipped == 1) {
@@ -103,39 +59,25 @@ void drawRogue() {
     printf("\n");
 }
 
-void drawChar() {
+void drawChar_en() {
     if (strcmp(playerInfo.playerScharacterInfo.name, "Warrior") == 0) {
-        drawWarrior();
+        drawWarrior_en();
     }
     else if (strcmp(playerInfo.playerScharacterInfo.name, "Wizard") == 0) {
-        drawMage();
+        drawMage_en();
     }
     else if (strcmp(playerInfo.playerScharacterInfo.name, "Rogue") == 0) {
-        drawRogue();
+        drawRogue_en();
     }
     else {
         //추가 캐릭터
     }
 }
 
-void printSlowly(const char* text, int delay) { //print 문자열 하나하나 천천히
-    for (int i = 0; text[i] != '\0'; i++) {
-        putchar(text[i]);
-        Sleep(delay);
-    }
 
-}
 
-char* StringvalueOf(int num) {
-    char* str = malloc(sizeof(char) * 11);
-    if (str == NULL) {
-        return NULL;
-    }
-    sprintf(str, "%d", num);
-    return str;
-}
 
-void displayInventory() {
+void displayInventory_en() {
     int selected = 0;
 
     while (1) { // while 루프를 사용하여 반복
@@ -147,14 +89,14 @@ void displayInventory() {
         for (int i = 0; i < 10; i++) {
             if (playerInfo.inventory[i].quantity > 0) {
                 if (playerInfo.inventory[i].isEquipped == 1) {
-                    printf("%d. %s: %d개 / Mounting\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
+                    printf("%d. %s: %d / Mounting\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
                 }
                 else {
                     if (playerInfo.inventory[i].type == 2) {
-                        printf("%d. %s: %d개 / Not used\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
+                        printf("%d. %s: %d / Not used\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
                     }
                     else {
-                        printf("%d. %s: %d개 / Not installed\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
+                        printf("%d. %s: %d / Not installed\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
                     }
                 }
 
@@ -211,14 +153,14 @@ void displayInventory() {
                                 }
                                 else if (playerInfo.inventory[selectedIndex - 1].addDefense > 0) {
                                     setColor(SKYBLUE);
-                                    printSlowly("Defensive power: +", 30);
+                                    printSlowly("DEFr: +", 30);
                                     printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
                                     printf("\n");
                                     setColor(WHITE);
                                 }
                                 else if (playerInfo.inventory[selectedIndex - 1].addAttack > 0) {
                                     setColor(DARK_RED);
-                                    printSlowly("Offensive power: +", 30);
+                                    printSlowly("ATK: +", 30);
                                     printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
                                     printf("\n");
                                     setColor(WHITE);
@@ -261,14 +203,14 @@ void displayInventory() {
                                 }
                                 else if (playerInfo.inventory[selectedIndex - 1].addDefense > 0) {
                                     setColor(SKYBLUE);
-                                    printSlowly("Defensive power: +", 30);
+                                    printSlowly("DEF: +", 30);
                                     printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
                                     printf("\n");
                                     setColor(WHITE);
                                 }
                                 else if (playerInfo.inventory[selectedIndex - 1].addAttack > 0) {
                                     setColor(DARK_RED);
-                                    printSlowly("Offensive power: +", 30);
+                                    printSlowly("ATKr: +", 30);
                                     printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
                                     printf("\n");
                                     setColor(WHITE);
@@ -313,14 +255,14 @@ void displayInventory() {
                                 }
                                 else if (playerInfo.inventory[selectedIndex - 1].addDefense > 0) {
                                     setColor(SKYBLUE);
-                                    printSlowly("Defensive power: -", 30);
+                                    printSlowly("DEF: -", 30);
                                     printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
                                     printf("\n");
                                     setColor(WHITE);
                                 }
                                 else if (playerInfo.inventory[selectedIndex - 1].addAttack > 0) {
                                     setColor(DARK_RED);
-                                    printSlowly("Offensive power: -", 30);
+                                    printSlowly("ATK: -", 30);
                                     printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
                                     printf("\n");
                                     setColor(WHITE);
@@ -360,9 +302,11 @@ void displayInventory() {
             }
             else if (selectedIndex == 0) {
                 printf("------------------------------------------------------------------------------------------\n");
-                drawChar();
+                drawChar_en();
+
+                printSlowly("Mr/Ms ", 200);
                 printSlowly(playerInfo.playerName, 200);
-                printSlowly("Mr/Ms: ", 200);
+                printSlowly(": ", 200);
                 printSlowly(playerInfo.playerScharacterInfo.name, 200);
                 printf("!\n");
 
@@ -376,12 +320,12 @@ void displayInventory() {
                 printSlowly(playerInfo.playerScharacterInfo.skill, 100);
                 printf("\n");
                 setColor(DARK_RED);
-                printSlowly(" - Offensive power: ", 100);
+                printSlowly(" - ATKr: ", 100);
                 printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.attack), 100);
                 setColor(WHITE);
                 printf("\n");
                 setColor(SKYBLUE);
-                printSlowly(" - Defensive power: ", 100);
+                printSlowly(" - DEF: ", 100);
                 printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.defense), 100);
                 setColor(WHITE);
                 printf("\n");
@@ -405,34 +349,10 @@ void displayInventory() {
 
 
 
-void printMonster1() {
-    setColor(VIOLET);
-    printf("              .-\"\"\"\"\"-.\n");
-    printf("            .'          '.\n");
-    printf("           /   O      O   \\\n");
-    printf("          :           `    :\n");
-    printf("          |                |\n");
-    printf("          :    .------.    :\n");
-    printf("           \\  '        '  /\n");
-    printf("            '.          .'\n");
-    printf("              '-......-'\n");
-    printf("               /        \\\n");
-    printf("              |          |\n");
-    printf("              |  .------.| \n");
-    printf("              |  |      ||  \n");
-    printf("              |  |      ||  \n");
-    printf("              |  |      ||  \n");
-    printf("              |  |      ||  \n");
-    printf("              |  |      ||  \n");
-    printf("             /    |    |  \\ \n");
-    printf("            |     |    |   |\n");
-    printf("            |_____|____|___|\n");
-    printf("           (_____(_____)____)\n\n");
-    setColor(WHITE);
-}
 
-void printstatus() {
-    drawChar();
+
+void printstatus_en() {
+    drawChar_en();
     printSlowly(playerInfo.playerName, 200);
     printSlowly("\'s chocie: ", 200);
     printSlowly(playerInfo.playerScharacterInfo.name, 200);
@@ -448,12 +368,12 @@ void printstatus() {
     printSlowly(playerInfo.playerScharacterInfo.skill, 100);
     printf("\n");
     setColor(DARK_RED);
-    printSlowly(" - Offensive power: ", 100);
+    printSlowly(" - ATK: ", 100);
     printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.attack), 100);
     setColor(WHITE);
     printf("\n");
     setColor(SKYBLUE);
-    printSlowly(" - Defensive power: ", 100);
+    printSlowly(" - DEF: ", 100);
     printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.defense), 100);
     setColor(WHITE);
     printf("\n");
@@ -467,7 +387,7 @@ void printstatus() {
 }
 
 
-void useSkill(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐릭터의 현재 공격력 * 2
+void useSkill_en(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐릭터의 현재 공격력 * 2
     //마법사는 마나 -=10 / 도적은 공격이 아니라 방어력 100으로 은신 구현
     if (*skillIndex == 0 && strcmp(playerInfo.playerScharacterInfo.name, "Wizard") != 0) {
         printf("------------------------------------------------------------------------------------------\n");
@@ -574,7 +494,7 @@ void useSkill(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐�
     }
 
 }
-bool battle(int monsterIndex) {
+bool battle_en(int monsterIndex) {
     int turn = 0;
     int defenseTurn = 0; //0. 방어 안 함, 1. 방어 상태
     int skillIndex = 0;
@@ -703,7 +623,7 @@ bool battle(int monsterIndex) {
             }
             else if (playerChoice == 3) {
 
-                useSkill(monsterIndex, &skillIndex, &con);
+                useSkill_en(monsterIndex, &skillIndex, &con);
 
 
             }

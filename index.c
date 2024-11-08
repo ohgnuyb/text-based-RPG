@@ -6,27 +6,96 @@
 #include <time.h>
 #include <stdbool.h>
 #include "color.h"
-int lang = 0;
-#if lang == 1
 #include "korean.c"
-#elif lang == 2
 #include "english.c"
-#else
-#include "korean.c"
-#endif
+#include "rpg_struct.h"
+#include "string.h"
 
-#define MAX_INVENTORY_SIZE 10
-#define DEFENSE_RATE 0.2
+
+typedef void (*drawWarrior_ptr)();
+typedef void (*drawMage_ptr)();
+typedef void (*drawRogue_ptr)();
+typedef void (*drawChar_ptr)();
+typedef void (*displayInventory_ptr)();
+typedef void (*printstatus_ptr)();
+typedef void (*useSkill_ptr)(int monsterIndex, int* skillIndex, int* con);
+typedef bool (*battle_ptr)(int monsterIndex);
+
+drawWarrior_ptr drawWarrior;
+drawMage_ptr drawMage;
+drawRogue_ptr drawRogue;
+drawChar_ptr drawChar;
+displayInventory_ptr displayInventory;
+printstatus_ptr printstatus;
+useSkill_ptr useSkill;
+battle_ptr battle;
+
+
+
+
+void printMonster1() { //몬스터 첫번째
+	setColor(VIOLET);
+	printf("              .-\"\"\"\"\"-.\n");
+	printf("            .'          '.\n");
+	printf("           /   O      O   \\\n");
+	printf("          :           `    :\n");
+	printf("          |                |\n");
+	printf("          :    .------.    :\n");
+	printf("           \\  '        '  /\n");
+	printf("            '.          .'\n");
+	printf("              '-......-'\n");
+	printf("               /        \\\n");
+	printf("              |          |\n");
+	printf("              |  .------.| \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("              |  |      ||  \n");
+	printf("             /    |    |  \\ \n");
+	printf("            |     |    |   |\n");
+	printf("            |_____|____|___|\n");
+	printf("           (_____(_____)____)\n\n");
+	setColor(WHITE);
+}
+
+
+
+
+
 
 void main() {
+	int lang = 0;
 	int st_ex = -1; //시작/종료 인덱스
+	
 	printf("------------------------------------------------------------------------------------------\n");
 	printSlowly("언어를 선택하세요. / Select a language.\n", 50);
 	printSlowly("1. 한국어 / Korean\n2. 영어 / English\n", 50);
+
 	while (1) {
 		printf("Enter: ");
 		scanf("%d", &lang);
+
 		if (lang == 1) {
+			drawWarrior = drawWarrior_ko;
+			drawMage = drawMage_ko;
+			drawRogue = drawRogue_ko;
+			drawChar = drawChar_ko;
+			displayInventory = displayInventory_ko;
+			printstatus = printstatus_ko;
+			useSkill = useSkill_ko;
+			battle = battle_ko;
+
+
+			strcpy(characterInfo[0].name, "전사");//한국어 캐릭터 구조체
+			strcpy(characterInfo[0].skill, "파괴의 일격");
+			strcpy(characterInfo[0].charState, "강인한 체력과 뛰어난 검술 실력을 가진 전사입니다.");
+			strcpy(characterInfo[1].name, "마법사");//한국어 캐릭터 구조체
+			strcpy(characterInfo[1].skill, "백만볼트");
+			strcpy(characterInfo[1].charState, "강력한 마법을 사용하는 마법사입니다.");
+			strcpy(characterInfo[2].name, "도적");//한국어 캐릭터 구조체
+			strcpy(characterInfo[2].skill, "은신");
+			strcpy(characterInfo[2].charState, "민첩한 움직임과 은밀한 행동에 능숙한 도적입니다.");
 
 	system("title 문제해결기법 / 11조");
 
@@ -509,6 +578,24 @@ void main() {
 	}
 	else if (lang == 2) {
 		//영어 부분
+		drawWarrior = drawWarrior_en;
+		drawMage = drawMage_en;
+		drawRogue = drawRogue_en;
+		drawChar = drawChar_en;
+		displayInventory = displayInventory_en;
+		printstatus = printstatus_en;
+		useSkill = useSkill_en;
+		battle = battle_en;
+
+		strcpy(characterInfo[0].name, "Warrior");//영어 캐릭터 구조체
+		strcpy(characterInfo[0].skill, "A blow to destruction");
+		strcpy(characterInfo[0].charState, "A warrior with strong physical strength and excellent swordsmanship.");
+		strcpy(characterInfo[1].name, "Wizard");
+		strcpy(characterInfo[1].skill, "Million Volts");
+		strcpy(characterInfo[1].charState, "Wizard using powerful magic.");
+		strcpy(characterInfo[2].name, "Rogue");
+		strcpy(characterInfo[2].skill, "The Grace");
+		strcpy(characterInfo[2].charState, "The Bandit is adept at agile movements and covert actions.");
 		system("title 문제해결기법 / 11조");
 
 		playerInfo.playerScharacterInfo.hp = 1;
@@ -861,7 +948,7 @@ void main() {
 						else if (choice == 2) { //2번 스토리
 
 							setColor(RED);
-							printSlowly("guardian of the forest\n", 50); //숲의 수호자
+							printSlowly("Guardian of the forest\n", 50); //숲의 수호자
 							setColor(WHITE);
 							//몬스터 마주침
 							printSlowly("Doubting the teachings of the stone tablets and choosing a different path, you encounter the huge monster ‘Fenrir’ while wandering through the forest. \nFenrir is the guardian of the forest, blocking the road to Arcadia.\n\n", 20);
