@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
@@ -20,6 +20,12 @@ typedef void (*displayInventory_ptr)();
 typedef void (*printstatus_ptr)();
 typedef void (*useSkill_ptr)(int monsterIndex, int* skillIndex, int* con);
 typedef bool (*battle_ptr)(int monsterIndex);
+typedef void (*shop_ptr)();
+typedef void (*printLevel_ptr)();
+typedef void (*levelUp_ptr)();
+typedef void (*selectPro_ptr)();
+typedef void (*loadLevelPro_ptr)(int x, char* reason);
+
 
 drawWarrior_ptr drawWarrior;
 drawMage_ptr drawMage;
@@ -29,11 +35,17 @@ displayInventory_ptr displayInventory;
 printstatus_ptr printstatus;
 useSkill_ptr useSkill;
 battle_ptr battle;
+shop_ptr shop;
+printLevel_ptr printLevel;
+levelUp_ptr levelUp;
+loadLevelPro_ptr loadLevelPro;
+selectPro_ptr selectPro;
 
 
 
 
-void printMonster1() { //¸ó½ºÅÍ Ã¹¹øÂ°
+
+void printMonster1() { //ëª¬ìŠ¤í„° ì²«ë²ˆì§¸
 	setColor(VIOLET);
 	printf("              .-\"\"\"\"\"-.\n");
 	printf("            .'          '.\n");
@@ -66,16 +78,16 @@ void printMonster1() { //¸ó½ºÅÍ Ã¹¹øÂ°
 
 void main() {
 	int lang = 0;
-	int st_ex = -1; //½ÃÀÛ/Á¾·á ÀÎµ¦½º
-	
-	printf("------------------------------------------------------------------------------------------\n");
-	printSlowly("¾ğ¾î¸¦ ¼±ÅÃÇÏ¼¼¿ä. / Select a language.\n", 50);
-	printSlowly("1. ÇÑ±¹¾î / Korean\n2. ¿µ¾î / English\n", 50);
+	int st_ex = -1; //ì‹œì‘/ì¢…ë£Œ ì¸ë±ìŠ¤
+
+	printBar();
+	printf("ì–¸ì–´ë¥¼ ì„ íƒí•˜ì„¸ìš”. / Select a language.\n");
+	printSlowly("1. í•œêµ­ì–´ / Korean\n2. ì˜ì–´ / English\n", 30);
 
 	while (1) {
 		printf("Enter: ");
 		scanf("%d", &lang);
-
+		printBar();
 		if (lang == 1) {
 			drawWarrior = drawWarrior_ko;
 			drawMage = drawMage_ko;
@@ -85,983 +97,776 @@ void main() {
 			printstatus = printstatus_ko;
 			useSkill = useSkill_ko;
 			battle = battle_ko;
+			shop = shop_ko;
+			printLevel = printLevel_ko;
+			levelUp = levelUp_ko;
+			loadLevelPro = loadLevelPro_ko;
+			selectPro = selectPro_ko;
 
 
-			strcpy(characterInfo[0].name, "Àü»ç");//ÇÑ±¹¾î Ä³¸¯ÅÍ ±¸Á¶Ã¼
-			strcpy(characterInfo[0].skill, "ÆÄ±«ÀÇ ÀÏ°İ");
-			strcpy(characterInfo[0].charState, "°­ÀÎÇÑ Ã¼·Â°ú ¶Ù¾î³­ °Ë¼ú ½Ç·ÂÀ» °¡Áø Àü»çÀÔ´Ï´Ù.");
-			strcpy(characterInfo[1].name, "¸¶¹ı»ç");//ÇÑ±¹¾î Ä³¸¯ÅÍ ±¸Á¶Ã¼
-			strcpy(characterInfo[1].skill, "¹é¸¸º¼Æ®");
-			strcpy(characterInfo[1].charState, "°­·ÂÇÑ ¸¶¹ıÀ» »ç¿ëÇÏ´Â ¸¶¹ı»çÀÔ´Ï´Ù.");
-			strcpy(characterInfo[2].name, "µµÀû");//ÇÑ±¹¾î Ä³¸¯ÅÍ ±¸Á¶Ã¼
-			strcpy(characterInfo[2].skill, "Àº½Å");
-			strcpy(characterInfo[2].charState, "¹ÎÃ¸ÇÑ ¿òÁ÷ÀÓ°ú Àº¹ĞÇÑ Çàµ¿¿¡ ´É¼÷ÇÑ µµÀûÀÔ´Ï´Ù.");
+			strcpy(characterInfo[0].name, "ì „ì‚¬");//í•œêµ­ì–´ ìºë¦­í„° êµ¬ì¡°ì²´
+			strcpy(characterInfo[0].skill, "íŒŒê´´ì˜ ì¼ê²©");
+			strcpy(characterInfo[0].charState, "ê°•ì¸í•œ ì²´ë ¥ê³¼ ë›°ì–´ë‚œ ê²€ìˆ  ì‹¤ë ¥ì„ ê°€ì§„ ì „ì‚¬ì…ë‹ˆë‹¤.");
+			strcpy(characterInfo[1].name, "ë§ˆë²•ì‚¬");//í•œêµ­ì–´ ìºë¦­í„° êµ¬ì¡°ì²´
+			strcpy(characterInfo[1].skill, "ë°±ë§Œë³¼íŠ¸");
+			strcpy(characterInfo[1].charState, "ê°•ë ¥í•œ ë§ˆë²•ì„ ì‚¬ìš©í•˜ëŠ” ë§ˆë²•ì‚¬ì…ë‹ˆë‹¤.");
+			strcpy(characterInfo[2].name, "ë„ì ");//í•œêµ­ì–´ ìºë¦­í„° êµ¬ì¡°ì²´
+			strcpy(characterInfo[2].skill, "ì€ì‹ ");
+			strcpy(characterInfo[2].charState, "ë¯¼ì²©í•œ ì›€ì§ì„ê³¼ ì€ë°€í•œ í–‰ë™ì— ëŠ¥ìˆ™í•œ ë„ì ì…ë‹ˆë‹¤.");
 
-	system("title ¹®Á¦ÇØ°á±â¹ı / 11Á¶");
+			system("title ë¬¸ì œí•´ê²°ê¸°ë²• / 11ì¡°");
 
-	playerInfo.playerScharacterInfo.hp = 1;
-	while(playerInfo.playerScharacterInfo.hp > 0){
-	srand(time(NULL));
-	setColor(BLACK);
-	int choice = -1;
-	int charSel = -1;
-	int itemIndex = 0;
-	char title[50] = "ÀØÇôÁø ¿Õ±¹ÀÇ ºñ¹Ğ";
-	int totalWidth = 47;
-	int strWidth = strlen(title);
-	int padding = (totalWidth - strWidth) / 2;
+			playerInfo.playerScharacterInfo.hp = 1;
+			while (playerInfo.playerScharacterInfo.hp > 0) { //ì˜ì–´ ë¶€ë¶„ ì—¬ê¸°ë¶€í„° ë³µì‚¬
+				srand(time(NULL));
+				setColor(BLACK);
+				int choice = -1;
+				int charSel = -1;
+				int itemIndex = 0;
+				char title[50] = "ìŠí˜€ì§„ ì™•êµ­ì˜ ë¹„ë°€";
+				int padding = 46;
 
-	strcpy(monster[0].name, "Ææ¸®¸£"); //Ã¹ ¹øÂ° ¸ó½ºÅÍ
-	strcpy(monster[0].skill, "³»·ÁÂï±â");
-	monster[0].hp = 80;
-	monster[0].attack = 20;
-	monster[0].defense = 20;
+				strcpy(monster[0].name, "íœë¦¬ë¥´"); //ì²« ë²ˆì§¸ ëª¬ìŠ¤í„°
+				strcpy(monster[0].skill, "ë‚´ë ¤ì°ê¸°");
+				monster[0].hp = 80;
+				monster[0].attack = 20;
+				monster[0].defense = 20;
 
-									  //µÎ ¹øÂ° ¸ó½ºÅÍ
-
-	printf("------------------------------------------------------------------------------------------\n");
-	setColor(RED);
-	printf("     ,      ,\n");
-	printf("      (\\____/)\n");
-	printf("       (_oo_)\n");
-	printf("        (oo)\n");
-	printf("      /------\\/`\n");
-	printf("     / |    ||\n");
-	printf("    *  /\\---/\\\n");
-	printf("       ~~   ~~\n");
-
-	setColor(DARK_VOILET);
-	for (int i = 0; i < padding; i++) {
-		printf(" ");
-	}
-	printSlowly(title, 250);
-	for (int i = 0; i < padding; i++) {
-		printf(" ");
-	}
-
-	printSlowly("\n\n", 150);
-	setColor(DARK_GREEN);
-
-	printf("                               .--\"\"--.\n");
-	printf("                              /        \\\n");
-	printf("                             |   *  *  |\n");
-	printf("                             \\  .--.  /\n");
-	printf("                              '.____.'\n");
-	printf("                                ||||\n");
-	setColor(WHITE);
-
-		printf("1. ½ÃÀÛ\n2. Á¾·á\n");
-		while (1) {
+				//ë‘ ë²ˆì§¸ ëª¬ìŠ¤í„°
 
 
 
-			printf("Enter: ");
-			scanf("%d", &st_ex);
-			if (st_ex == 1) {
-				printf("------------------------------------------------------------------------------------------\n");
-				printf("ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä: \n");
-				printf("Enter: ");
-				scanf("%s", playerInfo.playerName);
-				printf("------------------------------------------------------------------------------------------\n");
-				printSlowly("¾È³çÇÏ¼¼¿ä, ", 30);
-				printSlowly(playerInfo.playerName, 200);
-				printf("´Ô!\n");
-				printf("------------------------------------------------------------------------------------------\n");
-				setColor(SKYBLUE);
-				printSlowly("Tip: ÀÎº¥Åä¸® ¿­±â´Â ¾ÆÀÌÅÛÀ» È¹µæÇÏ¿´À» ¶§¸¸ °¡´ÉÇÏ´Ï ÁÖÀÇÇÏ¼¼¿ä!\n", 30);
-				setColor(WHITE);
-				printf("------------------------------------------------------------------------------------------\n");
-				setColor(RED);
-				printSlowly("½ÃÀÛ...\n", 300);
-
-				setColor(WHITE);
-				printSlowly("±íÀº ½£ ¼Ó¿¡ ¼û°ÜÁø °í´ë ¿Õ±¹, '¾Æ¸£Ä«µğ¾Æ'. ÇÑ¶§ ¹ø¿µÇß´ø ÀÌ ¿Õ±¹Àº ¾îµÒÀÇ ¸¶¹ı»ç \n'¸»·¹ÇÇ¼¾Æ®'ÀÇ ÀúÁÖ·Î ÀÎÇØ ¸ê¸ÁÇÏ°í, »ç¶÷µéÀÇ ±â¾ï ¼Ó¿¡¼­ ÀØÇôÁ³½À´Ï´Ù. \n´ç½ÅÀº ¿ì¿¬È÷ ¾Æ¸£Ä«µğ¾ÆÀÇ Á¸Àç¸¦ ¾Ë°Ô µÈ ¸ğÇè°¡ÀÔ´Ï´Ù. \nÀØÇôÁø ¿Õ±¹ÀÇ ºñ¹ĞÀ» ¹àÇô³»°í ¸»·¹ÇÇ¼¾Æ®ÀÇ ÀúÁÖ¸¦ Ç®¾î ¾Æ¸£Ä«µğ¾Æ¸¦ ºÎÈ°½ÃÅ³ ¼ö ÀÖÀ»±î¿ä?\n", 30);
-				printf("------------------------------------------------------------------------------------------\n");
-				setColor(SKYBLUE);
-				printSlowly("Tip. Àü»ç¿Í µµÀûÀº ÀüÅõ´ç ÇÑ ¹øÀÇ ½ºÅ³À» »ç¿ëÇÒ ¼ö ÀÖ°í ¸¶¹ı»ç´Â ½ºÅ³ ÇÑ ¹ø´ç ¸¶³ª 10À» ¼Ò¸ğÇÕ´Ï´Ù.\n", 100);
-				setColor(WHITE);
-				printf("------------------------------------------------------------------------------------------\n");
-				printSlowly("Ä³¸¯ÅÍ ¼±ÅÃ: \n", 300);
-				for (int i = 0; i < 3; i++) {
-					setColor(i == 0 ? SKYBLUE : i == 1 ? YELLOW : RED);
-					printSlowly(i == 0 ? "1. " : i == 1 ? "2. " : "3. ", 200);
-					printSlowly(characterInfo[i].name, 200);
-					printf(": ");
-					setColor(WHITE);
-					printSlowly(characterInfo[i].charState, 30);
-					printf("\n");
+				for (int i = 0; i < padding; i++) {
+					printf(" ");
 				}
-				while (1) {
-					printf("Enter: ");
-					scanf("%d", &charSel);
-					int use = -1;
-					strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
-					strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
-					strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
-					playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
-					playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
-					playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
-					playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
-					
-					if (charSel == 1) {
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("°Ë»ç¸¦ À§ÇÑ \'¸ñ°Ë\'ÀÌ Áö±ŞµÇ¾ú½À´Ï´Ù.\n", 30);
-						printf("------------------------------------------------------------------------------------------\n");
-						
-						strcpy(playerInfo.inventory[0].item, "¸ñ°Ë");
-						playerInfo.inventory[itemIndex].quantity = 1;
-						playerInfo.inventory[itemIndex].type = 1;
-						playerInfo.inventory[itemIndex].isEquipped = 0;
-						playerInfo.inventory[itemIndex].addAttack = 5;
-						playerInfo.inventory[itemIndex].addDefense = 0;
-						playerInfo.inventory[itemIndex].addHp = 0;
-						playerInfo.inventory[itemIndex].addMana = 0;
-						printstatus();
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n", 100);
-						while (1) {
+				setColor(RED);
+				printf("\n");
+				printf("      (\\____/)\n");
+				printf("       (_oo_)\n");
+				printf("        (oo)\n");
+				printf("      /------\\/`\n");
+				printf("     / |    ||\n");
+				printf("    *  /\\---/\\\n");
+				printf("       ~~   ~~\n");
+				setColor(DARK_VOILET);
+				for (int i = 0; i < padding -15; i++) {
+					printf(" ");
+				}
+				printf("+------------------------------------------------------+\n");
+				for (int i = 0; i < padding+3	;  i++) {
+					printf(" ");
+				}
+				printSlowly(title, 250);
+				printf("\n");
+				for (int i = 0; i < padding - 15; i++) {
+					printf(" ");
+				}
+				printf("+------------------------------------------------------+\n");
+				for (int i = 0; i < padding + 1; i++) {
+					printf(" ");
+				}
 
-						
+				printf("\n\n");
+				setColor(DARK_GREEN);
+				for (int i = 0; i < padding + 30; i++) {
+					printf(" ");
+				}
+				printf("                               .--\"\"--.\n");
+				for (int i = 0; i < padding + 30; i++) {
+					printf(" ");
+				}
+				printf("                              /        \\\n");
+				for (int i = 0; i < padding + 30; i++) {
+					printf(" ");
+				}
+				printf("                             |   *  *  |\n");
+				for (int i = 0; i < padding + 30; i++) {
+					printf(" ");
+				}
+				printf("                             \\  .--.  /\n");
+				for (int i = 0; i < padding + 30; i++) {
+					printf(" ");
+				}
+				printf("                              '.____.'\n");
+				for (int i = 0; i < padding + 30; i++) {
+					printf(" ");
+				}
+				printf("                                ||||\n\n\n");
+
+				setColor(WHITE);
+				printBar();
+				printf("1. ì‹œì‘\n2. ì¢…ë£Œ\n");
+				while (1) {
+
+
+
+					printf("Enter: ");
+					scanf("%d", &st_ex);
+					if (st_ex == 1) {
+						playerInfo.level = 0;
+						playerInfo.levelPro = 0;
+						int charExit = 0;
+						printBar();
+						printf("ì´ë¦„ì„ ì…ë ¥í•˜ì„¸ìš”: \n");
 						printf("Enter: ");
-						scanf("%d", &use);
-						if (use == 1) {
-							displayInventory();
-							break;
+						scanf("%s", playerInfo.playerName);
+						printBar();
+						clear();
+						printBar();
+						for (int i = 0; i < padding; i++) {
+							printf(" ");
 						}
-						else if (use == 2) {
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("Ãë¼ÒµÇ¾ú½À´Ï´Ù.\n", 100);
-							break;
-						}
-						else {
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-							while (getchar() != '\n');
-						}
-
-						}
-						break;
-
-					}
-					else if (charSel == 2) {
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("¸¶¹ı»ç¸¦ À§ÇÑ \'¸¶¹ı»çÀÇ ¸ñ°ÉÀÌ\'°¡ Áö±ŞµÇ¾ú½À´Ï´Ù.\n", 100);
-						printf("------------------------------------------------------------------------------------------\n");
-						strcpy(playerInfo.inventory[0].item, "¸¶¹ı»çÀÇ ¸ñ°ÉÀÌ");
-						playerInfo.inventory[itemIndex].quantity = 1;
-						playerInfo.inventory[itemIndex].type = 1;
-						playerInfo.inventory[itemIndex].isEquipped = 0;
-						playerInfo.inventory[itemIndex].addAttack = 0;
-						playerInfo.inventory[itemIndex].addDefense = 0;
-						playerInfo.inventory[itemIndex].addHp = 0;
-						playerInfo.inventory[itemIndex].addMana = 10;
-						printstatus();
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n", 100);
-						while (1) {
-
-
-							printf("Enter: ");
-							scanf("%d", &use);
-							if (use == 1) {
-								displayInventory();
-								break;
-							}
-							else if (use == 2) {
-								printf("------------------------------------------------------------------------------------------\n");
-								printSlowly("Ãë¼ÒµÇ¾ú½À´Ï´Ù.\n", 100);
-								break;
-							}
-							else {
-								printf("------------------------------------------------------------------------------------------\n");
-								printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-								while (getchar() != '\n');
-							}
-
-						}
-						break;
-
-					}
-					else if (charSel == 3) {
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("µµÀû¸¦ À§ÇÑ \'µµÀûÀÇ ¸ÁÅä\'°¡ Áö±ŞµÇ¾ú½À´Ï´Ù.\n", 100);
-						printf("------------------------------------------------------------------------------------------\n");
-						strcpy(playerInfo.inventory[0].item, "µµÀûÀÇ ¸ÁÅä");
-						playerInfo.inventory[itemIndex].quantity = 1;
-						playerInfo.inventory[itemIndex].type = 1;
-						playerInfo.inventory[itemIndex].isEquipped = 0;
-						playerInfo.inventory[itemIndex].addAttack = 0;
-						playerInfo.inventory[itemIndex].addDefense = 0;
-						playerInfo.inventory[itemIndex].addHp = 10;
-						playerInfo.inventory[itemIndex].addMana = 0;
-						printstatus();
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n", 100);
-						while (1) {
-
-
-							printf("Enter: ");
-							scanf("%d", &use);
-							if (use == 1) {
-								displayInventory();
-								break;
-							}
-							else if(use == 2) {
-								printf("------------------------------------------------------------------------------------------\n");
-								printSlowly("Ãë¼ÒµÇ¾ú½À´Ï´Ù.\n", 100);
-								break;
-							}
-							else {
-								printf("------------------------------------------------------------------------------------------\n");
-								printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-								while (getchar() != '\n');
-							}
-
-						}
-						break;
-
-					}
-					else {
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-						while (getchar() != '\n');
-
-					}
-				}
-				itemIndex++;
-				
-
-				
-				setColor(WHITE);
-				printf("------------------------------------------------------------------------------------------\n");
-				setColor(RED);
-				printSlowly("¾Æ¸£Ä«µğ¾Æ·Î ÇâÇÏ´Â ±æ...\n", 200);
-				setColor(WHITE);
-				printSlowly("¿ïÃ¢ÇÑ ½£ ¼Ó¿¡¼­ ±æÀ» ÀÒÀº ´ç½ÅÀº ¿À·¡µÈ ¼®ÆÇÀ» ¹ß°ßÇÕ´Ï´Ù.\n¼®ÆÇ¿¡´Â ¾Æ¸£Ä«µğ¾Æ·Î ÇâÇÏ´Â ±æ¿¡ ´ëÇÑ Èñ¹ÌÇÑ ±Û±Í°¡ »õ°ÜÁ® ÀÖ½À´Ï´Ù.\n", 20);
-				printSlowly("\"ÀúÁÖ¹ŞÀº ½£À» Áö³ª, ÀØÇôÁø ½ÅÀüÀ» Ã£¾Æ¶ó. \n½ÅÀüÀÇ ¼öÈ£ÀÚ¸¦ ¹°¸®Ä¡°í, ¾Æ¸£Ä«µğ¾ÆÀÇ ¹®À» ¿­¾î¶ó.\"\n\n", 20);
-
-
-				setColor(RED);
-				printf("¼±ÅÃ: \n");
-				setColor(WHITE);
-				printSlowly("1. ÀúÁÖ¹ŞÀº ½£À¸·Î ÇâÇÑ´Ù.\n", 100);
-				printSlowly("2. ¼®ÆÇÀ» ¹«½ÃÇÏ°í ´Ù¸¥ ±æÀ» Ã£´Â´Ù.\n", 100);
-				while (1) {
-					printf("Enter: ");
-					scanf("%d", &choice);
-					printf("------------------------------------------------------------------------------------------\n");
-					if (choice == 1) { //1¹ø ½ºÅä¸®
-						setColor(YELLOW);
-						printSlowly("½£ÀÇ º¸¹°\n", 50);
-						setColor(WHITE);
-						printSlowly("´ç½ÅÀº ¼®ÆÇÀÇ °¡¸£Ä§¿¡ µû¶ó ±íÀº ½£ ¼ÓÀ¸·Î µé¾î¼¹´Ù.\nÀúÁÖ¹ŞÀº ½£Àº À½»êÇÑ ±â¿îÀ¸·Î °¡µæÇÏ´Ù...\n³ª¹«µéÀº ±â±«ÇÏ°Ô µÚÆ²·Á ÀÖ°í, ½£ ¼Ó¿¡´Â ¾Ë ¼ö ¾ø´Â »ı¸íÃ¼µéÀÇ ¿ïÀ½¼Ò¸®°¡ ¿ï·Á ÆÛÁø´Ù.\n", 20);
-						printSlowly("±íÀº ½£À» ÇìÄ¡°í ³ª¾Æ°¡´ø Áß, °©ÀÚ±â ½Ã¾ß¿¡ ¿À·¡µÈ À¯ÀûÁö°¡ ³ªÅ¸³µ´Ù. ÀÌ°÷Àº ºĞ¸í ÀÎ°£ÀÇ ¼Õ±æÀÌ ´êÁö ¾ÊÀº µíÇÑ ¸ğ½ÀÀÌ´Ù.\n", 20);
-						printSlowly("À¯Àû ÇÑ°¡¿îµ¥ ÀÛÀº Á¦´ÜÀÌ ³õ¿© ÀÖ°í, ±× À§¿¡´Â ¹ºÁö¸ğ¸¦ »óÀÚ°¡ ³õ¿©ÀÖ´Ù.\n", 20);
-						setColor(YELLOW);
-						printSlowly("60% : °©¿Ê, 40 % : Æ÷¼Ç\n", 100);
-						setColor(WHITE);
-						int use = -1;
-						
-						// ¾ÆÀÌÅÛ È¹µæ È®·ü °è»ê
-						int itemChance = rand() % 100; // 0¿¡¼­ 99 »çÀÌÀÇ ·£´ı ¼ıÀÚ
-						if (itemChance < 60) { // 60% È®·ü·Î °©¿Ê È¹µæ
-							printSlowly("»óÀÚ¸¦ ¿­¾îº¸´Ï °©¿ÊÀÌ µé¾îÀÖ´Ù.\n³°¾Æ º¸ÀÌÁö¸¸ ¾ÆÁ÷ °ß°íÇØ º¸ÀÎ´Ù.\n", 30);
-							strcpy(playerInfo.inventory[itemIndex].item, "³°Àº °©¿Ê");
-							playerInfo.inventory[itemIndex].quantity = 1;
-							playerInfo.inventory[itemIndex].type = 1;
-							playerInfo.inventory[itemIndex].isEquipped = 0;
-							playerInfo.inventory[itemIndex].addAttack = 0;
-							playerInfo.inventory[itemIndex].addDefense = 5;
-							playerInfo.inventory[itemIndex].addHp = 0;
-							playerInfo.inventory[itemIndex].addMana = 0;
-							printSlowly("1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n", 100);
-							while (1) {
-
-
-								printf("Enter: ");
-								scanf("%d", &use);
-								if (use == 1) {
-									displayInventory();
-									break;
-								}
-								else if (use == 2) {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("Ãë¼ÒµÇ¾ú½À´Ï´Ù.\n", 100);
-									break;
-								}
-								else {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-									while (getchar() != '\n');
-								}
-
-							}
-
-						}
-						else { // 40% È®·ü·Î °ø°İ·Â Áõ°¡ Æ÷¼Ç È¹µæ
-							printSlowly("»óÀÚ¸¦ ¿­¾îº¸´Ï ºû³ª´Â Æ÷¼ÇÀÌ µé¾îÀÖ´Ù.\n", 70);
-							strcpy(playerInfo.inventory[itemIndex].item, "ºû³ª´Â Æ÷¼Ç");
-							playerInfo.inventory[itemIndex].quantity = 1;
-							playerInfo.inventory[itemIndex].type = 2;
-							playerInfo.inventory[itemIndex].isEquipped = 0;
-							playerInfo.inventory[itemIndex].addAttack = 10;
-							playerInfo.inventory[itemIndex].addDefense = 0;
-							playerInfo.inventory[itemIndex].addHp = 0;
-							playerInfo.inventory[itemIndex].addMana = 0;
-							printSlowly("1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n", 100);
-							while (1) {
-
-
-								printf("Enter: ");
-								scanf("%d", &use);
-								if (use == 1) {
-									displayInventory();
-									break;
-								}
-								else if (use == 2) {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("Ãë¼ÒµÇ¾ú½À´Ï´Ù.\n", 100);
-									break;
-								}
-								else {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-									while (getchar() != '\n');
-								}
-
-							}
-
-
-						}
-						itemIndex++;
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("¾ÆÀÌÅÛÀ» È¹µæÇÑ ´ç½ÅÀº ½£ ¼Ó¿¡¼­ ºüÁ®³ª°¡·Á ÇÏÁö¸¸, ¿©ÀüÈ÷ À½»êÇÑ ±â¿îÀÌ ÁÖÀ§¸¦ °¨½Î°í ÀÖ´Ù...\n", 20);
-						printSlowly("½£ ¼Ó¿¡¼­ ¹«¾ğ°¡°¡ ¿òÁ÷ÀÌ´Â ¼Ò¸®°¡ µé¸°´Ù. ´ç½ÅÀº ¹ß°ÉÀ½À» ÀçÃËÇØ ÀÌ°÷À» ºüÁ®³ª°¡±â·Î ÇÑ´Ù.\n", 20);
-
-						//***1¹ø ½ºÅä¸® Ãß°¡ÇØ¾ßµÊ.***
-						
-						break;
-					}
-					else if (choice == 2) { //2¹ø ½ºÅä¸®
-
 						setColor(RED);
-						printSlowly("½£ÀÇ ¼öÈ£ÀÚ\n", 50);
-						setColor(WHITE);
-						//¸ó½ºÅÍ ¸¶ÁÖÄ§
-						printSlowly("¼®ÆÇÀÇ °¡¸£Ä§À» ÀÇ½ÉÇÏ¸ç ´Ù¸¥ ±æÀ» ¼±ÅÃÇÑ ´ç½ÅÀº ½£À» Çì¸Å´ø µµÁß °Å´ëÇÑ ¸ó½ºÅÍ, 'Ææ¸®¸£'¿Í ¸¶ÁÖÄ¨´Ï´Ù. \nÆæ¸®¸£´Â ½£ÀÇ ¼öÈ£ÀÚ·Î, ¾Æ¸£Ä«µğ¾Æ·Î ÇâÇÏ´Â ±æÀ» ¸·°í ÀÖ½À´Ï´Ù.\n\n", 20);
-						printMonster1();
-						printSlowly("ÀÌ¸§: ", 50);
-						printSlowly(monster[0].name, 50);
 						printf("\n");
-						setColor(RED);
-						printSlowly(" - HP: ", 50);
-						printSlowly(StringvalueOf(monster[0].hp), 50);
-						setColor(WHITE);
+						printf("      (\\____/)\n");
+						printf("       (_oo_)\n");
+						printf("        (oo)\n");
+						printf("      /------\\/`\n");
+						printf("     / |    ||\n");
+						printf("    *  /\\---/\\\n");
+						printf("       ~~   ~~\n");
+						setColor(DARK_VOILET);
+						for (int i = 0; i < padding - 15; i++) {
+							printf(" ");
+						}
+						printf("+------------------------------------------------------+\n");
+						for (int i = 0; i < padding + 3; i++) {
+							printf(" ");
+						}
+						printf(title);
 						printf("\n");
-						printSlowly(" - ½ºÅ³: ", 50);
-						printSlowly(monster[0].skill, 50);
-						printf("\n");
-						setColor(DARK_RED);
-						printSlowly(" - °ø°İ·Â: ", 50);
-						printSlowly(StringvalueOf(monster[0].attack), 50);
-						setColor(WHITE);
-						printf("\n");
-						setColor(SKYBLUE);
-						printSlowly(" - ¹æ¾î·Â: ", 50);
-						printSlowly(StringvalueOf(monster[0].defense), 50);
-						setColor(WHITE);
+						for (int i = 0; i < padding - 15; i++) {
+							printf(" ");
+						}
+						printf("+------------------------------------------------------+\n");
+						for (int i = 0; i < padding + 1; i++) {
+							printf(" ");
+						}
+
 						printf("\n\n");
-						
-
-						//±×¸² Ãß°¡: Àü»ç, ¸¶¹ı»ç, µµÀû
-						drawChar();
+						setColor(DARK_GREEN);
+						for (int i = 0; i < padding + 30; i++) {
+							printf(" ");
+						}
+						printf("                               .--\"\"--.\n");
+						for (int i = 0; i < padding + 30; i++) {
+							printf(" ");
+						}
+						printf("                              /        \\\n");
+						for (int i = 0; i < padding + 30; i++) {
+							printf(" ");
+						}
+						printf("                             |   *  *  |\n");
+						for (int i = 0; i < padding + 30; i++) {
+							printf(" ");
+						}
+						printf("                             \\  .--.  /\n");
+						for (int i = 0; i < padding + 30; i++) {
+							printf(" ");
+						}
+						printf("                              '.____.'\n");
+						for (int i = 0; i < padding + 30; i++) {
+							printf(" ");
+						}
+						printf("                                ||||\n\n\n");
+						setColor(WHITE);
+						printBar();
+						printSlowly("ì•ˆë…•í•˜ì„¸ìš”, ", 30);
 						printSlowly(playerInfo.playerName, 200);
-						printSlowly("´Ô: ", 200);
-						printSlowly(playerInfo.playerScharacterInfo.name, 200);
-						printf("!\n");
-
-						setColor(RED);
-						printSlowly(" - HP: ", 100);
-						printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.hp), 100);
-						printf("\n");
-
-						setColor(WHITE);
-						printSlowly(" - ½ºÅ³: ", 100);
-						printSlowly(playerInfo.playerScharacterInfo.skill, 100);
-						printf("\n");
-						setColor(DARK_RED);
-						printSlowly(" - °ø°İ·Â: ", 100);
-						printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.attack), 100);
-						setColor(WHITE);
-						printf("\n");
+						printf("ë‹˜!\n");
+						printBar();
+						loadLevelPro(100, "ê²Œì„ ì‹œì‘");
+						printBar();
+						printLevel();
+						printBar();
+						printSlowly("\'ë¹ˆ ì¢…ì´\'ê°€ ì§€ê¸‰ë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+						strcpy(playerInfo.inventory[itemIndex].item, "ë¹ˆ ì¢…ì´");
+						strcpy(playerInfo.inventory[itemIndex].state, "ë¹ˆ ì¢…ì´ì…ë‹ˆë‹¤.");
+						playerInfo.inventory[itemIndex].quantity = 1;
+						playerInfo.inventory[itemIndex].type = 3;
+						playerInfo.inventory[itemIndex].isEquipped = 0;
+						playerInfo.inventory[itemIndex].addAttack = 0;
+						playerInfo.inventory[itemIndex].addDefense = 0;
+						playerInfo.inventory[itemIndex].addHp = 0;
+						playerInfo.inventory[itemIndex].addMana = 0;
+						itemIndex++;
+						printBar();
 						setColor(SKYBLUE);
-						printSlowly(" - ¹æ¾î·Â: ", 100);
-						printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.defense), 100);
+						printSlowly("Tip: ì¸ë²¤í† ë¦¬ì™€ ìƒì ì€ ì„ íƒì°½ì— í‘œì‹œë  ë•Œ ì´ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤.\n", 30);
 						setColor(WHITE);
-						printf("\n");
-						if (strcmp(playerInfo.playerScharacterInfo.name, "¸¶¹ı»ç") == 0) {
-							setColor(BLUE);
-							printSlowly(" - ¸¶³ª: ", 100);
-							printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.mana), 100);
-							printf("\n");
-							setColor(WHITE);
-						}
+						selectPro();
+						printBar();
+						setColor(RED);
+						printSlowly("ì‹œì‘...\n", 300);
 
-						//¿ø·¡ Ã¼·Â, °ø°İ·Â, ¹æ¾î·Â, ¸¶³ª ±â·Ï
-						int tempH = playerInfo.playerScharacterInfo.hp;
-						int tempA = playerInfo.playerScharacterInfo.attack;
-						int tempD = playerInfo.playerScharacterInfo.defense;
-						int tempM = playerInfo.playerScharacterInfo.mana;
-
-						if (battle(0) == true) { //0 = ¸ó½ºÅÍ ÀÎµ¦½º
-							//½Â¸®ÀÏ °æ¿ì ½ºÅä¸® Áö¼Ó
-							playerInfo.playerScharacterInfo.hp = tempH;
-							playerInfo.playerScharacterInfo.attack = tempA;
-							playerInfo.playerScharacterInfo.defense = tempD;
-							playerInfo.playerScharacterInfo.mana = tempM;
-							//ÀüÅõ¿¡¼­ º¯°æµÈ ´É·ÂÄ¡ º¹±¸
-
-
-
-
-							break;
-						}
-						else {
-							break; //ÆĞ¹è½Ã return False
-						}
-						
-					
-						break;
-					}
-
-
-					else {
-						printf("------------------------------------------------------------------------------------------\n");
-						printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-						while (getchar() != '\n');
-					}
-					break; //
-				}
-
-
-
-
-
-			
-				break; //°ÔÀÓ Á¾·á
-			}
-			//½ºÅä¸® ÅëÇÕ: ÀÓ½Ã
-
-
-			else if (st_ex == 2) {
-				printf("------------------------------------------------------------------------------------------\n");
-				printSlowly("Game is closed!", 100);
-				break;
-			}
-			else {
-				printf("------------------------------------------------------------------------------------------\n");
-				printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n", 100);
-				while (getchar() != '\n');
-			}
-			break; //°ÔÀÓ Á¾·á 2¹ø ¼±ÅÃ/·çÇÁ Á¾·á
-		}
-		break; //hp Á¶°Ç/·çÇÁ Á¾·á
-	
-	}
-
-		if (st_ex != 2) {
-		printSlowly("ÇÃ·¹ÀÌ¾î°¡ »ç¸ÁÇß½À´Ï´Ù.\n", 100);
-		printSlowly("Game is closed!", 100);
-		break;//°ÔÀÓ Á¾·á/¾ğ¾î ¼±ÅÃ ·çÇÁ Á¾·á
-		}
-
-	}
-	else if (lang == 2) {
-		//¿µ¾î ºÎºĞ
-		drawWarrior = drawWarrior_en;
-		drawMage = drawMage_en;
-		drawRogue = drawRogue_en;
-		drawChar = drawChar_en;
-		displayInventory = displayInventory_en;
-		printstatus = printstatus_en;
-		useSkill = useSkill_en;
-		battle = battle_en;
-
-		strcpy(characterInfo[0].name, "Warrior");//¿µ¾î Ä³¸¯ÅÍ ±¸Á¶Ã¼
-		strcpy(characterInfo[0].skill, "A blow to destruction");
-		strcpy(characterInfo[0].charState, "A warrior with strong physical strength and excellent swordsmanship.");
-		strcpy(characterInfo[1].name, "Wizard");
-		strcpy(characterInfo[1].skill, "Million Volts");
-		strcpy(characterInfo[1].charState, "Wizard using powerful magic.");
-		strcpy(characterInfo[2].name, "Rogue");
-		strcpy(characterInfo[2].skill, "The Grace");
-		strcpy(characterInfo[2].charState, "The Bandit is adept at agile movements and covert actions.");
-		system("title ¹®Á¦ÇØ°á±â¹ı / 11Á¶");
-
-		playerInfo.playerScharacterInfo.hp = 1;
-		while (playerInfo.playerScharacterInfo.hp > 0) {
-			srand(time(NULL));
-			setColor(BLACK);
-			int choice = -1;
-			int charSel = -1;
-			int itemIndex = 0;
-			char title[50] = "The Secret of the Forgotten Kingdom"; //ÀØÇôÁø ¿Õ±¹ÀÇ ºñ¹Ğ
-			int totalWidth = 47;
-			int strWidth = strlen(title);
-			int padding = (totalWidth - strWidth) / 2;
-
-			strcpy(monster[0].name, "Fenrir"); //Ã¹ ¹øÂ° ¸ó½ºÅÍ(Ææ¸®¸£)
-			strcpy(monster[0].skill, "Take it down"); //³»·ÁÂï±â
-			monster[0].hp = 80;
-			monster[0].attack = 20;
-			monster[0].defense = 20;
-
-			//µÎ ¹øÂ° ¸ó½ºÅÍ
-
-			printf("------------------------------------------------------------------------------------------\n");
-			setColor(RED);
-			printf("     ,      ,\n");
-			printf("      (\\____/)\n");
-			printf("       (_oo_)\n");
-			printf("        (oo)\n");
-			printf("      /------\\/`\n");
-			printf("     / |    ||\n");
-			printf("    *  /\\---/\\\n");
-			printf("       ~~   ~~\n");
-
-			setColor(DARK_VOILET);
-			for (int i = 0; i < padding; i++) {
-				printf(" ");
-			}
-			printSlowly(title, 250);
-			for (int i = 0; i < padding; i++) {
-				printf(" ");
-			}
-
-			printSlowly("\n\n", 150);
-			setColor(DARK_GREEN);
-
-			printf("                               .--\"\"--.\n");
-			printf("                              /        \\\n");
-			printf("                             |   *  *  |\n");
-			printf("                             \\  .--.  /\n");
-			printf("                              '.____.'\n");
-			printf("                                ||||\n");
-			setColor(WHITE);
-
-			printf("1. Start\n2. End\n"); //1.½ÃÀÛ 2.Á¾·á
-			while (1) {
-
-
-
-				printf("Enter: ");
-				scanf("%d", &st_ex);
-				if (st_ex == 1) {
-					printf("------------------------------------------------------------------------------------------\n");
-					printf("Please enter your name: \n"); //ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä: 
-					printf("Enter: ");
-					scanf("%s", playerInfo.playerName);
-					printf("------------------------------------------------------------------------------------------\n");
-					printSlowly("Hello, ", 30); //¾È³çÇÏ¼¼¿ä,
-					printSlowly(playerInfo.playerName, 200);
-					//printf("´Ô!\n");
-					printf("\n");
-					printf("------------------------------------------------------------------------------------------\n");
-					setColor(SKYBLUE);
-					printSlowly("Tip. Open inventory is only possible when you acquire an item, so be careful!\n", 30); //Tip. ÀÎº¥Åä¸® ¿­±â´Â ¾ÆÀÌÅÛÀ» È¹µæÇÏ¿´À» ¶§¸¸ °¡´ÉÇÏ´Ï ÁÖÀÇÇÏ¼¼¿ä!
-					setColor(WHITE);
-					printf("------------------------------------------------------------------------------------------\n");
-					setColor(RED);
-					printSlowly("Start...\n", 300); //½ÃÀÛ
-
-					setColor(WHITE);
-					printSlowly("Arcadia, an ancient kingdom hidden in a deep forest. This once prosperous kingdom is a dark wizard \nDestroyed by the curse of Maleficent, forgotten in people's memory. \nYou are an adventurer who happens to know Arcadia's existence. \nCan we uncover the secrets of the forgotten kingdom and unlock the curse of Maleficent to resurrect Arcadia?\n", 30);
-					//±íÀº ½£ ¼Ó¿¡ ¼û°ÜÁø °í´ë ¿Õ±¹, '¾Æ¸£Ä«µğ¾Æ'. ÇÑ¶§ ¹ø¿µÇß´ø ÀÌ ¿Õ±¹Àº ¾îµÒÀÇ ¸¶¹ı»ç \n'¸»·¹ÇÇ¼¾Æ®'ÀÇ ÀúÁÖ·Î ÀÎÇØ ¸ê¸ÁÇÏ°í, »ç¶÷µéÀÇ ±â¾ï ¼Ó¿¡¼­ ÀØÇôÁ³½À´Ï´Ù. \n´ç½ÅÀº ¿ì¿¬È÷ ¾Æ¸£Ä«µğ¾ÆÀÇ Á¸Àç¸¦ ¾Ë°Ô µÈ ¸ğÇè°¡ÀÔ´Ï´Ù. \nÀØÇôÁø ¿Õ±¹ÀÇ ºñ¹ĞÀ» ¹àÇô³»°í ¸»·¹ÇÇ¼¾Æ®ÀÇ ÀúÁÖ¸¦ Ç®¾î ¾Æ¸£Ä«µğ¾Æ¸¦ ºÎÈ°½ÃÅ³ ¼ö ÀÖÀ»±î¿ä?
-					printf("------------------------------------------------------------------------------------------\n");
-					setColor(SKYBLUE);
-					printSlowly("Tip. Warriors and bandits can use one skill per battle and the wizard consumes Mana 10 per skill.\n", 100); //Tip. Àü»ç¿Í µµÀûÀº ÀüÅõ´ç ÇÑ ¹øÀÇ ½ºÅ³À» »ç¿ëÇÒ ¼ö ÀÖ°í ¸¶¹ı»ç´Â ½ºÅ³ ÇÑ ¹ø´ç ¸¶³ª 10À» ¼Ò¸ğÇÕ´Ï´Ù.
-					setColor(WHITE);
-					printf("------------------------------------------------------------------------------------------\n");
-					printSlowly("Select a character:\n", 300); //Ä³¸¯ÅÍ ¼±ÅÃ:
-					for (int i = 0; i < 3; i++) {
-						setColor(i == 0 ? SKYBLUE : i == 1 ? YELLOW : RED);
-						printSlowly(i == 0 ? "1. " : i == 1 ? "2. " : "3. ", 200);
-						printSlowly(characterInfo[i].name, 200);
-						printf(": ");
 						setColor(WHITE);
-						printSlowly(characterInfo[i].charState, 30);
-						printf("\n");
-					}
-					while (1) {
-						printf("Enter: ");
-						scanf("%d", &charSel);
-						int use = -1;
-						strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
-						strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
-						strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
-						playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
-						playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
-						playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
-						playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
-
-						if (charSel == 1) {
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("A \'wooden sword'\ was provided for sword fighter.\n", 30); //°Ë»ç¸¦ À§ÇÑ \'¸ñ°Ë\'ÀÌ Áö±ŞµÇ¾ú½À´Ï´Ù.
-							printf("------------------------------------------------------------------------------------------\n");
-
-							strcpy(playerInfo.inventory[0].item, "A wooden sword"); //¸ñ°Ë
-							playerInfo.inventory[itemIndex].quantity = 1;
-							playerInfo.inventory[itemIndex].type = 1;
-							playerInfo.inventory[itemIndex].isEquipped = 0;
-							playerInfo.inventory[itemIndex].addAttack = 5;
-							playerInfo.inventory[itemIndex].addDefense = 0;
-							playerInfo.inventory[itemIndex].addHp = 0;
-							playerInfo.inventory[itemIndex].addMana = 0;
-							printstatus();
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. ÀÎº¥Åä¸®\n2. Ãë¼Ò
-							while (1) {
-
-
-								printf("Enter: ");
-								scanf("%d", &use);
-								if (use == 1) {
-									displayInventory();
-									break;
-								}
-								else if (use == 2) {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("Canceled.\n", 100); //Ãë¼ÒµÇ¾ú½À´Ï´Ù.
-									break;
-								}
-								else {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("It's a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
-									while (getchar() != '\n');
-								}
-
-							}
-							break;
-
-						}
-						else if (charSel == 2) {
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("A \'Wizard's Necklace\' has been provided for wizards.\n", 100); //¸¶¹ı»ç¸¦ À§ÇÑ \'¸¶¹ı»çÀÇ ¸ñ°ÉÀÌ\'°¡ Áö±ŞµÇ¾ú½À´Ï´Ù.
-							printf("------------------------------------------------------------------------------------------\n");
-							strcpy(playerInfo.inventory[0].item, "The Wizard's Necklace"); //¸¶¹ı»çÀÇ ¸ñ°ÉÀÌ
-							playerInfo.inventory[itemIndex].quantity = 1;
-							playerInfo.inventory[itemIndex].type = 1;
-							playerInfo.inventory[itemIndex].isEquipped = 0;
-							playerInfo.inventory[itemIndex].addAttack = 0;
-							playerInfo.inventory[itemIndex].addDefense = 0;
-							playerInfo.inventory[itemIndex].addHp = 0;
-							playerInfo.inventory[itemIndex].addMana = 10;
-							printstatus();
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("1. Inventory\n2. Cancellation\n", 100); //1.ÀÎº¥Åä¸® 2.Ãë¼Ò
-							while (1) {
-
-
-								printf("Enter: ");
-								scanf("%d", &use);
-								if (use == 1) {
-									displayInventory();
-									break;
-								}
-								else if (use == 2) {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("Canceled.\n", 100); //Ãë¼ÒµÇ¾ú½À´Ï´Ù.
-									break;
-								}
-								else {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("It's a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
-									while (getchar() != '\n');
-								}
-
-							}
-							break;
-
-						}
-						else if (charSel == 3) {
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("A 'Cloak of the Rogue' has been granted to the rogue.\n", 100); //µµÀû¸¦ À§ÇÑ \'µµÀûÀÇ ¸ÁÅä\'°¡ Áö±ŞµÇ¾ú½À´Ï´Ù.
-							printf("------------------------------------------------------------------------------------------\n");
-							strcpy(playerInfo.inventory[0].item, "A bandit's cloak"); //µµÀûÀÇ ¸ÁÅä
-							playerInfo.inventory[itemIndex].quantity = 1;
-							playerInfo.inventory[itemIndex].type = 1;
-							playerInfo.inventory[itemIndex].isEquipped = 0;
-							playerInfo.inventory[itemIndex].addAttack = 0;
-							playerInfo.inventory[itemIndex].addDefense = 0;
-							playerInfo.inventory[itemIndex].addHp = 10;
-							playerInfo.inventory[itemIndex].addMana = 0;
-							printstatus();
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n
-							while (1) {
-
-
-								printf("Enter: ");
-								scanf("%d", &use);
-								if (use == 1) {
-									displayInventory();
-									break;
-								}
-								else if (use == 2) {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("Canceled.\n", 100); //Ãë¼ÒµÇ¾ú½À´Ï´Ù.
-									break;
-								}
-								else {
-									printf("------------------------------------------------------------------------------------------\n");
-									printSlowly("It's a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
-									while (getchar() != '\n');
-								}
-
-							}
-							break;
-
-						}
-						else {
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("It's a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
-							while (getchar() != '\n');
-
-						}
-					}
-					itemIndex++;
-
-
-
-					setColor(WHITE);
-					printf("------------------------------------------------------------------------------------------\n");
-					setColor(RED);
-					printSlowly("On the way to Arcadia...\n", 200); //¾Æ¸£Ä«µğ¾Æ·Î ÇâÇÏ´Â ±æ...
-					setColor(WHITE);
-					printSlowly("Lost in the dense forest, you find an old lithograph.\nThere is a faint inscription on the stone tablet about the path to Arcadia.\n\n", 20); //¿ïÃ¢ÇÑ ½£ ¼Ó¿¡¼­ ±æÀ» ÀÒÀº ´ç½ÅÀº ¿À·¡µÈ ¼®ÆÇÀ» ¹ß°ßÇÕ´Ï´Ù.\n¼®ÆÇ¿¡´Â ¾Æ¸£Ä«µğ¾Æ·Î ÇâÇÏ´Â ±æ¿¡ ´ëÇÑ Èñ¹ÌÇÑ ±Û±Í°¡ »õ°ÜÁ® ÀÖ½À´Ï´Ù.\n
-					printSlowly("Through the cursed forest, find a forgotten temple. \nDefeat the guardian of the temple, and open the door of Arcadia.\"\"\n\n", 20); //ÀúÁÖ¹ŞÀº ½£À» Áö³ª, ÀØÇôÁø ½ÅÀüÀ» Ã£¾Æ¶ó. \n½ÅÀüÀÇ ¼öÈ£ÀÚ¸¦ ¹°¸®Ä¡°í, ¾Æ¸£Ä«µğ¾ÆÀÇ ¹®À» ¿­¾î¶ó.
-
-
-					setColor(RED);
-					printf("Select: \n"); //¼±ÅÃ
-					setColor(WHITE);
-					printSlowly("1. Head to the cursed forest.\n", 100); //1. ÀúÁÖ¹ŞÀº ½£À¸·Î ÇâÇÑ´Ù.
-					printSlowly("2. Ignore the stone slab and find another path.\n", 100); //2. ¼®ÆÇÀ» ¹«½ÃÇÏ°í ´Ù¸¥ ±æÀ» Ã£´Â´Ù.
-					while (1) {
-						printf("Enter: ");
-						scanf("%d", &choice);
-						printf("------------------------------------------------------------------------------------------\n");
-						if (choice == 1) { //1¹ø ½ºÅä¸®
-							setColor(YELLOW);
-							printSlowly("the treasure of the forest\n", 50); //½£ÀÇ º¸¹°
+						 /*printSlowly("ê¹Šì€ ìˆ² ì†ì— ìˆ¨ê²¨ì§„ ê³ ëŒ€ ì™•êµ­, 'ì•„ë¥´ì¹´ë””ì•„'. í•œë•Œ ë²ˆì˜í–ˆë˜ ì´ ì™•êµ­ì€ ì–´ë‘ ì˜ ë§ˆë²•ì‚¬ \n'ë§ë ˆí”¼ì„¼íŠ¸'ì˜ ì €ì£¼ë¡œ ì¸í•´ ë©¸ë§í•˜ê³ , ì‚¬ëŒë“¤ì˜ ê¸°ì–µ ì†ì—ì„œ ìŠí˜€ì¡ŒìŠµë‹ˆë‹¤. \në‹¹ì‹ ì€ ìš°ì—°íˆ ì•„ë¥´ì¹´ë””ì•„ì˜ ì¡´ì¬ë¥¼ ì•Œê²Œ ëœ ëª¨í—˜ê°€ì…ë‹ˆë‹¤. \nìŠí˜€ì§„ ì™•êµ­ì˜ ë¹„ë°€ì„ ë°í˜€ë‚´ê³  ë§ë ˆí”¼ì„¼íŠ¸ì˜ ì €ì£¼ë¥¼ í’€ì–´ ì•„ë¥´ì¹´ë””ì•„ë¥¼ ë¶€í™œì‹œí‚¬ ìˆ˜ ìˆì„ê¹Œìš”?\n", 30);
+						printBar();
+						setColor(SKYBLUE);
+						printSlowly("Tip. ì „ì‚¬ì™€ ë„ì ì€ ì „íˆ¬ë‹¹ í•œ ë²ˆì˜ ìŠ¤í‚¬ì„ ì‚¬ìš©í•  ìˆ˜ ìˆê³  ë§ˆë²•ì‚¬ëŠ” ìŠ¤í‚¬ í•œ ë²ˆë‹¹ ë§ˆë‚˜ 10ì„ ì†Œëª¨í•©ë‹ˆë‹¤.\n", 100); */
+						while (1) {
 							setColor(WHITE);
-							printSlowly("You have entered the deep forest following the instructions of the lithograph.\nCursed forests are full of dreary energy...\nThe trees are grotesquely twisted, and the cries of unknown creatures echo through the forest.\n", 20);
-							//´ç½ÅÀº ¼®ÆÇÀÇ °¡¸£Ä§¿¡ µû¶ó ±íÀº ½£ ¼ÓÀ¸·Î µé¾î¼¹´Ù.\nÀúÁÖ¹ŞÀº ½£Àº À½»êÇÑ ±â¿îÀ¸·Î °¡µæÇÏ´Ù...\n³ª¹«µéÀº ±â±«ÇÏ°Ô µÚÆ²·Á ÀÖ°í, ½£ ¼Ó¿¡´Â ¾Ë ¼ö ¾ø´Â »ı¸íÃ¼µéÀÇ ¿ïÀ½¼Ò¸®°¡ ¿ï·Á ÆÛÁø´Ù.
-							printSlowly("While wading through the deep forest, an old ruin suddenly appeared in sight. This place clearly appears to have been untouched by humans.\n", 20);
-							//±íÀº ½£À» ÇìÄ¡°í ³ª¾Æ°¡´ø Áß, °©ÀÚ±â ½Ã¾ß¿¡ ¿À·¡µÈ À¯ÀûÁö°¡ ³ªÅ¸³µ´Ù. ÀÌ°÷Àº ºĞ¸í ÀÎ°£ÀÇ ¼Õ±æÀÌ ´êÁö ¾ÊÀº µíÇÑ ¸ğ½ÀÀÌ´Ù.
-							printSlowly("There is a small altar in the middle of the ruins, and an unknown box is placed on top of it.\n", 20); //À¯Àû ÇÑ°¡¿îµ¥ ÀÛÀº Á¦´ÜÀÌ ³õ¿© ÀÖ°í, ±× À§¿¡´Â ¹ºÁö¸ğ¸¦ »óÀÚ°¡ ³õ¿©ÀÖ´Ù.
-							setColor(YELLOW);
-							printSlowly("60%: Armor, 40%: Potion\n", 100); //60% : °©¿Ê, 40 % : Æ÷¼Ç
-							setColor(WHITE);
+							printBar();
+							printSlowly("ìºë¦­í„° ì„ íƒ: \n", 200);
+							/*
+							for (int i = 0; i < 3; i++) {
+								setColor(i == 0 ? SKYBLUE : i == 1 ? YELLOW : RED);
+								printSlowly(i == 0 ? "1. " : i == 1 ? "2. " : "3. ", 200);
+								printSlowly(characterInfo[i].name, 200);
+								printf(": ");
+								setColor(WHITE);
+								printSlowly(characterInfo[i].charState, 30);
+								printf("\n");
+							}
+							*/
+							printBar();
+							printSlowly("4. ì¸ë²¤í† ë¦¬\n5. ìƒì \n", 30);
+							printBar();
+							printf("Enter: ");
+							scanf("%d", &charSel);
 							int use = -1;
 
-							// ¾ÆÀÌÅÛ È¹µæ È®·ü °è»ê
-							int itemChance = rand() % 100; // 0¿¡¼­ 99 »çÀÌÀÇ ·£´ı ¼ıÀÚ
-							if (itemChance < 60) { // 60% È®·ü·Î °©¿Ê È¹µæ
-								printSlowly("When I opened the box, there was armor inside.\nIt looks old, but still seems sturdy.\n", 30); //»óÀÚ¸¦ ¿­¾îº¸´Ï °©¿ÊÀÌ µé¾îÀÖ´Ù.\n³°¾Æ º¸ÀÌÁö¸¸ ¾ÆÁ÷ °ß°íÇØ º¸ÀÎ´Ù.\n
-								strcpy(playerInfo.inventory[itemIndex].item, "A old armor"); //³°Àº °©¿Ê
-								playerInfo.inventory[itemIndex].quantity = 1;
-								playerInfo.inventory[itemIndex].type = 1;
-								playerInfo.inventory[itemIndex].isEquipped = 0;
-								playerInfo.inventory[itemIndex].addAttack = 0;
-								playerInfo.inventory[itemIndex].addDefense = 5;
-								playerInfo.inventory[itemIndex].addHp = 0;
-								playerInfo.inventory[itemIndex].addMana = 0;
-								printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n
-								while (1) {
+							if (charSel == 1) {
+								printBar();
+								printSlowly("ì •ë§ ", 50);
+								printSlowly(characterInfo[charSel - 1].name, 50);
+								printSlowly("ì„/ë¥¼ ì„ íƒí•˜ì‹œê² ìŠµë‹ˆê¹Œ?\n", 50);
+								printSlowly("1. ì„ íƒ\n2. ì·¨ì†Œ\n", 50);
 
 
 									printf("Enter: ");
-									scanf("%d", &use);
-									if (use == 1) {
-										displayInventory();
+									scanf("%d", &charExit);
+									if (charExit == 1) {
+										strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+										strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+										strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+										playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+										playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+										playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+										playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+										printBar();
+										loadLevelPro(100, "ìºë¦­í„° ì„ íƒ");
+										printBar();
+										printLevel();
+										printBar();
+										printSlowly("ê²€ì‚¬ë¥¼ ìœ„í•œ \'ëª©ê²€\'ì´ ì§€ê¸‰ë˜ì—ˆìŠµë‹ˆë‹¤.\n", 30);
+										printBar();
+										strcpy(playerInfo.inventory[itemIndex].item, "ëª©ê²€");
+										playerInfo.inventory[itemIndex].quantity = 1;
+										playerInfo.inventory[itemIndex].type = 1;
+										playerInfo.inventory[itemIndex].isEquipped = 0;
+										playerInfo.inventory[itemIndex].addAttack = 5;
+										playerInfo.inventory[itemIndex].addDefense = 0;
+										playerInfo.inventory[itemIndex].addHp = 0;
+										playerInfo.inventory[itemIndex].addMana = 0;
+										itemIndex++;
+										printstatus();
+										printBar();
+										printSlowly("1. ì¸ë²¤í† ë¦¬\n2. ì·¨ì†Œ\n", 100);
+										while (1) {
+
+
+											printf("Enter: ");
+											scanf("%d", &use);
+											if (use == 1) {
+												displayInventory();
+												break;
+											}
+											else if (use == 2) {
+												printBar();
+												printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+												printBar();
+												break;
+											}
+											else {
+												printBar();
+												printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+												while (getchar() != '\n');
+											}
+
+										}
 										break;
 									}
-									else if (use == 2) {
-										printf("------------------------------------------------------------------------------------------\n");
-										printSlowly("Canceled.\n", 100); //Ãë¼ÒµÇ¾ú½À´Ï´Ù.
-										break;
-									}
-									else {
-										printf("------------------------------------------------------------------------------------------\n");
-										printSlowly("It's a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
+									else if (charExit == 2) {
+										printBar();
+										printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
 										while (getchar() != '\n');
 									}
+									else {
+										printBar();
+										printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+										while (getchar() != '\n');
+									}
+								
 
+							}
+							else if (charSel == 2) {
+								printBar();
+								printSlowly("ì •ë§ ", 50);
+								printSlowly(characterInfo[charSel - 1].name, 50);
+								printSlowly("ì„ ì„ íƒí•˜ì‹œê² ìŠµë‹ˆê¹Œ?\n", 50);
+								printSlowly("1. ì„ íƒ\n2. ì·¨ì†Œ\n", 50);
+								printf("Enter: ");
+								scanf("%d", &charExit);
+								if (charExit == 1) {
+									strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+									strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+									strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+									playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+									playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+									playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+									playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+									
+									printBar();
+									loadLevelPro(100, "ìºë¦­í„° ì„ íƒ");
+									printBar();
+									printLevel();
+									printBar();
+									printSlowly("ë§ˆë²•ì‚¬ë¥¼ ìœ„í•œ \'ë§ˆë²•ì‚¬ì˜ ëª©ê±¸ì´\'ê°€ ì§€ê¸‰ë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+									printBar();
+									strcpy(playerInfo.inventory[itemIndex].item, "ë§ˆë²•ì‚¬ì˜ ëª©ê±¸ì´");
+									playerInfo.inventory[itemIndex].quantity = 1;
+									playerInfo.inventory[itemIndex].type = 1;
+									playerInfo.inventory[itemIndex].isEquipped = 0;
+									playerInfo.inventory[itemIndex].addAttack = 0;
+									playerInfo.inventory[itemIndex].addDefense = 0;
+									playerInfo.inventory[itemIndex].addHp = 0;
+									playerInfo.inventory[itemIndex].addMana = 10;
+									itemIndex++;
+									printstatus();
+									printBar();
+									printSlowly("1. ì¸ë²¤í† ë¦¬\n2. ì·¨ì†Œ\n", 100);
+									while (1) {
+
+
+										printf("Enter: ");
+										scanf("%d", &use);
+										if (use == 1) {
+											displayInventory();
+											break;
+										}
+										else if (use == 2) {
+											printBar();
+											printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+											printBar();
+											break;
+										}
+										else {
+											printBar();
+											printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+											while (getchar() != '\n');
+										}
+
+									}
+									break;
+								}
+								else if (charExit == 2) {
+									printBar();
+									printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+									
+									while (getchar() != '\n');
+								}
+								else {
+									printBar();
+									printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+									while (getchar() != '\n');
 								}
 
 							}
-							else { // 40% È®·ü·Î °ø°İ·Â Áõ°¡ Æ÷¼Ç È¹µæ
-								printSlowly("When I opened the box, there was a glowing potion inside.\n", 70); //»óÀÚ¸¦ ¿­¾îº¸´Ï ºû³ª´Â Æ÷¼ÇÀÌ µé¾îÀÖ´Ù.
-								strcpy(playerInfo.inventory[itemIndex].item, "A glowing potion"); //ºû³ª´Â Æ÷¼Ç(¸¶½Ã´Â ¹°¾à)
-								playerInfo.inventory[itemIndex].quantity = 1;
-								playerInfo.inventory[itemIndex].type = 2;
-								playerInfo.inventory[itemIndex].isEquipped = 0;
-								playerInfo.inventory[itemIndex].addAttack = 10;
-								playerInfo.inventory[itemIndex].addDefense = 0;
-								playerInfo.inventory[itemIndex].addHp = 0;
-								playerInfo.inventory[itemIndex].addMana = 0;
-								printSlowly("1. Inventory\n2. Cancellation\n", 100); //1. ÀÎº¥Åä¸®\n2. Ãë¼Ò\n
-								while (1) {
+							else if (charSel == 3) {
+								printBar();
+								printSlowly("ì •ë§ ", 50);
+								printSlowly(characterInfo[charSel - 1].name, 50);
+								printSlowly("ì„ ì„ íƒí•˜ì‹œê² ìŠµë‹ˆê¹Œ?\n", 50);
+								printSlowly("1. ì„ íƒ\n2. ì·¨ì†Œ\n", 50);
+								printf("Enter: ");
+								scanf("%d", &charExit);
+								if (charExit == 1) {
+									strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+									strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+									strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+									playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+									playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+									playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+									playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+									
+									printBar();
+									loadLevelPro(100, "ìºë¦­í„° ì„ íƒ");
+									printBar();
+									printLevel();
+									printBar();
+									printSlowly("ë„ì ë¥¼ ìœ„í•œ \'ë„ì ì˜ ë§í† \'ê°€ ì§€ê¸‰ë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+									printBar();
+									strcpy(playerInfo.inventory[itemIndex].item, "ë„ì ì˜ ë§í† ");
+									playerInfo.inventory[itemIndex].quantity = 1;
+									playerInfo.inventory[itemIndex].type = 1;
+									playerInfo.inventory[itemIndex].isEquipped = 0;
+									playerInfo.inventory[itemIndex].addAttack = 0;
+									playerInfo.inventory[itemIndex].addDefense = 0;
+									playerInfo.inventory[itemIndex].addHp = 10;
+									playerInfo.inventory[itemIndex].addMana = 0;
+									itemIndex++;
+									printstatus();
+									printBar();
+									printSlowly("1. ì¸ë²¤í† ë¦¬\n2. ì·¨ì†Œ\n", 100);
+									while (1) {
 
 
-									printf("Enter: ");
-									scanf("%d", &use);
-									if (use == 1) {
-										displayInventory();
-										break;
-									}
-									else if (use == 2) {
-										printf("------------------------------------------------------------------------------------------\n");
-										printSlowly("Canceled.\n", 100); //Ãë¼ÒµÇ¾ú½À´Ï´Ù.
-										break;
-									}
-									else {
-										printf("------------------------------------------------------------------------------------------\n");
-										printSlowly("It's a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
-										while (getchar() != '\n');
-									}
+										printf("Enter: ");
+										scanf("%d", &use);
+										if (use == 1) {
+											displayInventory();
+											break;
+										}
+										else if (use == 2) {
+											printBar();
+											printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+											printBar();
+											break;
+										}
+										else {
+											printBar();
+											printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+											while (getchar() != '\n');
+										}
 
+									}
+									break;
 								}
-
-
+								else if (charExit == 2) {
+									printBar();
+									printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+								
+									while (getchar() != '\n');
+								}
+								else {
+									printBar();
+									while (getchar() != '\n');
+								}
 							}
-							itemIndex++;
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("After acquiring the item, you try to escape from the forest, but a gloomy energy still surrounds you...\n", 20); //¾ÆÀÌÅÛÀ» È¹µæÇÑ ´ç½ÅÀº ½£ ¼Ó¿¡¼­ ºüÁ®³ª°¡·Á ÇÏÁö¸¸, ¿©ÀüÈ÷ À½»êÇÑ ±â¿îÀÌ ÁÖÀ§¸¦ °¨½Î°í ÀÖ´Ù...
-							printSlowly("I hear something moving in the forest. You decide to hurry up and get out of here.\n", 20); //½£ ¼Ó¿¡¼­ ¹«¾ğ°¡°¡ ¿òÁ÷ÀÌ´Â ¼Ò¸®°¡ µé¸°´Ù. ´ç½ÅÀº ¹ß°ÉÀ½À» ÀçÃËÇØ ÀÌ°÷À» ºüÁ®³ª°¡±â·Î ÇÑ´Ù.
-
-							//***1¹ø ½ºÅä¸® Ãß°¡ÇØ¾ßµÊ.***
-
-							break;
+							else if (charSel == 4) {
+								printBar();
+								displayInventory();
+								while (getchar() != '\n');
+							}
+							else if (charSel == 5) {
+								printBar();
+								//shop()
+								while (getchar() != '\n');
+							}
+							else {
+								printBar();
+								printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+								while (getchar() != '\n');
+							}
+							
 						}
-						else if (choice == 2) { //2¹ø ½ºÅä¸®
+						
 
+						setColor(WHITE);
+
+						selectPro();
+
+						printBar();
+						/*
+						setColor(RED);
+						printSlowly("ì•„ë¥´ì¹´ë””ì•„ë¡œ í–¥í•˜ëŠ” ê¸¸...\n", 200);
+						setColor(WHITE);
+						printSlowly("ìš¸ì°½í•œ ìˆ² ì†ì—ì„œ ê¸¸ì„ ìƒì€ ë‹¹ì‹ ì€ ì˜¤ë˜ëœ ì„íŒì„ ë°œê²¬í•©ë‹ˆë‹¤.\nì„íŒì—ëŠ” ì•„ë¥´ì¹´ë””ì•„ë¡œ í–¥í•˜ëŠ” ê¸¸ì— ëŒ€í•œ í¬ë¯¸í•œ ê¸€ê·€ê°€ ìƒˆê²¨ì ¸ ìˆìŠµë‹ˆë‹¤.\n", 20);
+						printSlowly("\"ì €ì£¼ë°›ì€ ìˆ²ì„ ì§€ë‚˜, ìŠí˜€ì§„ ì‹ ì „ì„ ì°¾ì•„ë¼. \nì‹ ì „ì˜ ìˆ˜í˜¸ìë¥¼ ë¬¼ë¦¬ì¹˜ê³ , ì•„ë¥´ì¹´ë””ì•„ì˜ ë¬¸ì„ ì—´ì–´ë¼.\"\n\n", 20);
+						*/
+					
+						
+						while (1) {
+							printBar();
 							setColor(RED);
-							printSlowly("Guardian of the forest\n", 50); //½£ÀÇ ¼öÈ£ÀÚ
+							printf("ì„ íƒ: \n");
 							setColor(WHITE);
-							//¸ó½ºÅÍ ¸¶ÁÖÄ§
-							printSlowly("Doubting the teachings of the stone tablets and choosing a different path, you encounter the huge monster ¡®Fenrir¡¯ while wandering through the forest. \nFenrir is the guardian of the forest, blocking the road to Arcadia.\n\n", 20);
-							//¼®ÆÇÀÇ °¡¸£Ä§À» ÀÇ½ÉÇÏ¸ç ´Ù¸¥ ±æÀ» ¼±ÅÃÇÑ ´ç½ÅÀº ½£À» Çì¸Å´ø µµÁß °Å´ëÇÑ ¸ó½ºÅÍ, 'Ææ¸®¸£'¿Í ¸¶ÁÖÄ¨´Ï´Ù. \nÆæ¸®¸£´Â ½£ÀÇ ¼öÈ£ÀÚ·Î, ¾Æ¸£Ä«µğ¾Æ·Î ÇâÇÏ´Â ±æÀ» ¸·°í ÀÖ½À´Ï´Ù.
-							printMonster1();
-							printSlowly("Name: ", 50);
-							printSlowly(monster[0].name, 50);
-							printf("\n");
-							setColor(RED);
-							printSlowly(" - HP: ", 50);
-							printSlowly(StringvalueOf(monster[0].hp), 50);
-							setColor(WHITE);
-							printf("\n");
-							printSlowly(" - Skill: ", 50);
-							printSlowly(monster[0].skill, 50);
-							printf("\n");
-							setColor(DARK_RED);
-							printSlowly(" - ATK: ", 50); //Attack¶ó°í ¾µÁö °í¹Î
-							printSlowly(StringvalueOf(monster[0].attack), 50);
-							setColor(WHITE);
-							printf("\n");
-							setColor(SKYBLUE);
-							printSlowly(" - DEF: ", 50); //Defense¶ó°í ¾µÁö °í¹Î
-							printSlowly(StringvalueOf(monster[0].defense), 50);
-							setColor(WHITE);
-							printf("\n\n");
+							printSlowly("1. ì €ì£¼ë°›ì€ ìˆ²ìœ¼ë¡œ í–¥í•œë‹¤.\n", 100);
+							printSlowly("2. ì„íŒì„ ë¬´ì‹œí•˜ê³  ë‹¤ë¥¸ ê¸¸ì„ ì°¾ëŠ”ë‹¤.\n", 100);
+							printBar();
+							printSlowly("3. ì¸ë²¤í† ë¦¬\n", 100);
+							printSlowly("4. ìƒì \n", 100);
+							printBar();
+							printf("Enter: ");
+							scanf("%d", &choice);
+							if (choice == 1) { //1ë²ˆ ìŠ¤í† ë¦¬
+								printBar();
+								setColor(YELLOW);
+								printSlowly("ìˆ²ì˜ ë³´ë¬¼\n", 50);
+								setColor(WHITE);
+								printSlowly("ë‹¹ì‹ ì€ ì„íŒì˜ ê°€ë¥´ì¹¨ì— ë”°ë¼ ê¹Šì€ ìˆ² ì†ìœ¼ë¡œ ë“¤ì–´ì„°ë‹¤.\nì €ì£¼ë°›ì€ ìˆ²ì€ ìŒì‚°í•œ ê¸°ìš´ìœ¼ë¡œ ê°€ë“í•˜ë‹¤...\në‚˜ë¬´ë“¤ì€ ê¸°ê´´í•˜ê²Œ ë’¤í‹€ë ¤ ìˆê³ , ìˆ² ì†ì—ëŠ” ì•Œ ìˆ˜ ì—†ëŠ” ìƒëª…ì²´ë“¤ì˜ ìš¸ìŒì†Œë¦¬ê°€ ìš¸ë ¤ í¼ì§„ë‹¤.\n", 20);
+								printSlowly("ê¹Šì€ ìˆ²ì„ í—¤ì¹˜ê³  ë‚˜ì•„ê°€ë˜ ì¤‘, ê°‘ìê¸° ì‹œì•¼ì— ì˜¤ë˜ëœ ìœ ì ì§€ê°€ ë‚˜íƒ€ë‚¬ë‹¤. ì´ê³³ì€ ë¶„ëª… ì¸ê°„ì˜ ì†ê¸¸ì´ ë‹¿ì§€ ì•Šì€ ë“¯í•œ ëª¨ìŠµì´ë‹¤.\n", 20);
+								printSlowly("ìœ ì  í•œê°€ìš´ë° ì‘ì€ ì œë‹¨ì´ ë†“ì—¬ ìˆê³ , ê·¸ ìœ„ì—ëŠ” ë­”ì§€ëª¨ë¥¼ ìƒìê°€ ë†“ì—¬ìˆë‹¤.\n", 20);
+								printBar();
+								setColor(YELLOW);
+								printSlowly("60% : ê°‘ì˜·, 40 % : í¬ì…˜\n", 100);
+								setColor(WHITE);
+								printBar();
+								int use = -1;
+
+								// ì•„ì´í…œ íšë“ í™•ë¥  ê³„ì‚°
+								int itemChance = rand() % 100; // 0ì—ì„œ 99 ì‚¬ì´ì˜ ëœë¤ ìˆ«ì
+								if (itemChance < 60) { // 60% í™•ë¥ ë¡œ ê°‘ì˜· íšë“
+									printSlowly("ìƒìë¥¼ ì—´ì–´ë³´ë‹ˆ ê°‘ì˜·ì´ ë“¤ì–´ìˆë‹¤.\në‚¡ì•„ ë³´ì´ì§€ë§Œ ì•„ì§ ê²¬ê³ í•´ ë³´ì¸ë‹¤.\n", 30);
+									strcpy(playerInfo.inventory[itemIndex].item, "ë‚¡ì€ ê°‘ì˜·");
+									playerInfo.inventory[itemIndex].quantity = 1;
+									playerInfo.inventory[itemIndex].type = 1;
+									playerInfo.inventory[itemIndex].isEquipped = 0;
+									playerInfo.inventory[itemIndex].addAttack = 0;
+									playerInfo.inventory[itemIndex].addDefense = 5;
+									playerInfo.inventory[itemIndex].addHp = 0;
+									playerInfo.inventory[itemIndex].addMana = 0;
+									itemIndex++;
+									printSlowly("1. ì¸ë²¤í† ë¦¬\n2. ì·¨ì†Œ\n", 100);
+									while (1) {
 
 
-							//±×¸² Ãß°¡: Àü»ç, ¸¶¹ı»ç, µµÀû
-							drawChar();
-							printstatus();
+										printf("Enter: ");
+										scanf("%d", &use);
+										if (use == 1) {
+											displayInventory();
+											break;
+										}
+										else if (use == 2) {
+											printBar();
+											printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+											break;
+										}
+										else {
+											printBar();
+											printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+											while (getchar() != '\n');
+										}
 
-							//¿ø·¡ Ã¼·Â, °ø°İ·Â, ¹æ¾î·Â, ¸¶³ª ±â·Ï
-							int tempH = playerInfo.playerScharacterInfo.hp;
-							int tempA = playerInfo.playerScharacterInfo.attack;
-							int tempD = playerInfo.playerScharacterInfo.defense;
-							int tempM = playerInfo.playerScharacterInfo.mana;
+									}
 
-							if (battle(0) == true) { //0 = ¸ó½ºÅÍ ÀÎµ¦½º
-								//½Â¸®ÀÏ °æ¿ì ½ºÅä¸® Áö¼Ó
-								playerInfo.playerScharacterInfo.hp = tempH;
-								playerInfo.playerScharacterInfo.attack = tempA;
-								playerInfo.playerScharacterInfo.defense = tempD;
-								playerInfo.playerScharacterInfo.mana = tempM;
-								//ÀüÅõ¿¡¼­ º¯°æµÈ ´É·ÂÄ¡ º¹±¸
+								}
+								else { // 40% í™•ë¥ ë¡œ ê³µê²©ë ¥ ì¦ê°€ í¬ì…˜ íšë“
+									printSlowly("ìƒìë¥¼ ì—´ì–´ë³´ë‹ˆ ë¹›ë‚˜ëŠ” í¬ì…˜ì´ ë“¤ì–´ìˆë‹¤.\n", 70);
+									strcpy(playerInfo.inventory[itemIndex].item, "ë¹›ë‚˜ëŠ” í¬ì…˜");
+									playerInfo.inventory[itemIndex].quantity = 1;
+									playerInfo.inventory[itemIndex].type = 2;
+									playerInfo.inventory[itemIndex].isEquipped = 0;
+									playerInfo.inventory[itemIndex].addAttack = 10;
+									playerInfo.inventory[itemIndex].addDefense = 0;
+									playerInfo.inventory[itemIndex].addHp = 0;
+									playerInfo.inventory[itemIndex].addMana = 0;
+									itemIndex++;
+									printSlowly("1. ì¸ë²¤í† ë¦¬\n2. ì·¨ì†Œ\n", 100);
+									while (1) {
 
 
+										printf("Enter: ");
+										scanf("%d", &use);
+										if (use == 1) {
+											displayInventory();
+											break;
+										}
+										else if (use == 2) {
+											printBar();
+											printSlowly("ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.\n", 100);
+											break;
+										}
+										else {
+											printBar();
+											printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+											while (getchar() != '\n');
+										}
 
+									}
+
+
+								}
+								
+								printBar();
+								printSlowly("ì•„ì´í…œì„ íšë“í•œ ë‹¹ì‹ ì€ ìˆ² ì†ì—ì„œ ë¹ ì ¸ë‚˜ê°€ë ¤ í•˜ì§€ë§Œ, ì—¬ì „íˆ ìŒì‚°í•œ ê¸°ìš´ì´ ì£¼ìœ„ë¥¼ ê°ì‹¸ê³  ìˆë‹¤...\n", 20);
+								printSlowly("ìˆ² ì†ì—ì„œ ë¬´ì–¸ê°€ê°€ ì›€ì§ì´ëŠ” ì†Œë¦¬ê°€ ë“¤ë¦°ë‹¤. ë‹¹ì‹ ì€ ë°œê±¸ìŒì„ ì¬ì´‰í•´ ì´ê³³ì„ ë¹ ì ¸ë‚˜ê°€ê¸°ë¡œ í•œë‹¤.\n", 20);
+
+								//***1ë²ˆ ìŠ¤í† ë¦¬ ì¶”ê°€í•´ì•¼ë¨.***
 
 								break;
 							}
+							else if (choice == 2) { //2ë²ˆ ìŠ¤í† ë¦¬
+
+								setColor(RED);
+								printSlowly("ìˆ²ì˜ ìˆ˜í˜¸ì\n", 50);
+								setColor(WHITE);
+								//ëª¬ìŠ¤í„° ë§ˆì£¼ì¹¨
+								printSlowly("ì„íŒì˜ ê°€ë¥´ì¹¨ì„ ì˜ì‹¬í•˜ë©° ë‹¤ë¥¸ ê¸¸ì„ ì„ íƒí•œ ë‹¹ì‹ ì€ ìˆ²ì„ í—¤ë§¤ë˜ ë„ì¤‘ ê±°ëŒ€í•œ ëª¬ìŠ¤í„°, 'íœë¦¬ë¥´'ì™€ ë§ˆì£¼ì¹©ë‹ˆë‹¤. \níœë¦¬ë¥´ëŠ” ìˆ²ì˜ ìˆ˜í˜¸ìë¡œ, ì•„ë¥´ì¹´ë””ì•„ë¡œ í–¥í•˜ëŠ” ê¸¸ì„ ë§‰ê³  ìˆìŠµë‹ˆë‹¤.\n\n", 20);
+								printMonster1();
+								printSlowly("ì´ë¦„: ", 50);
+								printSlowly(monster[0].name, 50);
+								printf("\n");
+								setColor(RED);
+								printSlowly(" - HP: ", 50);
+								printSlowly(StringvalueOf(monster[0].hp), 50);
+								setColor(WHITE);
+								printf("\n");
+								printSlowly(" - ìŠ¤í‚¬: ", 50);
+								printSlowly(monster[0].skill, 50);
+								printf("\n");
+								setColor(DARK_RED);
+								printSlowly(" - ê³µê²©ë ¥: ", 50);
+								printSlowly(StringvalueOf(monster[0].attack), 50);
+								setColor(WHITE);
+								printf("\n");
+								setColor(SKYBLUE);
+								printSlowly(" - ë°©ì–´ë ¥: ", 50);
+								printSlowly(StringvalueOf(monster[0].defense), 50);
+								setColor(WHITE);
+								printf("\n\n");
+
+
+								//ê·¸ë¦¼ ì¶”ê°€: ì „ì‚¬, ë§ˆë²•ì‚¬, ë„ì 
+								drawChar();
+								printSlowly(playerInfo.playerName, 200);
+								printSlowly("ë‹˜: ", 200);
+								printSlowly(playerInfo.playerScharacterInfo.name, 200);
+								printf("!\n");
+								
+								setColor(GREEN);
+								printSlowly(" - Lv. ", 100);
+								printSlowly(StringvalueOf(playerInfo.level), 100);
+								printf("\n");
+
+								setColor(RED);
+								printSlowly(" - HP: ", 100);
+								printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.hp), 100);
+								printf("\n");
+
+								setColor(WHITE);
+								printSlowly(" - ìŠ¤í‚¬: ", 100);
+								printSlowly(playerInfo.playerScharacterInfo.skill, 100);
+								printf("\n");
+								setColor(DARK_RED);
+								printSlowly(" - ê³µê²©ë ¥: ", 100);
+								printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.attack), 100);
+								setColor(WHITE);
+								printf("\n");
+								setColor(SKYBLUE);
+								printSlowly(" - ë°©ì–´ë ¥: ", 100);
+								printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.defense), 100);
+								setColor(WHITE);
+								printf("\n");
+								if (strcmp(playerInfo.playerScharacterInfo.name, "ë§ˆë²•ì‚¬") == 0) {
+									setColor(BLUE);
+									printSlowly(" - ë§ˆë‚˜: ", 100);
+									printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.mana), 100);
+									printf("\n");
+									setColor(WHITE);
+								}
+
+								//ì›ë˜ ì²´ë ¥, ê³µê²©ë ¥, ë°©ì–´ë ¥, ë§ˆë‚˜ ê¸°ë¡
+								int tempH = playerInfo.playerScharacterInfo.hp;
+								int tempA = playerInfo.playerScharacterInfo.attack;
+								int tempD = playerInfo.playerScharacterInfo.defense;
+								int tempM = playerInfo.playerScharacterInfo.mana;
+
+								if (battle(0) == true) { //0 = ëª¬ìŠ¤í„° ì¸ë±ìŠ¤
+									//ìŠ¹ë¦¬ì¼ ê²½ìš° ìŠ¤í† ë¦¬ ì§€ì†
+									playerInfo.playerScharacterInfo.hp = tempH;
+									playerInfo.playerScharacterInfo.attack = tempA;
+									playerInfo.playerScharacterInfo.defense = tempD;
+									playerInfo.playerScharacterInfo.mana = tempM;
+									//ì „íˆ¬ì—ì„œ ë³€ê²½ëœ ëŠ¥ë ¥ì¹˜ ë³µêµ¬
+
+
+
+
+									break;
+								}
+								else {
+									break; //íŒ¨ë°°ì‹œ return False
+								}
+
+								break;
+
+							}
+							else if (choice == 3) {
+								displayInventory();
+								while (getchar() != '\n');
+							}
+
+							else if (choice == 4) {
+								printBar();
+								shop();
+								while (getchar() != '\n');
+							}
 							else {
-								break; //ÆĞ¹è½Ã return False
+									printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+									while (getchar() != '\n');
 							}
 
 
-							break;
+						
 						}
 
+						//ìŠ¤í† ë¦¬ í†µí•©: ì„ì‹œ
 
-						else {
-							printf("------------------------------------------------------------------------------------------\n");
-							printSlowly("It's a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
-							while (getchar() != '\n');
-						}
-						break; //
+						break;
+					}
+					else if (st_ex == 2) {
+						printBar();
+						printSlowly("Game is closed!", 100);
+						break;
+					}
+					else {
+						printBar();
+						printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n", 100);
+						printBar();
+						while (getchar() != '\n');
 					}
 
-
-
-
-
-
-					break; //°ÔÀÓ Á¾·á
 				}
-				//½ºÅä¸® ÅëÇÕ: ÀÓ½Ã
 
-
-				else if (st_ex == 2) {
-					printf("------------------------------------------------------------------------------------------\n");
-					printSlowly("Game is closed!", 100);
-					break;
-				}
-				else {
-					printf("------------------------------------------------------------------------------------------\n");
-					printSlowly("It\'s a wrong choice. Please select again.\n", 100); //Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.
-					while (getchar() != '\n');
-				}
-				break; //°ÔÀÓ Á¾·á 2¹ø ¼±ÅÃ/·çÇÁ Á¾·á
 			}
-			break; //hp Á¶°Ç/·çÇÁ Á¾·á
 
+			if (st_ex != 2) {
+				printSlowly("í”Œë ˆì´ì–´ê°€ ì‚¬ë§í–ˆìŠµë‹ˆë‹¤.\n", 100);
+				printSlowly("Game is closed!", 100);
+				break;//ê²Œì„ ì¢…ë£Œ/ì–¸ì–´ ì„ íƒ ë£¨í”„ ì¢…ë£Œ
+			}
+
+
+
+			//ì˜ì–´ ë¶€ë¶„ ì—¬ê¸°ê¹Œì§€ ë³µì‚¬
+
+
+			break; //ê²Œì„ ì¢…ë£Œ/í•œêµ­ì–´ ë¶€ë¶„
 		}
+		else if (lang == 2) {
+			//ì˜ì–´ ë¶€ë¶„
+			drawWarrior = drawWarrior_en;
+			drawMage = drawMage_en;
+			drawRogue = drawRogue_en;
+			drawChar = drawChar_en;
+			displayInventory = displayInventory_en;
+			printstatus = printstatus_en;
+			useSkill = useSkill_en;
+			battle = battle_en;
 
-		if (st_ex != 2) {
-			printSlowly("The player has died.\n", 100);
-			printSlowly("Game is closed!", 100);
-			break;//°ÔÀÓ Á¾·á/¾ğ¾î ¼±ÅÃ ·çÇÁ Á¾·á
-		}
+			strcpy(characterInfo[0].name, "Warrior");//ì˜ì–´ ìºë¦­í„° êµ¬ì¡°ì²´
+			strcpy(characterInfo[0].skill, "A blow to destruction");
+			strcpy(characterInfo[0].charState, "A warrior with strong physical strength and excellent swordsmanship.");
+			strcpy(characterInfo[1].name, "Wizard");
+			strcpy(characterInfo[1].skill, "Million Volts");
+			strcpy(characterInfo[1].charState, "Wizard using powerful magic.");
+			strcpy(characterInfo[2].name, "Rogue");
+			strcpy(characterInfo[2].skill, "The Grace");
+			strcpy(characterInfo[2].charState, "The Bandit is adept at agile movements and covert actions.");
+			system("title ë¬¸ì œí•´ê²°ê¸°ë²• / Team 11");
+			playerInfo.playerScharacterInfo.hp = 1;
 
 
 
-
-
-
-		break; //°ÔÀÓ Á¾·á/¿µ¾î ºÎºĞ
 		}
 		else {
-		printf("------------------------------------------------------------------------------------------\n");
-		printSlowly("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä. / It\'s a wrong choice. Please select again.\n", 100);
-		while (getchar() != '\n');
+			printSlowly("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”. / It\'s a wrong choice. Please select again.\n", 100);
+			while (getchar() != '\n');
 		}
-		break; //°ÔÀÓ Á¾·á/¸ğµç ·çÇÁ Á¾·á
+
+
 	}
 
 }

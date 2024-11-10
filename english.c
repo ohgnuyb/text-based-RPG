@@ -704,4 +704,3 @@ bool battle_en(int monsterIndex) {
         return false;
     }
 }
-

@@ -23,6 +23,7 @@ struct inventoryItem {
     int addDefense;
     int addHp;
     int addMana;
+    char state[300];
 };
 struct character characterInfo[3] = {
    {"", "", "", 120, 10, 10, 0}, //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
@@ -40,6 +41,8 @@ struct {
 
 struct {
     char playerName[20];
+    int level;
+    int levelPro;
     struct character playerScharacterInfo;
     struct inventoryItem inventory[MAX_INVENTORY_SIZE];
 } playerInfo;
