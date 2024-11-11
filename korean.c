@@ -560,6 +560,8 @@ bool battle_ko(int monsterIndex) {
 				//치명타
 					setColor(RED);
 					printSlowly("치명타 발동!\n", 100);
+					setColor(WHITE);
+					printBar();
 					damage *= 1.5;
 					monster[monsterIndex].hp -= damage;
 					setColor(VIOLET);
@@ -571,6 +573,8 @@ bool battle_ko(int monsterIndex) {
 				//경미한
 					setColor(BLUE);
 					printSlowly("아쉽다! 공격이 빗나갔다.\n", 100);
+					setColor(WHITE);
+					printBar();
 					damage *= 0.6;
 					monster[monsterIndex].hp -= damage;
 					setColor(VIOLET);

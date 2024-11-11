@@ -330,7 +330,7 @@ void main() {
 								printBar();
 								printSlowly("정말 ", 50);
 								printSlowly(characterInfo[charSel - 1].name, 50);
-								printSlowly("을/를 선택하시겠습니까?\n", 50);
+								printSlowly("를 선택하시겠습니까?\n", 50);
 								printSlowly("1. 선택\n2. 취소\n", 50);
 
 
@@ -404,7 +404,7 @@ void main() {
 								printBar();
 								printSlowly("정말 ", 50);
 								printSlowly(characterInfo[charSel - 1].name, 50);
-								printSlowly("을 선택하시겠습니까?\n", 50);
+								printSlowly("를 선택하시겠습니까?\n", 50);
 								printSlowly("1. 선택\n2. 취소\n", 50);
 								printf("Enter: ");
 								scanf("%d", &charExit);
@@ -689,7 +689,7 @@ void main() {
 							}
 							else if (choice == 2) { //2번 스토리
 
-								setColor(RED);
+								setColor(VIOLET);
 								printSlowly("숲의 수호자\n", 50);
 								setColor(WHITE);
 								//몬스터 마주침
@@ -764,12 +764,13 @@ void main() {
 								int tempM = playerInfo.playerScharacterInfo.mana;
 
 								if (battle(0) == true) { //0 = 몬스터 인덱스
-									//승리일 경우 스토리 지속
 									playerInfo.playerScharacterInfo.hp = tempH;
 									playerInfo.playerScharacterInfo.attack = tempA;
 									playerInfo.playerScharacterInfo.defense = tempD;
 									playerInfo.playerScharacterInfo.mana = tempM;
 									//전투에서 변경된 능력치 복구
+
+									//승리일 경우 스토리 지속
 
 
 
@@ -822,7 +823,7 @@ void main() {
 
 			}
 
-			if (st_ex != 2) {
+			if (playerInfo.playerScharacterInfo.hp < 1) {
 				printSlowly("플레이어가 사망했습니다.\n", 100);
 				printSlowly("Game is closed!", 100);
 				break;//게임 종료/언어 선택 루프 종료
@@ -830,10 +831,12 @@ void main() {
 
 
 
-			//영어 부분 여기까지 복사
+		
 
 
 			break; //게임 종료/한국어 부분
+
+			//영어 부분 여기까지 복사
 		}
 		else if (lang == 2) {
 			//영어 부분
