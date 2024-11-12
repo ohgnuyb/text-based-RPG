@@ -250,6 +250,8 @@ void displayInventory_ko() {
 						else if (playerInfo.inventory[selectedIndex - 1].type == 3) {
 							printBar();
 							printSlowly("소모품은 장착 해제가 불가합니다.\n", 30);
+							printBar();
+							break;
 						}
 						else if (playerInfo.inventory[selectedIndex - 1].type == 1) {
 							if (playerInfo.inventory[selectedIndex - 1].isEquipped == 0) {
@@ -753,6 +755,26 @@ void shop_ko() {
 
 }
 
+void money_ko(){
+	printSlowly("현재 보유한 골드는 ", 50);
+	setColor(YELLOW);
+	printf("$ ");
+	printSlowly(StringvalueOf(playerInfo.money), 50);
+	setColor(WHITE);
+	printSlowly("입니다.\n", 50);
+}
+
+void addMoney_ko(int x) {
+	setColor(YELLOW);
+	printSlowly("$ ", 50);
+	printSlowly(StringvalueOf(x), 50);
+	setColor(WHITE);
+	printSlowly(" 골드를 획득하였습니다.\n", 50);
+	playerInfo.money += x;
+	money_ko();
+}
+
+
 void levelUp_ko() {
 	playerInfo.level += 1;
 	printSlowly("===== 경험치가 ", 50);
@@ -768,12 +790,12 @@ void loadLevelPro_ko(int x, char* reason) {
 	printSlowly("경험치가 ", 50);
 	setColor(GREEN);
 	printf("%d", x);
-	printf("%");
+	printf("%%");
 	setColor(WHITE);
 	printSlowly(" 만큼 올라 현재: ", 50);
 	setColor(GREEN);
 	printSlowly(StringvalueOf(playerInfo.levelPro), 50);
-	printf("%");
+	printf("%%");
 	setColor(WHITE);
 	printSlowly(" 입니다. / ", 50);
 	printSlowly("이유: ", 50);
@@ -800,7 +822,7 @@ int selectPro_ko() {
 	int option = 0;
 	while (1) {
 		printBar();
-		printSlowly("1. 스토리\n2. 인벤토리\n3. 상점\n4. 게임 종료", 50);
+		printSlowly("1. 스토리\n2. 인벤토리\n3. 상점\n4. 게임 종료\n", 50);
 		printf("Enter: ");
 		scanf("%d", &option);
 		if (option == 1) {
@@ -813,6 +835,9 @@ int selectPro_ko() {
 		else if (option == 3) {
 			shop_ko();
 			while (getchar() != '\n');
+		}
+		else if (option == 4) {
+			break;
 		}
 		else {
 			printBar();

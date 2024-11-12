@@ -25,6 +25,7 @@ typedef void (*printLevel_ptr)();
 typedef void (*levelUp_ptr)();
 typedef int (*selectPro_ptr)();
 typedef void (*loadLevelPro_ptr)(int x, char* reason);
+typedef void (*addMoney_ptr)(int x);
 
 
 drawWarrior_ptr drawWarrior;
@@ -40,7 +41,7 @@ printLevel_ptr printLevel;
 levelUp_ptr levelUp;
 loadLevelPro_ptr loadLevelPro;
 selectPro_ptr selectPro;
-
+addMoney_ptr addMoney;
 
 
 
@@ -102,7 +103,7 @@ int main() {
 			levelUp = levelUp_ko;
 			loadLevelPro = loadLevelPro_ko;
 			selectPro = selectPro_ko;
-
+			addMoney = addMoney_ko;
 
 			strcpy(characterInfo[0].name, "전사");//한국어 캐릭터 구조체
 			strcpy(characterInfo[0].skill, "파괴의 일격");
@@ -127,7 +128,6 @@ int main() {
 				int padding = 46;
 
 				strcpy(monster[0].name, "펜리르"); //첫 번째 몬스터
-				strcpy(monster[0].skill, "내려찍기");
 				monster[0].hp = 80;
 				monster[0].attack = 20;
 				monster[0].defense = 20;
@@ -279,7 +279,12 @@ int main() {
 						printBar();
 						printLevel();
 						printBar();
+						addMoney(50);
+						printBar();
 						printSlowly("\'빈 종이\'가 지급되었습니다.\n", 100);
+						printBar();
+						loadLevelPro(30, "아이템 획득");
+						printLevel();
 						strcpy(playerInfo.inventory[itemIndex].item, "빈 종이");
 						strcpy(playerInfo.inventory[itemIndex].state, "빈 종이입니다.");
 						playerInfo.inventory[itemIndex].quantity = 1;
@@ -354,7 +359,7 @@ int main() {
 										printBar();
 										printLevel();
 										printBar();
-										printSlowly("검사를 위한 \'목검\'이 지급되었습니다.\n", 30);
+										printSlowly("전사를 위한 \'목검\'이 지급되었습니다.\n", 30);
 										printBar();
 										strcpy(playerInfo.inventory[itemIndex].item, "목검");
 										playerInfo.inventory[itemIndex].quantity = 1;
@@ -500,7 +505,7 @@ int main() {
 									printBar();
 									printLevel();
 									printBar();
-									printSlowly("도적를 위한 \'도적의 망토\'가 지급되었습니다.\n", 100);
+									printSlowly("도적을 위한 \'도적의 망토\'가 지급되었습니다.\n", 100);
 									printBar();
 									strcpy(playerInfo.inventory[itemIndex].item, "도적의 망토");
 									playerInfo.inventory[itemIndex].quantity = 1;
@@ -550,7 +555,6 @@ int main() {
 								}
 							}
 							else if (charSel == 4) {
-								printBar();
 								displayInventory();
 								while (getchar() != '\n');
 							}
@@ -593,7 +597,6 @@ int main() {
 					
 						
 						while (1) {
-							printBar();
 							setColor(RED);
 							printf("선택: \n");
 							setColor(WHITE);
@@ -625,6 +628,8 @@ int main() {
 								int itemChance = rand() % 100; // 0에서 99 사이의 랜덤 숫자
 								if (itemChance < 60) { // 60% 확률로 갑옷 획득
 									printSlowly("상자를 열어보니 갑옷이 들어있다.\n낡아 보이지만 아직 견고해 보인다.\n", 30);
+									loadLevelPro(50, "아이템 획득");
+									printLevel();
 									strcpy(playerInfo.inventory[itemIndex].item, "낡은 갑옷");
 									playerInfo.inventory[itemIndex].quantity = 1;
 									playerInfo.inventory[itemIndex].type = 1;
@@ -660,6 +665,8 @@ int main() {
 								}
 								else { // 40% 확률로 공격력 증가 포션 획득
 									printSlowly("상자를 열어보니 빛나는 포션이 들어있다.\n", 70);
+									loadLevelPro(50, "아이템 획득");
+									printLevel();
 									strcpy(playerInfo.inventory[itemIndex].item, "빛나는 포션");
 									playerInfo.inventory[itemIndex].quantity = 1;
 									playerInfo.inventory[itemIndex].type = 2;
@@ -704,7 +711,7 @@ int main() {
 								break;
 							}
 							else if (choice == 2) { //2번 스토리
-
+								printBar();
 								setColor(VIOLET);
 								printSlowly("숲의 수호자\n", 50);
 								setColor(WHITE);
@@ -718,9 +725,6 @@ int main() {
 								printSlowly(" - HP: ", 50);
 								printSlowly(StringvalueOf(monster[0].hp), 50);
 								setColor(WHITE);
-								printf("\n");
-								printSlowly(" - 스킬: ", 50);
-								printSlowly(monster[0].skill, 50);
 								printf("\n");
 								setColor(DARK_RED);
 								printSlowly(" - 공격력: ", 50);
@@ -785,8 +789,8 @@ int main() {
 									playerInfo.playerScharacterInfo.defense = tempD;
 									playerInfo.playerScharacterInfo.mana = tempM;
 									//전투에서 변경된 능력치 복구
-									loadLevelPro_ko(100, "전투 승리");
-									printLevel_ko();
+									loadLevelPro(100, "전투 승리");
+									printLevel();
 									//승리일 경우 스토리 지속
 
 
