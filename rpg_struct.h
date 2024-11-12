@@ -33,7 +33,6 @@ struct character characterInfo[3] = {
 
 struct {
     char name[20];
-    char skill[20];
     int hp;
     int attack;
     int defense;
@@ -41,6 +40,7 @@ struct {
 
 struct {
     char playerName[20];
+    int money;
     int level;
     int levelPro;
     struct character playerScharacterInfo;
