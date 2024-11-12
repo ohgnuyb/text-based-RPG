@@ -796,11 +796,11 @@ void loadLevelPro_ko(int x, char* reason) {
 }
 
 
-void selectPro_ko() {
+int selectPro_ko() {
+	int option = 0;
 	while (1) {
 		printBar();
-		printSlowly("1. 스토리\n2. 인벤토리\n3. 상점\n", 50);
-		int option = 0;
+		printSlowly("1. 스토리\n2. 인벤토리\n3. 상점\n4. 게임 종료", 50);
 		printf("Enter: ");
 		scanf("%d", &option);
 		if (option == 1) {
@@ -820,4 +820,7 @@ void selectPro_ko() {
 			while (getchar() != '\n');
 		}
 	}
+	return option;
 }
+
+

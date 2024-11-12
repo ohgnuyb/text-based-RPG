@@ -23,7 +23,7 @@ typedef bool (*battle_ptr)(int monsterIndex);
 typedef void (*shop_ptr)();
 typedef void (*printLevel_ptr)();
 typedef void (*levelUp_ptr)();
-typedef void (*selectPro_ptr)();
+typedef int (*selectPro_ptr)();
 typedef void (*loadLevelPro_ptr)(int x, char* reason);
 
 
@@ -76,7 +76,7 @@ void printMonster1() { //몬스터 첫번째
 
 
 
-void main() {
+int main() {
 	int lang = 0;
 	int st_ex = -1; //시작/종료 인덱스
 
@@ -195,7 +195,7 @@ void main() {
 
 				setColor(WHITE);
 				printBar();
-				printf("1. 시작\n2. 종료\n");
+				printf("1. 시작\n2. 게임 종료\n");
 				while (1) {
 
 
@@ -294,7 +294,12 @@ void main() {
 						setColor(SKYBLUE);
 						printSlowly("Tip: 인벤토리와 상점은 선택창에 표시될 때 이용 가능합니다.\n", 30);
 						setColor(WHITE);
-						selectPro();
+						
+						if (selectPro() == 4) {
+							printBar();
+							printSlowly("Game is closed!", 100);
+							return 0;
+						}
 						printBar();
 						setColor(RED);
 						printSlowly("시작...\n", 300);
@@ -320,7 +325,7 @@ void main() {
 							}
 							*/
 							printBar();
-							printSlowly("4. 인벤토리\n5. 상점\n", 30);
+							printSlowly("4. 인벤토리\n5. 상점\n6. 게임 종료\n", 30);
 							printBar();
 							printf("Enter: ");
 							scanf("%d", &charSel);
@@ -554,6 +559,12 @@ void main() {
 								//shop()
 								while (getchar() != '\n');
 							}
+							else if (charSel == 6) {
+								printBar();
+								printSlowly("Game is closed!", 100);
+								return 0;
+								
+							}
 							else {
 								printBar();
 								printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
@@ -565,7 +576,11 @@ void main() {
 
 						setColor(WHITE);
 
-						selectPro();
+						if (selectPro() == 4) {
+							printBar();
+							printSlowly("Game is closed!", 100);
+							return 0;
+						}
 
 						printBar();
 						/*
@@ -587,6 +602,7 @@ void main() {
 							printBar();
 							printSlowly("3. 인벤토리\n", 100);
 							printSlowly("4. 상점\n", 100);
+							printSlowly("5. 게임 종료\n", 100);
 							printBar();
 							printf("Enter: ");
 							scanf("%d", &choice);
@@ -769,8 +785,10 @@ void main() {
 									playerInfo.playerScharacterInfo.defense = tempD;
 									playerInfo.playerScharacterInfo.mana = tempM;
 									//전투에서 변경된 능력치 복구
-
+									loadLevelPro_ko(100, "전투 승리");
+									printLevel_ko();
 									//승리일 경우 스토리 지속
+
 
 
 
@@ -794,6 +812,11 @@ void main() {
 								shop();
 								while (getchar() != '\n');
 							}
+							else if (choice == 5) {
+								printBar();
+								printSlowly("Game is closed!", 100);
+								return 0;
+							}
 							else {
 									printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 100);
 									while (getchar() != '\n');
@@ -810,7 +833,7 @@ void main() {
 					else if (st_ex == 2) {
 						printBar();
 						printSlowly("Game is closed!", 100);
-						break;
+						return 0;
 					}
 					else {
 						printBar();
@@ -826,7 +849,7 @@ void main() {
 			if (playerInfo.playerScharacterInfo.hp < 1) {
 				printSlowly("플레이어가 사망했습니다.\n", 100);
 				printSlowly("Game is closed!", 100);
-				break;//게임 종료/언어 선택 루프 종료
+				return 0;//게임 종료/언어 선택 루프 종료
 			}
 
 
@@ -834,7 +857,7 @@ void main() {
 		
 
 
-			break; //게임 종료/한국어 부분
+			return 0; //게임 종료/한국어 부분
 
 			//영어 부분 여기까지 복사
 		}
