@@ -477,9 +477,13 @@ void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 
 			setColor(WHITE);
 			printSlowly("!\n", 100);
 			printSlowly(monster[monsterIndex].name, 50);
-			printSlowly("에게 스킬을 사용했습니다. 마나: ", 50);
+			printSlowly("에게 스킬을 사용했습니다.\n마나: ", 50);
 			setColor(BLUE);
-			printSlowly("-10", 50);
+			printSlowly("-10\n", 50);
+			setColor(BLUE);
+			printSlowly("보유 마나: ", 100);
+			printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.mana), 50);
+			setColor(WHITE);
 			setColor(WHITE);
 			printSlowly("\n데미지: ", 50);
 			setColor(DARK_RED);
@@ -508,9 +512,11 @@ void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 
 		}
 		else {
 			printBar();
-			printSlowly("마나가 부족합니다. / \n", 100);
-			setColor(BLUE);
+			printSlowly("마나가 부족합니다. \n", 100);
 			printSlowly("필요 마나: 10 \n", 100);
+			setColor(BLUE);
+			printSlowly("보유 마나: ", 100);
+			printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.mana), 50);
 			setColor(WHITE);
 
 		}
