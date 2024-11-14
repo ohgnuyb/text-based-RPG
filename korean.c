@@ -471,7 +471,7 @@ void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 
 		if (skillMage > 0) {
 			printBar();
 			printSlowly("스킬 사용: ", 100);
-			setColor(VIOLET);
+			setColor(YELLOW);
 			int damage = (playerInfo.playerScharacterInfo.attack * 2) - (monster[monsterIndex].defense * DEFENSE_RATE);
 			printSlowly(playerInfo.playerScharacterInfo.skill, 100);
 			setColor(WHITE);
@@ -843,7 +843,7 @@ int selectPro_ko() {
 			while (getchar() != '\n');
 		}
 		else if (option == 4) {
-			break;
+			break;	
 		}
 		else {
 			printBar();
