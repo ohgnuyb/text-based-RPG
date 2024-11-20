@@ -126,7 +126,7 @@ void displayInventory_ko() {
 				printSlowly(playerInfo.inventory[selectedIndex - 1].item, 30);
 				printf("\n");
 				printBar();
-				printf("1. 장착/사용\n2. 장착 해제(장비)\n3. 취소\n");
+				printf("1. 장착/사용\n2. 장착 해제(장비)\n3. 취소\n4. 버리기\n");
 				int temp = 0;
 				while (1) {
 					printf("Enter: ");
@@ -307,6 +307,39 @@ void displayInventory_ko() {
 						printf("취소되었습니다.\n");
 						break;
 					}
+					else if (temp == 4) {
+						printBar();
+						printSlowly("정말 버리시겠습니까?\n", 50);
+						printSlowly("1. 예\n2. 아니오\n", 50);
+						while (1) {
+							int trash = 0;
+							printf("Enter: ");
+							scanf("%d", &trash);
+							
+							if (trash == 1) {
+								playerInfo.inventory[selectedIndex - 1].quantity--;
+								printBar();
+								printSlowly(playerInfo.inventory[selectedIndex - 1].item, 50);
+								printSlowly("(을/를) 버렸습니다.", 50);
+								printSlowly("\n남은 개수: ", 50);
+								printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].quantity), 50);
+								printf("\n");
+								break;
+							}
+							else if (trash == 2) {
+								printSlowly("취소되었습니다.", 50);
+								break;
+							}
+							else {
+								while (getchar() != '\n');
+							}
+
+							
+
+						}
+						break;
+		
+					}
 					else {
 						printBar();
 						printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 30);
@@ -419,23 +452,37 @@ void printstatus_ko() {
 
 
 void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐릭터의 현재 공격력 * 2
-	//마법사는 마나 -=10 / 도적은 공격이 아니라 방어력 100으로 은신 구현
+	//마법사는 마나 -=10 / 도적은 공격이 아니라 방어력 100+원래 공격력으로 은신 구현
+	int temp = 0;
 	if (*skillIndex == 0 && strcmp(playerInfo.playerScharacterInfo.name, "마법사") != 0) {
 		printBar();
 		printSlowly("스킬 사용: ", 100);
 		if (strcmp(playerInfo.playerScharacterInfo.name, "전사") == 0) {
 			setColor(SKYBLUE);
+			temp = playerInfo.playerScharacterInfo.defense;
 		}
 		else if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
 			setColor(RED);
+			temp = playerInfo.playerScharacterInfo.defense;
+			playerInfo.playerScharacterInfo.defense = 100;
 		}
 		else {
 			//추가 캐릭터
 		}
-		int damage = (playerInfo.playerScharacterInfo.attack * 2) - (monster[monsterIndex].defense * DEFENSE_RATE);
+		int damage = 0;
+		if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
+			damage = (playerInfo.playerScharacterInfo.attack) - (monster[monsterIndex].defense * DEFENSE_RATE);
+		}
+		else {
+			damage = (playerInfo.playerScharacterInfo.attack * 2) - (monster[monsterIndex].defense * DEFENSE_RATE);
+		}
+		
 		printSlowly(playerInfo.playerScharacterInfo.skill, 100);
 		setColor(WHITE);
 		printSlowly("!\n", 100);
+		if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
+			printSlowly("도적: 임시 방어력 = 100\n", 100);
+		}
 		printSlowly(monster[monsterIndex].name, 50);
 		printSlowly("에게 스킬을 사용했습니다. \n데미지: ", 50);
 		setColor(DARK_RED);
@@ -467,6 +514,7 @@ void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 
 
 	}
 	else if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
+		temp = playerInfo.playerScharacterInfo.defense;
 		int skillMage = playerInfo.playerScharacterInfo.mana / 10;
 		if (skillMage > 0) {
 			printBar();
@@ -527,7 +575,7 @@ void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 
 		printBar();
 		*con = -1;
 	}
-
+	playerInfo.playerScharacterInfo.defense = temp;
 }
 bool battle_ko(int monsterIndex) {
 	int turn = 0;

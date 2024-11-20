@@ -11,7 +11,6 @@
 #include "rpg_struct.h"
 #include "stringFunc.h"
 
-
 typedef void (*drawWarrior_ptr)();
 typedef void (*drawMage_ptr)();
 typedef void (*drawRogue_ptr)();
@@ -286,7 +285,7 @@ int main() {
 						loadLevelPro(30, "아이템 획득");
 						printLevel();
 						strcpy(playerInfo.inventory[itemIndex].item, "빈 종이");
-						strcpy(playerInfo.inventory[itemIndex].state, "빈 종이입니다.");
+						strcpy(playerInfo.inventory[itemIndex].state, "그냥 빈 종이입니다.");
 						playerInfo.inventory[itemIndex].quantity = 1;
 						playerInfo.inventory[itemIndex].type = 3;
 						playerInfo.inventory[itemIndex].isEquipped = 0;
