@@ -451,19 +451,17 @@ void printstatus_ko() {
 }
 
 
-void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐릭터의 현재 공격력 * 2
+int useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 캐릭터의 현재 공격력 * 2
 	//마법사는 마나 -=10 / 도적은 공격이 아니라 방어력 100+원래 공격력으로 은신 구현
-	int temp = 0;
+
 	if (*skillIndex == 0 && strcmp(playerInfo.playerScharacterInfo.name, "마법사") != 0) {
 		printBar();
 		printSlowly("스킬 사용: ", 100);
 		if (strcmp(playerInfo.playerScharacterInfo.name, "전사") == 0) {
 			setColor(SKYBLUE);
-			temp = playerInfo.playerScharacterInfo.defense;
 		}
 		else if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
 			setColor(RED);
-			temp = playerInfo.playerScharacterInfo.defense;
 			playerInfo.playerScharacterInfo.defense = 100;
 		}
 		else {
@@ -514,7 +512,6 @@ void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 
 
 	}
 	else if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
-		temp = playerInfo.playerScharacterInfo.defense;
 		int skillMage = playerInfo.playerScharacterInfo.mana / 10;
 		if (skillMage > 0) {
 			printBar();
@@ -575,9 +572,16 @@ void useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 
 		printBar();
 		*con = -1;
 	}
-	playerInfo.playerScharacterInfo.defense = temp;
+	if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+
 }
 bool battle_ko(int monsterIndex) {
+	int skillDefense = 0;
 	int turn = 0;
 	int defenseTurn = 0; //0. 방어 안 함, 1. 방어 상태
 	int skillIndex = 0;
@@ -710,7 +714,7 @@ bool battle_ko(int monsterIndex) {
 			}
 			else if (playerChoice == 3) {
 
-				useSkill_ko(monsterIndex, &skillIndex, &con);
+				skillDefense = useSkill_ko(monsterIndex, &skillIndex, &con);
 
 
 			}
@@ -758,6 +762,10 @@ bool battle_ko(int monsterIndex) {
 					if (defenseTurn == 1) {
 						playerInfo.playerScharacterInfo.defense -= 50;
 					}
+					if (skillDefense == 1) {
+						playerInfo.playerScharacterInfo.defense -= 100;
+					}
+					skillDefense = 0;
 					defenseTurn = 0;
 					turn++;
 				}
