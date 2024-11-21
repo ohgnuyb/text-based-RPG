@@ -17,7 +17,7 @@ typedef void (*drawRogue_ptr)();
 typedef void (*drawChar_ptr)();
 typedef void (*displayInventory_ptr)();
 typedef void (*printstatus_ptr)();
-typedef void (*useSkill_ptr)(int monsterIndex, int* skillIndex, int* con);
+typedef int (*useSkill_ptr)(int monsterIndex, int* skillIndex, int* con);
 typedef bool (*battle_ptr)(int monsterIndex);
 typedef void (*shop_ptr)();
 typedef void (*printLevel_ptr)();
@@ -25,6 +25,7 @@ typedef void (*levelUp_ptr)();
 typedef int (*selectPro_ptr)();
 typedef void (*loadLevelPro_ptr)(int x, char* reason);
 typedef void (*addMoney_ptr)(int x);
+typedef void (*deleteItem_ptr)(char* target_itemName, int index);
 
 
 drawWarrior_ptr drawWarrior;
@@ -41,7 +42,7 @@ levelUp_ptr levelUp;
 loadLevelPro_ptr loadLevelPro;
 selectPro_ptr selectPro;
 addMoney_ptr addMoney;
-
+deleteItem_ptr deleteItem;
 
 
 
@@ -103,6 +104,7 @@ int main() {
 			loadLevelPro = loadLevelPro_ko;
 			selectPro = selectPro_ko;
 			addMoney = addMoney_ko;
+			deleteItem = deleteItem_ko;
 
 			strcpy(characterInfo[0].name, "전사");//한국어 캐릭터 구조체
 			strcpy(characterInfo[0].skill, "파괴의 일격");
@@ -304,6 +306,7 @@ int main() {
 							printSlowly("Game is closed!", 100);
 							return 0;
 						}
+						clear();
 						printBar();
 						setColor(RED);
 						printSlowly("시작...\n", 300);
@@ -627,6 +630,7 @@ int main() {
 								int itemChance = rand() % 100; // 0에서 99 사이의 랜덤 숫자
 								if (itemChance < 60) { // 60% 확률로 갑옷 획득
 									printSlowly("상자를 열어보니 갑옷이 들어있다.\n낡아 보이지만 아직 견고해 보인다.\n", 30);
+									printBar();
 									loadLevelPro(50, "아이템 획득");
 									printLevel();
 									strcpy(playerInfo.inventory[itemIndex].item, "낡은 갑옷");
@@ -638,6 +642,7 @@ int main() {
 									playerInfo.inventory[itemIndex].addHp = 0;
 									playerInfo.inventory[itemIndex].addMana = 0;
 									itemIndex++;
+									printBar();
 									printSlowly("1. 인벤토리\n2. 취소\n", 100);
 									while (1) {
 
@@ -707,7 +712,7 @@ int main() {
 
 								//***1번 스토리 추가해야됨.***
 
-								break;
+								
 							}
 							else if (choice == 2) { //2번 스토리
 								printBar();
@@ -715,7 +720,10 @@ int main() {
 								printSlowly("숲의 수호자\n", 50);
 								setColor(WHITE);
 								//몬스터 마주침
-								printSlowly("석판의 가르침을 의심하며 다른 길을 선택한 당신은 숲을 헤매던 도중 거대한 몬스터, '펜리르'와 마주칩니다. \n펜리르는 숲의 수호자로, 아르카디아로 향하는 길을 막고 있습니다.\n\n", 20);
+								printSlowly("석판의 가르침을 의심하며 다른 길을 선택한 당신은 숲을 헤매던 도중 거대한 몬스터, '펜리르'와 마주칩니다. \n펜리르는 숲의 수호자로, 아르카디아로 향하는 길을 막고 있습니다.\n", 20);
+								setColor(YELLOW);
+								printSlowly("전투 후 승리하세요.\n\n", 20);
+								setColor(WHITE);
 								printMonster1();
 								printSlowly("이름: ", 50);
 								printSlowly(monster[0].name, 50);
@@ -736,8 +744,6 @@ int main() {
 								setColor(WHITE);
 								printf("\n\n");
 
-
-								//그림 추가: 전사, 마법사, 도적
 								drawChar();
 								printSlowly(playerInfo.playerName, 200);
 								printSlowly("님: ", 200);
@@ -775,7 +781,7 @@ int main() {
 									printf("\n");
 									setColor(WHITE);
 								}
-
+								
 								//원래 체력, 공격력, 방어력, 마나 기록
 								int tempH = playerInfo.playerScharacterInfo.hp;
 								int tempA = playerInfo.playerScharacterInfo.attack;
@@ -792,11 +798,9 @@ int main() {
 									printLevel();
 									//승리일 경우 스토리 지속
 
+									printSlowly("펜리르를 물리친 당신은 드디어 숲을 빠져나가 아르카디아로 향하는 길을 여게 됩니다.\n", 30);
 
-
-
-
-									break;
+									
 								}
 								else {
 									break; //패배시 return False
@@ -825,11 +829,20 @@ int main() {
 									while (getchar() != '\n');
 							}
 
-
-						
+							break;
 						}
 
-						//스토리 통합: 임시
+						//스토리 통합:
+						printBar();
+						printSlowly("숲을 빠져나온 당신은 새로운 세계, 아르카디아의 아름다움과 마주합니다.\n", 30);
+						printSlowly("황금빛 들판과 맑은 하늘이 펼쳐지고, 희미한 전설로만 들었던 도시의 모습이 눈앞에 나타납니다.\n", 30);
+						printSlowly("고난과 역경을 극복한 끝에, 이제 당신은 마침내 이곳에 도달했습니다.\n", 30);
+						setColor(SKYBLUE);
+						printSlowly("아르카디아의 진정한 평화가 이제 시작되었습니다...\n", 30);
+						setColor(WHITE);
+						printBar();
+						return 0;
+
 
 						break;
 					}

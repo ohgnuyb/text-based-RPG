@@ -75,6 +75,30 @@ void drawChar_ko() {
 		//추가 캐릭터
 	}
 }
+void deleteItem_ko(char* target_itemName, int index) {
+	int i, j;
+
+	// target_itemName과 일치하는 아이템을 찾습니다.
+	for (i = 0; i < index; i++) {
+		if (strcmp(playerInfo.inventory[i].item, target_itemName) == 0) {
+			// 찾았으면, 해당 아이템 이후의 아이템들을 앞으로 당깁니다.
+			for (j = i; j < index - 1; j++) {
+				strcpy(playerInfo.inventory[j].item, playerInfo.inventory[j + 1].item);
+				playerInfo.inventory[j].quantity = playerInfo.inventory[j + 1].quantity;
+				playerInfo.inventory[j].type = playerInfo.inventory[j + 1].type;
+				playerInfo.inventory[j].isEquipped = playerInfo.inventory[j + 1].isEquipped;
+				playerInfo.inventory[j].addAttack = playerInfo.inventory[j + 1].addAttack;
+				playerInfo.inventory[j].addDefense = playerInfo.inventory[j + 1].addDefense;
+				playerInfo.inventory[j].addHp = playerInfo.inventory[j + 1].addHp;
+				playerInfo.inventory[j].addMana = playerInfo.inventory[j + 1].addMana;
+				strcpy(playerInfo.inventory[j].state, playerInfo.inventory[j + 1].state);
+			}
+
+			// 인벤토리 아이템 개수를 감소시킵니다.
+			break; // 삭제 후 반복문 종료
+		}
+	}
+}
 
 
 
@@ -90,17 +114,17 @@ void displayInventory_ko() {
 		for (int i = 0; i < 10; i++) {
 			if (playerInfo.inventory[i].quantity > 0) {
 				if (playerInfo.inventory[i].isEquipped == 1) {
-					printf("%d. %s: %d개 / 장착 중\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
+					printf("%d. %s: %d개 / 장착 중\n", selected + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
 				}
 				else {
 					if (playerInfo.inventory[i].type == 2) {
-						printf("%d. %s: %d개 / 미사용\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
+						printf("%d. %s: %d개 / 미사용\n", selected + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
 					}
 					else if (playerInfo.inventory[i].type == 3) {
-						printf("%d. %s: %d개\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
+						printf("%d. %s: %d개\n", selected + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
 					}
 					else if(playerInfo.inventory[i].type == 1){
-						printf("%d. %s: %d개 / 미장착 중\n", i + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
+						printf("%d. %s: %d개 / 미장착 중\n", selected + 1, playerInfo.inventory[i].item, playerInfo.inventory[i].quantity);
 					}
 				}
 
@@ -144,8 +168,11 @@ void displayInventory_ko() {
 								}
 								else {
 									playerInfo.inventory[selectedIndex - 1].quantity--;
+									if (playerInfo.inventory[selectedIndex - 1].quantity == 0) {
+										deleteItem_ko(playerInfo.inventory[selectedIndex - 1].item, selected);
+									}
 									printBar();
-									printSlowly("포션을 사용했습니다. / 지속시간 5분\n", 30);
+									printSlowly("포션을 사용했습니다. / 전투 1번만 유효\n", 30);
 									//5분 구현해야 함.
 								}
 								if (playerInfo.inventory[selectedIndex - 1].addHp > 0) {
@@ -315,9 +342,12 @@ void displayInventory_ko() {
 							int trash = 0;
 							printf("Enter: ");
 							scanf("%d", &trash);
-							
+
 							if (trash == 1) {
 								playerInfo.inventory[selectedIndex - 1].quantity--;
+								if (playerInfo.inventory[selectedIndex - 1].quantity == 0){
+									deleteItem_ko(playerInfo.inventory[selectedIndex - 1].item, selected);
+								}
 								printBar();
 								printSlowly(playerInfo.inventory[selectedIndex - 1].item, 50);
 								printSlowly("(을/를) 버렸습니다.", 50);
@@ -814,7 +844,7 @@ void printLevel_ko() {
 }
 
 void shop_ko() {
-
+	
 }
 
 void money_ko(){
@@ -843,7 +873,58 @@ void levelUp_ko() {
 	setColor(GREEN);
 	printSlowly("100%", 50);
 	setColor(WHITE);
-	printSlowly(" 를 넘어 레벨이 올랐습니다! =====\n", 50);
+	printSlowly("를 넘어 레벨이 올랐습니다! =====\n", 50);
+	printBar();
+	if (strcmp(playerInfo.playerScharacterInfo.name, "") == 0) {
+	
+	}
+	else {
+
+	
+
+	// 능력치 상승 처리
+	printSlowly("축하합니다! 레벨업으로 능력치가 상승합니다.\n", 50);
+	printBar();
+	int hpIncrease = 20;      // 체력 증가량
+	int attackIncrease = 5;   // 공격력 증가량
+	int defenseIncrease = 3;  // 방어력 증가량
+	int manaIncrease = 10;  // 마나 증가량
+	
+	if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
+		playerInfo.playerScharacterInfo.hp += manaIncrease;
+	}
+	playerInfo.playerScharacterInfo.hp += hpIncrease;
+	playerInfo.playerScharacterInfo.attack += attackIncrease;
+	playerInfo.playerScharacterInfo.defense += defenseIncrease;
+
+	setColor(RED);
+	printSlowly(" - HP: +", 50);
+	printSlowly(StringvalueOf(hpIncrease), 50);
+	printf("\n");
+
+	setColor(DARK_RED);
+	printSlowly(" - 공격력: +", 50);
+	printSlowly(StringvalueOf(attackIncrease), 50);
+	printf("\n");
+
+	setColor(SKYBLUE);
+	printSlowly(" - 방어력: +", 50);
+	printSlowly(StringvalueOf(defenseIncrease), 50);
+	printf("\n");
+	if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
+		setColor(BLUE);
+		printSlowly(" - 마나: +", 50);
+		printSlowly(StringvalueOf(manaIncrease), 50);
+		printf("\n");
+	}
+
+
+	setColor(WHITE);
+	printBar();
+	printSlowly("새로운 능력치가 적용되었습니다.\n", 50);
+
+	}
+
 }
 
 void loadLevelPro_ko(int x, char* reason) {
