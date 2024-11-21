@@ -509,7 +509,7 @@ int useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //스킬 데미지는 �
 		setColor(WHITE);
 		printSlowly("!\n", 100);
 		if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
-			printSlowly("도적: 임시 방어력 = 100\n", 100);
+			printSlowly("은신 상태가 되었습니다.\n도적: 임시 방어력 = 100\n", 100);
 		}
 		printSlowly(monster[monsterIndex].name, 50);
 		printSlowly("에게 스킬을 사용했습니다. \n데미지: ", 50);
