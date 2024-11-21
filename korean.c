@@ -172,7 +172,7 @@ void displayInventory_ko() {
 										deleteItem_ko(playerInfo.inventory[selectedIndex - 1].item, selected);
 									}
 									printBar();
-									printSlowly("포션을 사용했습니다. / 전투 1번만 유효\n", 30);
+									printSlowly("포션을 사용했습니다.\n", 30);
 									//5분 구현해야 함.
 								}
 								if (playerInfo.inventory[selectedIndex - 1].addHp > 0) {
@@ -637,7 +637,7 @@ bool battle_ko(int monsterIndex) {
 			}
 			setColor(WHITE);
 			con = 0;
-			printSlowly("1. 공격\n2. 방어&공격\n3. 스킬\n", 100);
+			printSlowly("1. 공격\n2. 방어&공격\n3. 스킬\n4. 인벤토리", 100);
 			printf("Enter: ");
 			scanf("%d", &playerChoice);
 			int damage = playerInfo.playerScharacterInfo.attack - (monster[monsterIndex].defense * DEFENSE_RATE);
@@ -747,6 +747,10 @@ bool battle_ko(int monsterIndex) {
 				skillDefense = useSkill_ko(monsterIndex, &skillIndex, &con);
 
 
+			}
+			else if (playerChoice == 4) {
+				printBar();
+				displayInventory_ko();
 			}
 			else {
 				printBar();
