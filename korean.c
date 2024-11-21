@@ -92,6 +92,16 @@ void deleteItem_ko(char* target_itemName, int index) {
 				playerInfo.inventory[j].addHp = playerInfo.inventory[j + 1].addHp;
 				playerInfo.inventory[j].addMana = playerInfo.inventory[j + 1].addMana;
 				strcpy(playerInfo.inventory[j].state, playerInfo.inventory[j + 1].state);
+
+				strcpy(playerInfo.inventory[j+1].item, "");
+				playerInfo.inventory[j+1].quantity = 0;
+				playerInfo.inventory[j + 1].type = 0;
+				playerInfo.inventory[j + 1].isEquipped = -1;
+				playerInfo.inventory[j + 1].addAttack = 0;
+				playerInfo.inventory[j + 1].addDefense = 0;
+				playerInfo.inventory[j + 1].addHp = 0;
+				playerInfo.inventory[j + 1].addMana = 0;
+				strcpy(playerInfo.inventory[j].state, "");
 			}
 
 			// 인벤토리 아이템 개수를 감소시킵니다.
@@ -878,14 +888,14 @@ void levelUp_ko() {
 	printSlowly("100%", 50);
 	setColor(WHITE);
 	printSlowly("를 넘어 레벨이 올랐습니다! =====\n", 50);
-	printBar();
+
 	if (strcmp(playerInfo.playerScharacterInfo.name, "") == 0) {
 	
 	}
 	else {
 
 	
-
+	printBar();
 	// 능력치 상승 처리
 	printSlowly("축하합니다! 레벨업으로 능력치가 상승합니다.\n", 50);
 	printBar();
