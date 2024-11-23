@@ -27,7 +27,7 @@ struct inventoryItem {
 };
 
 struct character characterInfo[3] = {
-   {"", "", "", 100, 5, 4, 0}, //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
+   {"", "", "", 100, 5, 7, 0}, //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
    {"", "", "", 70, 15, -3, 0}, //스킬 사용시 마나 -10
    {"", "", "", 40, 25, -3, 0}, //마나가 없는 대신 전투 한 번에 스킬 한 번 사용 가능
 };
@@ -46,4 +46,5 @@ struct {
     int levelPro;
     struct character playerScharacterInfo;
     struct inventoryItem inventory[MAX_INVENTORY_SIZE];
+    int itemIndex;
 } playerInfo;
