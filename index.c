@@ -85,7 +85,8 @@ int main() {
 	printf("언어를 선택하세요. / Select a language.\n");
 	printSlowly("1. 한국어 / Korean\n2. 영어 / English\n", 30);
 
-	while (1) {
+	playerInfo.playerScharacterInfo.hp = 1;
+	while (playerInfo.playerScharacterInfo.hp > 0) {
 		printf("Enter: ");
 		scanf("%d", &lang);
 		printBar();
@@ -118,7 +119,6 @@ int main() {
 
 			system("title 문제해결기법 / 11조");
 
-			playerInfo.playerScharacterInfo.hp = 1;
 			while (playerInfo.playerScharacterInfo.hp > 0) { //영어 부분 여기부터 복사
 				srand(time(NULL));
 				setColor(BLACK);
@@ -197,7 +197,13 @@ int main() {
 				setColor(WHITE);
 				printBar();
 				printf("1. 시작\n2. 게임 종료\n");
-				while (1) {
+				printBar();
+				setColor(SKYBLUE);
+				printSlowly("Tip: 게임 종료 시 내용은 저장됩니다.\n", 30);
+				setColor(RED);
+				printSlowly("Warning: 게임 종료 선택지로 종료해야 함.\n", 30);
+				setColor(WHITE);
+				while (playerInfo.playerScharacterInfo.hp > 0) {
 
 
 
@@ -316,7 +322,7 @@ int main() {
 						printBar();
 						setColor(SKYBLUE);
 						printSlowly("Tip. 전사와 도적은 전투당 한 번의 스킬을 사용할 수 있고 마법사는 스킬 한 번당 마나 10을 소모합니다.\n", 100); */
-						while (1) {
+						while (playerInfo.playerScharacterInfo.hp > 0) {
 							setColor(WHITE);
 							printBar();
 							printSlowly("캐릭터 선택: \n", 200);
@@ -375,7 +381,7 @@ int main() {
 										printstatus();
 										printBar();
 										printSlowly("1. 인벤토리\n2. 취소\n", 100);
-										while (1) {
+										while (playerInfo.playerScharacterInfo.hp > 0) {
 
 
 											printf("Enter: ");
@@ -448,7 +454,7 @@ int main() {
 									printstatus();
 									printBar();
 									printSlowly("1. 인벤토리\n2. 취소\n", 100);
-									while (1) {
+									while (playerInfo.playerScharacterInfo.hp > 0) {
 
 
 										printf("Enter: ");
@@ -521,7 +527,7 @@ int main() {
 									printstatus();
 									printBar();
 									printSlowly("1. 인벤토리\n2. 취소\n", 100);
-									while (1) {
+									while (playerInfo.playerScharacterInfo.hp > 0) {
 
 
 										printf("Enter: ");
@@ -598,7 +604,7 @@ int main() {
 						*/
 					
 						
-						while (1) {
+						while (playerInfo.playerScharacterInfo.hp > 0) {
 							setColor(RED);
 							printf("선택: \n");
 							setColor(WHITE);
@@ -644,7 +650,7 @@ int main() {
 									playerInfo.itemIndex++;
 									printBar();
 									printSlowly("1. 인벤토리\n2. 취소\n", 100);
-									while (1) {
+									while (playerInfo.playerScharacterInfo.hp > 0) {
 
 
 										printf("Enter: ");
@@ -681,7 +687,7 @@ int main() {
 									playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
 									playerInfo.itemIndex++;
 									printSlowly("1. 인벤토리\n2. 취소\n", 100);
-									while (1) {
+									while (playerInfo.playerScharacterInfo.hp > 0) {
 
 
 										printf("Enter: ");
@@ -803,7 +809,11 @@ int main() {
 									
 								}
 								else {
-									break; //패배시 return False
+									if (playerInfo.playerScharacterInfo.hp < 1) {
+										printSlowly("플레이어가 사망했습니다.\n", 100);
+										printSlowly("Game is closed!", 100);
+										return 0;
+									}
 								}
 
 								break;
@@ -841,8 +851,16 @@ int main() {
 						printSlowly("아르카디아의 진정한 평화가 이제 시작되었습니다...\n", 30);
 						setColor(WHITE);
 						printBar();
-						return 0;
+						setColor(SKYBLUE);
+						printf("  _______ _            ______           _ \n");
+						printf(" |__   __| |          |  ____|         | |\n");
+						printf("    | |  | |__   ___  | |__   _ __   __| |\n");
+						printf("    | |  | '_ \\ / _ \\ |  __| | '_ \\ / _` |\n");
+						printf("    | |  | | | |  __/ | |____| | | | (_| |\n");
+						printf("    |_|  |_| |_|\\___| |______|_| |_|\\__,_|\n");
 
+						return 0;
+						
 
 						break;
 					}

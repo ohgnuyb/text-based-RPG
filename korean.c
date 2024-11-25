@@ -108,9 +108,19 @@ void deleteItem_ko(char* target_itemName, int index) {
 				playerInfo.inventory[j].addHp = playerInfo.inventory[j + 1].addHp;
 				playerInfo.inventory[j].addMana = playerInfo.inventory[j + 1].addMana;
 				strcpy(playerInfo.inventory[j].state, playerInfo.inventory[j + 1].state);
-				playerInfo.itemIndex--;
+				strcpy(playerInfo.inventory[j + 1].item, "");
+				playerInfo.inventory[j + 1].quantity = 0;
+				playerInfo.inventory[j + 1].type = 0;
+				playerInfo.inventory[j + 1].isEquipped = -1;
+				playerInfo.inventory[j + 1].addAttack = 0;
+				playerInfo.inventory[j + 1].addDefense = 0;
+				playerInfo.inventory[j + 1].addHp = 0;
+				playerInfo.inventory[j + 1].addMana = 0;
+				strcpy(playerInfo.inventory[j + 1].state, "");
 
 			}
+			
+			playerInfo.itemIndex--;
 			}
 			// ÀÎº¥Åä¸® ¾ÆÀÌÅÛ °³¼ö¸¦ °¨¼Ò½ÃÅµ´Ï´Ù.
 			break; // »èÁ¦ ÈÄ ¹Ýº¹¹® Á¾·á
@@ -406,7 +416,9 @@ void displayInventory_ko() {
 
 								printSlowly(playerInfo.inventory[selectedIndex - 1].item, 50);
 								printSlowly("(À»/¸¦) ¹ö·È½À´Ï´Ù.", 50);
-								
+								printSlowly("\n³²Àº °³¼ö: ", 50);
+								printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].quantity - 1), 50);
+								printf("\n");
 
 								
 								playerInfo.inventory[selectedIndex - 1].quantity--;
@@ -414,9 +426,7 @@ void displayInventory_ko() {
 									deleteItem_ko(playerInfo.inventory[selectedIndex - 1].item, selected);
 								}
 								
-								printSlowly("\n³²Àº °³¼ö: ", 50);
-								printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].quantity), 50);
-								printf("\n");
+								
 								break;
 							}
 							else if (trash == 2) {
@@ -572,10 +582,15 @@ int useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //½ºÅ³ µ¥¹ÌÁö´Â Ä
 		setColor(WHITE);
 		printSlowly("!\n", 100);
 		if (strcmp(playerInfo.playerScharacterInfo.name, "µµÀû") == 0) {
-			printSlowly("Àº½Å »óÅÂ°¡ µÇ¾ú½À´Ï´Ù.\nµµÀû: ÀÓ½Ã ¹æ¾î·Â = 100\n", 100);
+			printSlowly("½ºÅ³À» »ç¿ëÇÏ¿© Àº½Å »óÅÂ°¡ µÇ¾ú½À´Ï´Ù.\nµµÀû: ÀÓ½Ã ¹æ¾î·Â = 100\n", 100);
 		}
 		printSlowly(monster[monsterIndex].name, 50);
+		if (strcmp(playerInfo.playerScharacterInfo.name, "µµÀû") == 0) {
+			printSlowly("¿¡°Ô °ø°ÝÇß½À´Ï´Ù. \nµ¥¹ÌÁö: ", 50);
+		}
+		else {
 		printSlowly("¿¡°Ô ½ºÅ³À» »ç¿ëÇß½À´Ï´Ù. \nµ¥¹ÌÁö: ", 50);
+		}
 		setColor(DARK_RED);
 		printSlowly(StringvalueOf(damage), 100);
 		printf("\n");
@@ -598,7 +613,7 @@ int useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //½ºÅ³ µ¥¹ÌÁö´Â Ä
 		setColor(WHITE);
 		*skillIndex = 1;
 
-		printf("\n");
+
 		printBar();
 		printSlowly("»ç¿ë °¡´É È½¼ö: 0\n", 30);
 
@@ -644,7 +659,6 @@ int useSkill_ko(int monsterIndex, int* skillIndex, int* con) { //½ºÅ³ µ¥¹ÌÁö´Â Ä
 				setColor(WHITE);
 			}
 
-			printf("\n");
 			playerInfo.playerScharacterInfo.mana -= 10;
 			setColor(WHITE);
 		}
@@ -700,7 +714,7 @@ bool battle_ko(int monsterIndex) {
 			}
 			setColor(WHITE);
 			con = 0;
-			printSlowly("1. °ø°Ý\n2. ¹æ¾î&°ø°Ý\n3. ½ºÅ³\n4. ÀÎº¥Åä¸®", 100);
+			printSlowly("1. °ø°Ý\n2. ¹æ¾î&°ø°Ý\n3. ½ºÅ³\n4. ÀÎº¥Åä¸®\n", 100);
 			printf("Enter: ");
 			scanf("%d", &playerChoice);
 			int damage = playerInfo.playerScharacterInfo.attack - (monster[monsterIndex].defense * DEFENSE_RATE);
@@ -771,7 +785,7 @@ bool battle_ko(int monsterIndex) {
 				// ÇÃ·¹ÀÌ¾î ¹æ¾î
 				defenseTurn = 1;
 				printBar();
-				printSlowly("ÇÃ·¹ÀÌ¾î°¡ ¹æ¾î ÀÚ¼¼¸¦ ÃëÇß½À´Ï´Ù.\n", 50);
+				printSlowly("¹æ¾î ÀÚ¼¼¸¦ ÃëÇß½À´Ï´Ù.\n", 50);
 				setColor(SKYBLUE);
 				printSlowly("ÀÓ½Ã ¹æ¾î·Â: +50\n", 50);
 				setColor(VIOLET);
@@ -812,7 +826,7 @@ bool battle_ko(int monsterIndex) {
 
 			}
 			else if (playerChoice == 4) {
-				printBar();
+
 				displayInventory_ko();
 			}
 			else {
@@ -882,7 +896,6 @@ bool battle_ko(int monsterIndex) {
 		setColor(SKYBLUE);
 		printSlowly("½Â¸®!\n", 40);
 		setColor(WHITE);
-		printBar();
 		return true;
 	}
 	else {
@@ -892,7 +905,6 @@ bool battle_ko(int monsterIndex) {
 		setColor(DARK_GRAY);
 		printSlowly("¿¡°Ô ÆÐ¹è...\n", 100);
 		setColor(WHITE);
-		printBar();
 		return false;
 	}
 }
