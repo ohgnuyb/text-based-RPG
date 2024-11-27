@@ -133,7 +133,7 @@ void deleteItem_ko(char* target_itemName, int index) {
 
 void displayInventory_ko() {
 	int selected = 0;
-
+	int potionUsed = 0;
 	while (1) { // while 루프를 사용하여 반복
 		selected = 0; // selected 값 초기화
 		printBar();
@@ -212,7 +212,8 @@ void displayInventory_ko() {
 										deleteItem_ko(playerInfo.inventory[selectedIndex - 1].item, selected);
 									}
 									printBar();
-									printSlowly("포션을 사용했습니다.\n", 30);
+									printSlowly("포션을 사용했습니다.\n 임시", 30);
+									potionUsed = 1;
 									//5분 구현해야 함.
 								}
 								if (playerInfo.inventory[selectedIndex - 1].addHp > 0) {
@@ -316,7 +317,6 @@ void displayInventory_ko() {
 
 									}
 								}
-							}
 								playerInfo.inventory[selectedIndex - 1].isEquipped = 1;
 								playerInfo.playerScharacterInfo.attack += playerInfo.inventory[selectedIndex - 1].addAttack;
 								playerInfo.playerScharacterInfo.defense += playerInfo.inventory[selectedIndex - 1].addDefense;
@@ -355,6 +355,8 @@ void displayInventory_ko() {
 									}
 
 								}
+							}
+								
 							}
 
 							break;
@@ -436,7 +438,7 @@ void displayInventory_ko() {
 								scanf("%d", &trash);
 
 								if (trash == 1) {
-									if (playerInfo.inventory[selectedIndex - 1].type == 1) {
+									if (playerInfo.inventory[selectedIndex - 1].type == 1 && playerInfo.inventory[selectedIndex - 1].isEquipped == 1) {
 										printBar();
 										printSlowly("아이템을 버려 장비가 착용 해제되었습니다. \n", 30);
 										if (playerInfo.inventory[selectedIndex - 1].addHp > 0) {
@@ -1102,6 +1104,38 @@ void loadLevelPro_ko(int x, char* reason) {
 		levelUp_ko();
 	}
 }
+
+struct INVENTORY_SHOP* getShopItems(const char* job) {
+	if (strcmp(job, "전사") == 0) {
+		static struct INVENTORY_SHOP warriorItems[] = {
+			{"빛나는 검", 1, 1, 0, 12, 0, 0, 0, "빛나는 검입니다. / 공격력 +12", 50},
+			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60}
+		};
+		return warriorItems;
+	}
+	else if (strcmp(job, "마법사") == 0) {
+		static struct INVENTORY_SHOP mageItems[] = {
+			{"빛나는 지팡이", 1, 1, 0, 8, 0, 0, 0, "빛나는 지팡이입니다. / 공격력 +8", 50},
+			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60}
+		};
+		return mageItems;
+	}
+	else if (strcmp(job, "도적") == 0) {
+		static struct INVENTORY_SHOP thiefItems[] = {
+			{"화염 표창", 1, 1, 0, 5, 0, 0, 0, "낡은 표창입니다. / 공격력 +5", 50},
+			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60}
+		};
+		return thiefItems;
+	}
+	else {
+		// 직업이 유효하지 않은 경우 빈 배열 반환 (itemCount는 0)
+		static struct INVENTORY_SHOP emptyItems[1];
+		return emptyItems;
+	}
+}
 void shop_ko() {
 	int selected = 0;
 	int index = 0;
@@ -1112,35 +1146,11 @@ void shop_ko() {
 		printf("===== 상점 =====\n");
 		setColor(WHITE);
 
-		struct inventoryItem_shop shopItem[10] = {
-			{"빛나는 검", 1, 1, 0, 12, 0, 0, 0, "빛나는 검입니다. / 공격력 +12", 50},
-			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
-			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60},
-			{"빛나는 지팡이", 1, 1, 0, 8, 0, 0, 0, "빛나는 지팡이입니다. / 공격력 +8", 50},
-			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
-			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60},
-			{"화염 표창", 1, 1, 0, 5, 0, 0, 0, "낡은 표창입니다. / 공격력 +5", 50},
-			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
-			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60}
-		};
-		if (strcmp(playerInfo.playerScharacterInfo.name, "전사") == 0) {
+		struct INVENTORY_SHOP inventoryItem_shop[3] = getShopItems(playerInfo.playerScharacterInfo.name);
+		if (strcmp(playerInfo.playerScharacterInfo.name, "전사") == 0 || strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0 || strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
 			for (int i = 0; i < 3; i++) {
-				printf("%d. %s: / ", i + 1, shopItem[i].item);
-				printf("%s", shopItem[i].state);
-				printf("\n");
-			}
-		}
-		else if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
-			for (int i = 3; i < 6; i++) {
-				printf("%d. %s: \n", i + 1, shopItem[i].item);
-				printf("%s", shopItem[i].state);
-				printf("\n");
-			}
-		}
-		else if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
-			for (int i = 6; i < 9; i++) {
-				printf("%d. %s: \n", i + 1, shopItem[i].item);
-				printf("%s", shopItem[i].state);
+				printf("%d. %s: / ", i + 1, inventoryItem_shop[i].item);
+				printf("%s", inventoryItem_shop[i].state);
 				printf("\n");
 			}
 		}
@@ -1148,6 +1158,7 @@ void shop_ko() {
 			printSlowly("아직 캐릭터를 선택하지 않았습니다.\n선택 후 다시 시도해주세요.\n", 50);
 			return;
 		}
+
 		printBar();
 		money_ko();
 		printBar();

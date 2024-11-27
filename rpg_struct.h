@@ -3,6 +3,18 @@
 #define MAX_INVENTORY_SIZE 10
 #define DEFENSE_RATE 0.2
 
+struct INVENTORY_SHOP {
+    char item[20];
+    int item_type; 
+    int item_grade;
+    int item_limit; 
+    int item_attack;
+    int item_defense;
+    int item_heal;
+    int item_mana;
+    char state[100];
+    int price;
+};
 
 struct character {
     char name[20];
@@ -60,4 +72,5 @@ struct {
     struct character playerScharacterInfo;
     struct inventoryItem inventory[MAX_INVENTORY_SIZE];
     int itemIndex;
+
 } playerInfo;
