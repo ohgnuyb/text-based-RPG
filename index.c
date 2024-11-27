@@ -291,7 +291,7 @@ int main() {
 							printBar();
 							addMoney(50);
 							printBar();
-							printSlowly("\'빈 종이\'가 지급되었습니다.\n", 100);
+							printSlowly("\'빈 종이\'와 \'하급 체력 포션\'이 지급되었습니다.\n", 100);
 							printBar();
 							loadLevelPro(30, "아이템 획득");
 							printLevel();
@@ -305,6 +305,19 @@ int main() {
 							playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
 							playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
 							playerInfo.itemIndex++;
+
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "하급 체력 포션");
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
+							playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+							playerInfo.inventory[playerInfo.itemIndex].type = 2;
+							playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addHp = 5;
+							playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
+							playerInfo.itemIndex++;
+
+
 							printBar();
 							setColor(SKYBLUE);
 							printSlowly("Tip: 인벤토리와 상점은 선택창에 표시될 때 이용 가능합니다.\n", 30);
@@ -449,7 +462,7 @@ int main() {
 										printBar();
 										strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "마법사의 목걸이");
 										playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
-										playerInfo.inventory[playerInfo.itemIndex].type = 1;
+										playerInfo.inventory[playerInfo.itemIndex].type = 4;
 										playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
@@ -523,7 +536,7 @@ int main() {
 										printBar();
 										strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "도적의 망토");
 										playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
-										playerInfo.inventory[playerInfo.itemIndex].type = 1;
+										playerInfo.inventory[playerInfo.itemIndex].type = 4;
 										playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
