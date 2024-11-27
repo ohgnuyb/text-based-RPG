@@ -17,13 +17,26 @@ struct character {
 struct inventoryItem {
     char item[20];
     int  quantity;
-    int type; //1: 장비, 2: 물약
+    int type; //1: 무기, 2: 물약, 3: 일반
     int isEquipped;
     int addAttack;
     int addDefense;
     int addHp;
     int addMana;
     char state[300];
+};
+
+struct inventoryItem_shop {
+    char item[20];
+    int  quantity;
+    int type; 
+    int isEquipped;
+    int addAttack;
+    int addDefense;
+    int addHp;
+    int addMana;
+    char state[300];
+    int price;
 };
 
 struct character characterInfo[3] = {

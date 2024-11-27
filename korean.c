@@ -126,6 +126,7 @@ void deleteItem_ko(char* target_itemName, int index) {
 			break; // 삭제 후 반복문 종료
 		}
 	}
+	return;
 }
 
 
@@ -171,7 +172,18 @@ void displayInventory_ko() {
 		while (1) {
 			printf("Enter: ");
 			scanf("%d", &selectedIndex);
-
+			int equippedIndex = -1;
+			if (playerInfo.inventory[selectedIndex - 1].type == 1) {
+				for (int i = 0; i < playerInfo.itemIndex; i++) {
+					if (playerInfo.inventory[i].isEquipped == 1 &&
+						(strstr(playerInfo.inventory[i].item, "검") != NULL ||
+							strstr(playerInfo.inventory[i].item, "지팡이") != NULL ||
+							strstr(playerInfo.inventory[i].item, "표창") != NULL)) {
+						equippedIndex = i;
+						
+					}
+				}
+			}
 			if (selectedIndex <= selected && selectedIndex != 0) {
 				printBar();
 				printSlowly("선택한 아이템: ", 30);
@@ -248,10 +260,63 @@ void displayInventory_ko() {
 							else if (playerInfo.inventory[selectedIndex - 1].type == 3) {
 								printBar();
 								printSlowly(playerInfo.inventory[selectedIndex - 1].state, 50);
+								printBar();
 								printf("\n");
 
 							}
 							else if (playerInfo.inventory[selectedIndex - 1].type == 1) {
+								if (equippedIndex != -1) {
+
+									printSlowly("이미 ", 50);
+									printSlowly(playerInfo.inventory[equippedIndex].item, 50);
+									printSlowly("을(를) 착용하고 있습니다. ", 50);
+									printSlowly(playerInfo.inventory[equippedIndex].item, 50);
+									printSlowly("을(를) 해제하고 ", 50);
+									printSlowly(playerInfo.inventory[selectedIndex - 1].item, 50);
+									printSlowly("을(를) 착용합니다.\n", 50);
+
+									// 기존 장착 아이템 해제
+									playerInfo.inventory[equippedIndex].isEquipped = 0;
+									playerInfo.playerScharacterInfo.attack -= playerInfo.inventory[equippedIndex].addAttack;
+									playerInfo.playerScharacterInfo.defense -= playerInfo.inventory[equippedIndex].addDefense;
+
+									playerInfo.playerScharacterInfo.attack -= playerInfo.inventory[equippedIndex].addAttack;
+									playerInfo.playerScharacterInfo.defense -= playerInfo.inventory[equippedIndex].addDefense;
+									playerInfo.playerScharacterInfo.hp -= playerInfo.inventory[equippedIndex].addHp;
+									playerInfo.playerScharacterInfo.mana -= playerInfo.inventory[equippedIndex].addMana;
+									if (playerInfo.inventory[equippedIndex].addHp > 0) {
+										setColor(RED);
+										printSlowly("체력: -", 30);
+										printSlowly(StringvalueOf(playerInfo.inventory[equippedIndex].addHp), 100);
+										printf("\n");
+										setColor(WHITE);
+									}
+									else if (playerInfo.inventory[equippedIndex].addDefense > 0) {
+										setColor(SKYBLUE);
+										printSlowly("방어력: -", 30);
+										printSlowly(StringvalueOf(playerInfo.inventory[equippedIndex].addAttack), 100);
+										printf("\n");
+										setColor(WHITE);
+									}
+									else if (playerInfo.inventory[equippedIndex].addAttack > 0) {
+										setColor(DARK_RED);
+										printSlowly("공격력: -", 30);
+										printSlowly(StringvalueOf(playerInfo.inventory[equippedIndex].addAttack), 100);
+										printf("\n");
+										setColor(WHITE);
+									}
+									else if (playerInfo.inventory[equippedIndex].addMana > 0) {
+										if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
+											setColor(BLUE);
+											printSlowly("마나: -", 30);
+											printSlowly(StringvalueOf(playerInfo.inventory[equippedIndex].addMana), 100);
+											printf("\n");
+											setColor(WHITE);
+										}
+
+									}
+								}
+							}
 								playerInfo.inventory[selectedIndex - 1].isEquipped = 1;
 								playerInfo.playerScharacterInfo.attack += playerInfo.inventory[selectedIndex - 1].addAttack;
 								playerInfo.playerScharacterInfo.defense += playerInfo.inventory[selectedIndex - 1].addDefense;
@@ -291,90 +356,31 @@ void displayInventory_ko() {
 
 								}
 							}
-						}
 
-						break;
-
-					}
-					else if (temp == 2) {
-						if (playerInfo.inventory[selectedIndex - 1].type == 2) {
-							printBar();
-							printSlowly("포션은 장착 해제가 불가합니다.\n", 30);
-
-						}
-						else if (playerInfo.inventory[selectedIndex - 1].type == 3) {
-							printBar();
-							printSlowly("소모품은 장착 해제가 불가합니다.\n", 30);
-							printBar();
 							break;
-						}
-						else if (playerInfo.inventory[selectedIndex - 1].type == 1) {
-							if (playerInfo.inventory[selectedIndex - 1].isEquipped == 0) {
-								printBar();
-								printSlowly("이미 장착하지 않고 있습니다.\n", 30);
-								break;
-							}
-							else {
-								printBar();
-								printSlowly("장비를 착용 해제했습니다.\n", 30);
-								if (playerInfo.inventory[selectedIndex - 1].addHp > 0) {
-									setColor(RED);
-									printSlowly("체력: -", 30);
-									printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addHp), 100);
-									printf("\n");
-									setColor(WHITE);
-								}
-								else if (playerInfo.inventory[selectedIndex - 1].addDefense > 0) {
-									setColor(SKYBLUE);
-									printSlowly("방어력: -", 30);
-									printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
-									printf("\n");
-									setColor(WHITE);
-								}
-								else if (playerInfo.inventory[selectedIndex - 1].addAttack > 0) {
-									setColor(DARK_RED);
-									printSlowly("공격력: -", 30);
-									printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
-									printf("\n");
-									setColor(WHITE);
-								}
-								else if (playerInfo.inventory[selectedIndex - 1].addMana > 0) {
-									if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
-										setColor(BLUE);
-										printSlowly("마나: -", 30);
-										printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addMana), 100);
-										printf("\n");
-										setColor(WHITE);
-									}
 
-								}
-								playerInfo.inventory[selectedIndex - 1].isEquipped = 0;
-								playerInfo.playerScharacterInfo.attack -= playerInfo.inventory[selectedIndex - 1].addAttack;
-								playerInfo.playerScharacterInfo.defense -= playerInfo.inventory[selectedIndex - 1].addDefense;
-								playerInfo.playerScharacterInfo.hp -= playerInfo.inventory[selectedIndex - 1].addHp;
-								playerInfo.playerScharacterInfo.mana -= playerInfo.inventory[selectedIndex - 1].addMana;
+						}
+						else if (temp == 2) {
+							if (playerInfo.inventory[selectedIndex - 1].type == 2) {
+								printBar();
+								printSlowly("포션은 장착 해제가 불가합니다.\n", 30);
+
+							}
+							else if (playerInfo.inventory[selectedIndex - 1].type == 3) {
+								printBar();
+								printSlowly("소모품은 장착 해제가 불가합니다.\n", 30);
+								printBar();
 								break;
 							}
-						}
-					}
-					else if (temp == 3) {
-						printBar();
-						printf("취소되었습니다.\n");
-						break;
-					}
-					else if (temp == 4) {
-						printBar();
-						printSlowly("정말 버리시겠습니까?\n", 50);
-						printSlowly("1. 예\n2. 아니오\n", 50);
-						while (1) {
-							int trash = 0;
-							printf("Enter: ");
-							scanf("%d", &trash);
-				
-							if (trash == 1) {
-								if (playerInfo.inventory[selectedIndex - 1].type == 1) {
+							else if (playerInfo.inventory[selectedIndex - 1].type == 1) {
+								if (playerInfo.inventory[selectedIndex - 1].isEquipped == 0) {
 									printBar();
-									printSlowly("아이템을 버려 장비가 착용 해제되었습니다. \n", 30);
+									printSlowly("이미 장착하지 않고 있습니다.\n", 30);
+									break;
+								}
+								else {
+									printBar();
+									printSlowly("장비를 착용 해제했습니다.\n", 30);
 									if (playerInfo.inventory[selectedIndex - 1].addHp > 0) {
 										setColor(RED);
 										printSlowly("체력: -", 30);
@@ -411,46 +417,106 @@ void displayInventory_ko() {
 									playerInfo.playerScharacterInfo.defense -= playerInfo.inventory[selectedIndex - 1].addDefense;
 									playerInfo.playerScharacterInfo.hp -= playerInfo.inventory[selectedIndex - 1].addHp;
 									playerInfo.playerScharacterInfo.mana -= playerInfo.inventory[selectedIndex - 1].addMana;
+									break;
 								}
-								printBar();
-
-								printSlowly(playerInfo.inventory[selectedIndex - 1].item, 50);
-								printSlowly("(을/를) 버렸습니다.", 50);
-								printSlowly("\n남은 개수: ", 50);
-								printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].quantity - 1), 50);
-								printf("\n");
-
-								
-								playerInfo.inventory[selectedIndex - 1].quantity--;
-								if (playerInfo.inventory[selectedIndex - 1].quantity == 0){
-									deleteItem_ko(playerInfo.inventory[selectedIndex - 1].item, selected);
-								}
-								
-								
-								break;
 							}
-							else if (trash == 2) {
-								printSlowly("취소되었습니다.", 50);
-								break;
-							}
-							else {
-								while (getchar() != '\n');
-							}
-
-							
-
 						}
-						break;
-		
-					}
-					else {
-						printBar();
-						printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 30);
-						while (getchar() != '\n');
-					}
+						else if (temp == 3) {
+							printBar();
+							printf("취소되었습니다.\n");
+							break;
+						}
+						else if (temp == 4) {
+							printBar();
+							printSlowly("정말 버리시겠습니까?\n", 50);
+							printSlowly("1. 예\n2. 아니오\n", 50);
+							while (1) {
+								int trash = 0;
+								printf("Enter: ");
+								scanf("%d", &trash);
+
+								if (trash == 1) {
+									if (playerInfo.inventory[selectedIndex - 1].type == 1) {
+										printBar();
+										printSlowly("아이템을 버려 장비가 착용 해제되었습니다. \n", 30);
+										if (playerInfo.inventory[selectedIndex - 1].addHp > 0) {
+											setColor(RED);
+											printSlowly("체력: -", 30);
+											printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addHp), 100);
+											printf("\n");
+											setColor(WHITE);
+										}
+										else if (playerInfo.inventory[selectedIndex - 1].addDefense > 0) {
+											setColor(SKYBLUE);
+											printSlowly("방어력: -", 30);
+											printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
+											printf("\n");
+											setColor(WHITE);
+										}
+										else if (playerInfo.inventory[selectedIndex - 1].addAttack > 0) {
+											setColor(DARK_RED);
+											printSlowly("공격력: -", 30);
+											printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addAttack), 100);
+											printf("\n");
+											setColor(WHITE);
+										}
+										else if (playerInfo.inventory[selectedIndex - 1].addMana > 0) {
+											if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
+												setColor(BLUE);
+												printSlowly("마나: -", 30);
+												printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].addMana), 100);
+												printf("\n");
+												setColor(WHITE);
+											}
+
+										}
+										playerInfo.inventory[selectedIndex - 1].isEquipped = 0;
+										playerInfo.playerScharacterInfo.attack -= playerInfo.inventory[selectedIndex - 1].addAttack;
+										playerInfo.playerScharacterInfo.defense -= playerInfo.inventory[selectedIndex - 1].addDefense;
+										playerInfo.playerScharacterInfo.hp -= playerInfo.inventory[selectedIndex - 1].addHp;
+										playerInfo.playerScharacterInfo.mana -= playerInfo.inventory[selectedIndex - 1].addMana;
+									}
+									printBar();
+
+									printSlowly(playerInfo.inventory[selectedIndex - 1].item, 50);
+									printSlowly("(을/를) 버렸습니다.", 50);
+									printSlowly("\n남은 개수: ", 50);
+									printSlowly(StringvalueOf(playerInfo.inventory[selectedIndex - 1].quantity - 1), 50);
+									printf("\n");
+
+
+									playerInfo.inventory[selectedIndex - 1].quantity--;
+									if (playerInfo.inventory[selectedIndex - 1].quantity == 0) {
+										deleteItem_ko(playerInfo.inventory[selectedIndex - 1].item, selected);
+									}
+
+
+									break;
+								}
+								else if (trash == 2) {
+									printSlowly("취소되었습니다.", 50);
+									break;
+								}
+								else {
+									while (getchar() != '\n');
+								}
+
+
+
+							}
+							break;
+
+							}
+						else {
+								printBar();
+								printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 30);
+								while (getchar() != '\n');
+								}
 				}
 
 				break; // 아이템 장착/사용 후 루프 종료
+
+				
 			}
 			else if (selectedIndex == 0) {
 				if (strlen(playerInfo.playerScharacterInfo.name) != 0) {
@@ -922,9 +988,7 @@ void printLevel_ko() {
 	printSlowly(" 입니다.\n", 50);
 }
 
-void shop_ko() {
-	
-}
+
 
 void money_ko(){
 	printSlowly("현재 보유한 골드는 ", 50);
@@ -1031,14 +1095,135 @@ void loadLevelPro_ko(int x, char* reason) {
 		printf("+%d", x);
 		printf("%%");
 		setColor(WHITE);
-		printSlowly(" / 이유: ", 50);
+		printSlowly(" / ", 50);
 		printSlowly(reason, 50);
 		printf("\n");
 		printBar();
 		levelUp_ko();
 	}
 }
+void shop_ko() {
+	int selected = 0;
+	int index = 0;
+	while (1) { // while 루프를 사용하여 반복
+		selected = 0; // selected 값 초기화
+		printBar();
+		setColor(YELLOW);
+		printf("===== 상점 =====\n");
+		setColor(WHITE);
 
+		struct inventoryItem_shop shopItem[10] = {
+			{"빛나는 검", 1, 1, 0, 12, 0, 0, 0, "빛나는 검입니다. / 공격력 +12", 50},
+			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60},
+			{"빛나는 지팡이", 1, 1, 0, 8, 0, 0, 0, "빛나는 지팡이입니다. / 공격력 +8", 50},
+			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60},
+			{"화염 표창", 1, 1, 0, 5, 0, 0, 0, "낡은 표창입니다. / 공격력 +5", 50},
+			{"빛나는 갑옷", 1, 1, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20", 60}
+		};
+		if (strcmp(playerInfo.playerScharacterInfo.name, "전사") == 0) {
+			for (int i = 0; i < 3; i++) {
+				printf("%d. %s: / ", i + 1, shopItem[i].item);
+				printf("%s", shopItem[i].state);
+				printf("\n");
+			}
+		}
+		else if (strcmp(playerInfo.playerScharacterInfo.name, "마법사") == 0) {
+			for (int i = 3; i < 6; i++) {
+				printf("%d. %s: \n", i + 1, shopItem[i].item);
+				printf("%s", shopItem[i].state);
+				printf("\n");
+			}
+		}
+		else if (strcmp(playerInfo.playerScharacterInfo.name, "도적") == 0) {
+			for (int i = 6; i < 9; i++) {
+				printf("%d. %s: \n", i + 1, shopItem[i].item);
+				printf("%s", shopItem[i].state);
+				printf("\n");
+			}
+		}
+		else {
+			printSlowly("아직 캐릭터를 선택하지 않았습니다.\n선택 후 다시 시도해주세요.\n", 50);
+			return;
+		}
+		printBar();
+		money_ko();
+		printBar();
+		printSlowly("어떤 아이템을 구매하시겠습니까?\n0. 나가기\n", 30);
+		while (1) {
+			printf("Enter: ");
+			scanf("%d", &index);
+			if (index == 0) {
+				printBar();
+				printSlowly("상점을 나갑니다.\n", 30);
+				return;
+			}
+			else if (index < 10 && index > 0) {
+				printBar();
+				printSlowly("선택한 아이템: ", 30);
+				printSlowly(shopItem[index - 1].item, 30);
+				printf("\n");
+				printBar();
+				printf("1. 구매\n2. 취소\n");
+				int temp = 0;
+				while (1) {
+					printf("Enter: ");
+					scanf("%d", &temp);
+					if (temp == 1) {
+						printBar();
+						if (playerInfo.money >= 50) {
+							playerInfo.money -= shopItem[index - 1].price;
+							printSlowly(shopItem[index - 1].item, 50);
+							printSlowly(" 구매 완료!\n", 50);
+		
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].item, shopItem[index - 1].item);
+							playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+							playerInfo.inventory[playerInfo.itemIndex].type = shopItem[index - 1].type;
+							playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addAttack = shopItem[index - 1].addAttack;
+							playerInfo.inventory[playerInfo.itemIndex].addDefense = shopItem[index - 1].addDefense;
+							playerInfo.inventory[playerInfo.itemIndex].addHp = shopItem[index - 1].addHp;
+							playerInfo.inventory[playerInfo.itemIndex].addMana = shopItem[index - 1].addMana;
+							if (shopItem[index - 1].type == 3) {
+								strcpy(playerInfo.inventory[playerInfo.itemIndex].state, shopItem[index - 1].state);
+							}
+							playerInfo.itemIndex++;
+							break;
+						}
+						else {
+							printSlowly("골드가 부족합니다.\n", 50);
+							printSlowly("필요한 골드: ", 50);
+							setColor(YELLOW);
+							printSlowly(StringvalueOf(shopItem[index - 1].price), 50);
+							setColor(WHITE);
+							printSlowly("\n현재 골드: ", 50);
+							money_ko();
+							break;
+						}
+					}
+					else if (temp == 2) {
+						printBar();
+						printf("취소되었습니다.\n");
+						break;
+					}
+					else {
+						printBar();
+						printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 30);
+						while (getchar() != '\n');
+					}
+				}
+				break;
+			}
+			else {
+				printBar();
+				printSlowly("잘못된 선택입니다. 다시 선택해주세요.\n", 30);
+				while (getchar() != '\n');
+			}
+		}
+	}
+}
 
 int selectPro_ko() {
 	int option = 0;
@@ -1069,5 +1254,3 @@ int selectPro_ko() {
 	}
 	return option;
 }  
-
-

@@ -203,6 +203,7 @@ int main() {
 				setColor(RED);
 				printSlowly("Warning: 게임 종료 선택지로 종료해야 함.\n", 30);
 				setColor(WHITE);
+				printBar();
 				while (playerInfo.playerScharacterInfo.hp > 0) {
 
 
