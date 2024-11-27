@@ -80,7 +80,7 @@ void printMonster1() { //몬스터 첫번째
 int main() {
 	int lang = 0;
 	int st_ex = -1; //시작/종료 인덱스
-
+	playerInfo.itemIndex = 0;
 
 	load_game_data();
 
@@ -129,7 +129,6 @@ int main() {
 					setColor(BLACK);
 					int choice = -1;
 					int charSel = -1;
-					playerInfo.itemIndex = 0;
 					char title[50] = "잊혀진 왕국의 비밀";
 					int padding = 46;
 
@@ -382,7 +381,7 @@ int main() {
 										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
-										stycpy(playerInfo.inventory[playerInfo.itemIndex].state, "null");
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
 										playerInfo.itemIndex++;
 										printstatus();
 										printBar();
@@ -456,7 +455,7 @@ int main() {
 										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addMana = 10;
-										stycpy(playerInfo.inventory[playerInfo.itemIndex].state, "null");
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
 										playerInfo.itemIndex++;
 										printstatus();
 										printBar();
@@ -530,7 +529,7 @@ int main() {
 										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addHp = 10;
 										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
-										stycpy(playerInfo.inventory[playerInfo.itemIndex].state, "null");
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
 										playerInfo.itemIndex++;
 										printstatus();
 										printBar();
@@ -659,7 +658,7 @@ int main() {
 										playerInfo.inventory[playerInfo.itemIndex].addDefense = 5;
 										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
-										stycpy(playerInfo.inventory[playerInfo.itemIndex].state, "null");
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
 										playerInfo.itemIndex++;
 										printBar();
 										printSlowly("1. 인벤토리\n2. 취소\n", 100);
@@ -701,7 +700,7 @@ int main() {
 										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
 										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
-										stycpy(playerInfo.inventory[playerInfo.itemIndex].state, "null");
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
 										playerInfo.itemIndex++;
 										printBar();
 										printSlowly("1. 인벤토리\n2. 취소\n", 100);

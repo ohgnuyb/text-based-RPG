@@ -5,15 +5,27 @@
 
 struct INVENTORY_SHOP {
     char item[20];
-    int item_type; 
-    int item_grade;
-    int item_limit; 
-    int item_attack;
-    int item_defense;
-    int item_heal;
-    int item_mana;
-    char state[100];
+    int  quantity;
+    int type; //1: 무기, 2: 물약, 3: 일반 4: 장비
+    int isEquipped;
+    int addAttack;
+    int addDefense;
+    int addHp;
+    int addMana;
+    char state[300];
     int price;
+};
+
+struct inventoryItem {
+    char item[20];
+    int  quantity;
+    int type; //1: 무기, 2: 물약, 3: 일반 4: 장비
+    int isEquipped;
+    int addAttack;
+    int addDefense;
+    int addHp;
+    int addMana;
+    char state[300];
 };
 
 struct character {
@@ -26,17 +38,6 @@ struct character {
     int mana;
 };
 
-struct inventoryItem {
-    char item[20];
-    int  quantity;
-    int type; //1: 무기, 2: 물약, 3: 일반
-    int isEquipped;
-    int addAttack;
-    int addDefense;
-    int addHp;
-    int addMana;
-    char state[300];
-};
 
 struct inventoryItem_shop {
     char item[20];
@@ -72,5 +73,7 @@ struct {
     struct character playerScharacterInfo;
     struct inventoryItem inventory[MAX_INVENTORY_SIZE];
     int itemIndex;
-
+    int potionUsed;
+    char type;
+    int potionAdd;
 } playerInfo;

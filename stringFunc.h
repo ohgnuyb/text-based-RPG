@@ -20,14 +20,14 @@ void load_game_data() {
 	// 플레이어 정보 불러오기
 	fscanf(fp, "%[^,], %d, %d, %d\n", playerInfo.playerName, &playerInfo.level, &playerInfo.levelPro, &playerInfo.money);
 
-	fscanf(fp, "%d, %d, %d, %d, %s, %s, %[^ ]\n",
+	fscanf(fp, "%d, %d, %d, %d, %[^,], %[^,], %[^\n]\n",
 		&playerInfo.playerScharacterInfo.hp, &playerInfo.playerScharacterInfo.defense,
 		&playerInfo.playerScharacterInfo.attack, &playerInfo.playerScharacterInfo.mana,
 		playerInfo.playerScharacterInfo.name, playerInfo.playerScharacterInfo.skill,
 		playerInfo.playerScharacterInfo.charState);
 
 	// 인벤토리 정보 불러오기
-	while (fscanf(fp, "%[^,], %d, %d, %d, %d, %d, %d, %d, %[^ ]\n",
+	while (fscanf(fp, "%[^,], %d, %d, %d, %d, %d, %d, %d, %[^\n]\n",
 		playerInfo.inventory[playerInfo.itemIndex].item, &playerInfo.inventory[playerInfo.itemIndex].quantity, &playerInfo.inventory[playerInfo.itemIndex].type,
 		&playerInfo.inventory[playerInfo.itemIndex].isEquipped, &playerInfo.inventory[playerInfo.itemIndex].addAttack, &playerInfo.inventory[playerInfo.itemIndex].addDefense,
 		&playerInfo.inventory[playerInfo.itemIndex].addHp, &playerInfo.inventory[playerInfo.itemIndex].addMana, playerInfo.inventory[playerInfo.itemIndex].state) != EOF) {
@@ -46,7 +46,6 @@ void load_game_data() {
 // 
 //아이템1 이름 아이템1 수량 아이템1 종류 아이템1 장착여부 아이템1 추가 공격력 아이템1 
 //추가 방어력 아이템1 추가 체력 아이템1 추가 마나 아이템1 상태
-// 
 //아이템2 이름 아이템2 수량 아이템2 종류 아이템2 장착여부 아이템2 추가 공격력 아이템2 
 //추가 방어력 아이템2 추가 체력 아이템2 추가 마나 아이템2 상태
 
