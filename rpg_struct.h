@@ -76,4 +76,6 @@ struct {
     int potionUsed;
     char type;
     int potionAdd;
+    int startIndex;
+    int lang;
 } playerInfo;

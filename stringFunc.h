@@ -12,13 +12,15 @@ void load_game_data() {
 	playerInfo.itemIndex = 0;
 	if (fp == NULL) {
 
-
-
+		printf("Error");
 		return;
 	}
 
 	// 플레이어 정보 불러오기
-	fscanf(fp, "%[^,], %d, %d, %d\n", playerInfo.playerName, &playerInfo.level, &playerInfo.levelPro, &playerInfo.money);
+	fscanf(fp, "%d, %d\n", &playerInfo.startIndex, &playerInfo.lang);
+	fscanf(fp, "%[^,], %d, %d, %d, %d, %d, %c, %d\n", playerInfo.playerName, &playerInfo.level, &playerInfo.levelPro, &playerInfo.money, &playerInfo.itemIndex, &playerInfo.potionUsed, &playerInfo.type, &playerInfo.potionAdd);
+
+
 
 	fscanf(fp, "%d, %d, %d, %d, %[^,], %[^,], %[^\n]\n",
 		&playerInfo.playerScharacterInfo.hp, &playerInfo.playerScharacterInfo.defense,
@@ -27,13 +29,16 @@ void load_game_data() {
 		playerInfo.playerScharacterInfo.charState);
 
 	// 인벤토리 정보 불러오기
-	while (fscanf(fp, "%[^,], %d, %d, %d, %d, %d, %d, %d, %[^\n]\n",
-		playerInfo.inventory[playerInfo.itemIndex].item, &playerInfo.inventory[playerInfo.itemIndex].quantity, &playerInfo.inventory[playerInfo.itemIndex].type,
-		&playerInfo.inventory[playerInfo.itemIndex].isEquipped, &playerInfo.inventory[playerInfo.itemIndex].addAttack, &playerInfo.inventory[playerInfo.itemIndex].addDefense,
-		&playerInfo.inventory[playerInfo.itemIndex].addHp, &playerInfo.inventory[playerInfo.itemIndex].addMana, playerInfo.inventory[playerInfo.itemIndex].state) != EOF) {
 
-		playerInfo.itemIndex++;
+	for (int i = 0; i < playerInfo.itemIndex; i++) {
+
+		fscanf(fp, "%[^,], %d, %d, %d, %d, %d, %d, %d, %[^\n]\n",
+			playerInfo.inventory[i].item, &playerInfo.inventory[i].quantity, &playerInfo.inventory[i].type,
+			&playerInfo.inventory[i].isEquipped, &playerInfo.inventory[i].addAttack, &playerInfo.inventory[i].addDefense,
+			&playerInfo.inventory[i].addHp, &playerInfo.inventory[i].addMana, playerInfo.inventory[i].state);
+
 	}
+
 
 	
 
@@ -55,15 +60,26 @@ void save_game_data() {
 		printf("error!\n");
 		return;
 	}
-
+	fprintf(fp, "%d, %d\n", playerInfo.startIndex, playerInfo.lang);
 	// 플레이어 정보 저장
-	fprintf(fp, "%s, %d, %d, %d\n", playerInfo.playerName, playerInfo.level, playerInfo.levelPro, playerInfo.money);
+	fprintf(fp, "%s, %d, %d, %d, %d, %d, %c, %d\n", playerInfo.playerName, playerInfo.level, playerInfo.levelPro, playerInfo.money, playerInfo.itemIndex, playerInfo.potionUsed, playerInfo.type, playerInfo.potionAdd);
+	
+	if (strcmp(playerInfo.playerScharacterInfo.name, "") == 0) {
+		fprintf(fp, "%d, %d, %d, %d, %s, %s, %s\n",
+			playerInfo.playerScharacterInfo.hp, playerInfo.playerScharacterInfo.defense,
+			playerInfo.playerScharacterInfo.attack, playerInfo.playerScharacterInfo.mana,
+			"UNDEFINED", "UNDEFINED", "UNDEFINED");
+	}
+	
+	else {
+
 
 	fprintf(fp, "%d, %d, %d, %d, %s, %s, %s\n",
 		playerInfo.playerScharacterInfo.hp, playerInfo.playerScharacterInfo.defense,
 		playerInfo.playerScharacterInfo.attack, playerInfo.playerScharacterInfo.mana,
 		playerInfo.playerScharacterInfo.name, playerInfo.playerScharacterInfo.skill,
 		playerInfo.playerScharacterInfo.charState);
+	}
 	// 인벤토리 정보 저장
 	for (int i = 0; i < playerInfo.itemIndex; i++) {
 		fprintf(fp, "%s, %d, %d, %d, %d, %d, %d, %d, %s\n",

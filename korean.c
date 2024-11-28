@@ -132,6 +132,7 @@ void deleteItem_ko(char* target_itemName, int index) {
 
 
 void displayInventory_ko() {
+	clear();
 	int selected = 0;
 
 	while (1) { // while 루프를 사용하여 반복
@@ -639,7 +640,7 @@ void displayInventory_ko() {
 
 			}
 			else if (selectedIndex == 0) {
-				if (strlen(playerInfo.playerScharacterInfo.name) != 0) {
+				if (strlen(playerInfo.playerScharacterInfo.name) != 0 && strcmp(playerInfo.playerScharacterInfo.name, "UNDEFINED") != 0) {
 
 
 					printBar();
@@ -1120,7 +1121,7 @@ bool battle_ko(int monsterIndex) {
 				}
 
 			}
-
+			printBar();
 			playerInfo.potionUsed = 0;
 		}
 		return true;
@@ -1266,25 +1267,25 @@ void loadLevelPro_ko(int x, char* reason) {
 struct INVENTORY_SHOP* getShopItems(const char* job) {
 	if (strcmp(job, "전사") == 0) {
 		static struct INVENTORY_SHOP warriorItems[] = {
-			{"빛나는 검", 1, 1, 0, 12, 0, 0, 0, "빛나는 검입니다. / 공격력 +12 / 가격 $ 50", 50},
-			{"빛나는 갑옷", 1, 4, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10 / 가격 $ 50", 50},
-			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20 / 가격 $ 60", 60}
+			{"빛나는 검", 1, 1, 0, 12, 0, 0, 0, "빛나는 검입니다. / 공격력 +12", 50},
+			{"빛나는 갑옷", 1, 4, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"고급 체력 포션", 1, 2, 0, 0, 0, 20, 0, "고급 체력 포션입니다. / 체력 +20", 60}
 		};
 		return warriorItems;
 	}
 	else if (strcmp(job, "마법사") == 0) {
 		static struct INVENTORY_SHOP mageItems[] = {
-			{"빛나는 지팡이", 1, 1, 0, 8, 0, 0, 0, "빛나는 지팡이입니다. / 공격력 +8 / 가격 $ 50", 50},
-			{"빛나는 갑옷", 1, 4, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10 / 가격 $ 50", 50},
-			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20 / 가격 $ 60", 60}
+			{"빛나는 지팡이", 1, 1, 0, 8, 0, 0, 0, "빛나는 지팡이입니다. / 공격력 +8", 50},
+			{"빛나는 갑옷", 1, 4, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"고급 체력 포션", 1, 2, 0, 0, 0, 20, 0, "고급 체력 포션입니다. / 체력 +20", 60}
 		};
 		return mageItems;
 	}
 	else if (strcmp(job, "도적") == 0) {
 		static struct INVENTORY_SHOP thiefItems[] = {
-			{"화염 표창", 1, 1, 0, 5, 0, 0, 0, "화염 표창입니다. / 공격력 +5 / 가격 $ 50", 50},
-			{"빛나는 갑옷", 1, 4, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10 / 가격 $ 50", 50},
-			{"체력 포션", 1, 2, 0, 0, 0, 20, 0, "체력 포션입니다. / 체력 +20 / 가격 $ 60", 60}
+			{"화염 표창", 1, 1, 0, 5, 0, 0, 0, "화염 표창입니다. / 공격력 +5", 50},
+			{"빛나는 갑옷", 1, 4, 0, 0, 10, 0, 0, "빛나는 갑옷입니다. / 방어력 +10", 50},
+			{"고급 체력 포션", 1, 2, 0, 0, 0, 20, 0, "고급 체력 포션입니다. / 체력 +20", 60}
 		};
 		return thiefItems;
 	}
@@ -1295,6 +1296,7 @@ struct INVENTORY_SHOP* getShopItems(const char* job) {
 	}
 }
 void shop_ko() {
+	clear();
 	int selected = 0;
 	int index = 0;
 	while (1) { // while 루프를 사용하여 반복
@@ -1314,6 +1316,12 @@ void shop_ko() {
 			for (int i = 0; i < 3; i++) {
 				printf("%d. %s: ", i + 1, inventoryItem_shop[i].item);
 				printf("%s", inventoryItem_shop[i].state);
+				printSlowly(" / 가격 ", 50);
+				
+				setColor(YELLOW);
+				printSlowly("$ ", 50);
+				printSlowly(StringvalueOf(inventoryItem_shop[i].price), 50);
+				setColor(WHITE);
 				printf("\n");
 			}
 		}
@@ -1360,9 +1368,7 @@ void shop_ko() {
 							playerInfo.inventory[playerInfo.itemIndex].addDefense = inventoryItem_shop[index - 1].addDefense;
 							playerInfo.inventory[playerInfo.itemIndex].addHp = inventoryItem_shop[index - 1].addHp;
 							playerInfo.inventory[playerInfo.itemIndex].addMana = inventoryItem_shop[index - 1].addMana;
-							if (inventoryItem_shop[index - 1].type == 3) {
-								strcpy(playerInfo.inventory[playerInfo.itemIndex].state, inventoryItem_shop[index - 1].state);
-							}
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].state, inventoryItem_shop[index - 1].state);
 							playerInfo.itemIndex++;
 							break;
 						}
