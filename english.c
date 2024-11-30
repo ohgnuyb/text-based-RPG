@@ -261,7 +261,7 @@ void displayInventory_en() {
 							else if (playerInfo.inventory[selectedIndex - 1].type == 3) {
 								printBar();
 								printSlowly(playerInfo.inventory[selectedIndex - 1].state, 50);
-								printBar();
+						
 								printf("\n");
 
 							}

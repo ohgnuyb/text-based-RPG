@@ -40,7 +40,7 @@ void load_game_data() {
 	}
 
 
-	
+
 
 	fclose(fp); // 파일 닫기
 }
@@ -55,6 +55,7 @@ void load_game_data() {
 //추가 방어력 아이템2 추가 체력 아이템2 추가 마나 아이템2 상태
 
 void save_game_data() {
+	SetConsoleOutputCP(CP_ACP);
 	FILE* fp = fopen("save_data.txt", "w"); // 파일 열기
 	if (fp == NULL) {
 		printf("error!\n");
@@ -68,23 +69,23 @@ void save_game_data() {
 	else {
 		fprintf(fp, "%s, %d, %d, %d, %d, %d, %c, %d\n", playerInfo.playerName, playerInfo.level, playerInfo.levelPro, playerInfo.money, playerInfo.itemIndex, playerInfo.potionUsed, playerInfo.type, playerInfo.potionAdd);
 	}
-	
-	
+
+
 	if (strcmp(playerInfo.playerScharacterInfo.name, "") == 0) {
 		fprintf(fp, "%d, %d, %d, %d, %s, %s, %s\n",
 			playerInfo.playerScharacterInfo.hp, playerInfo.playerScharacterInfo.defense,
 			playerInfo.playerScharacterInfo.attack, playerInfo.playerScharacterInfo.mana,
 			"UNDEFINED", "UNDEFINED", "UNDEFINED");
 	}
-	
+
 	else {
 
 
-	fprintf(fp, "%d, %d, %d, %d, %s, %s, %s\n",
-		playerInfo.playerScharacterInfo.hp, playerInfo.playerScharacterInfo.defense,
-		playerInfo.playerScharacterInfo.attack, playerInfo.playerScharacterInfo.mana,
-		playerInfo.playerScharacterInfo.name, playerInfo.playerScharacterInfo.skill,
-		playerInfo.playerScharacterInfo.charState);
+		fprintf(fp, "%d, %d, %d, %d, %s, %s, %s\n",
+			playerInfo.playerScharacterInfo.hp, playerInfo.playerScharacterInfo.defense,
+			playerInfo.playerScharacterInfo.attack, playerInfo.playerScharacterInfo.mana,
+			playerInfo.playerScharacterInfo.name, playerInfo.playerScharacterInfo.skill,
+			playerInfo.playerScharacterInfo.charState);
 	}
 	// 인벤토리 정보 저장
 	for (int i = 0; i < playerInfo.itemIndex; i++) {
@@ -94,7 +95,7 @@ void save_game_data() {
 			playerInfo.inventory[i].addHp, playerInfo.inventory[i].addMana, playerInfo.inventory[i].state);
 	}
 
-	
+
 
 	fclose(fp); // 파일 닫기
 }

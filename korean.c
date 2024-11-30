@@ -262,7 +262,7 @@ void displayInventory_ko() {
 								printBar();
 								printSlowly(playerInfo.inventory[selectedIndex - 1].state, 50);
 								printf("\n");
-								printBar();
+						
 							
 
 							}

@@ -6,7 +6,10 @@
 #include <windows.h>
 #include <conio.h>
 #include <time.h>
+#include <locale.h>
+#include <wchar.h>
 #include <stdbool.h>
+#include <fcntl.h>
 #include "color.h"
 #include "korean.c"
 #include "english.c"
@@ -82,20 +85,24 @@ void printMonster1() { //몬스터 첫번째
 
 
 
-int main() {
-	
+int main(void) {
 	FILE* checkNull = fopen("save_data.txt", "r");
+
 	if (checkNull == NULL) {
 		FILE* createFILE = fopen("save_data.txt", "w");
+
 		fprintf(createFILE, "%d, %d\n", 0, 1);
-		printf("다시 시작하세요. / Please restart.");
+		printf("다시 시작하세요. / Please restart.\n");
+
 		fclose(createFILE);
+		system("pause");
 		return;
 	}
 	fseek(checkNull, 0, SEEK_END);
 	long size = ftell(checkNull);
 	if (size == 0) {
 		checkNull = fopen("save_data.txt", "w");
+;
 		fprintf(checkNull, "%d, %d\n", 0, 1);
 	}
 	fclose(checkNull);
@@ -106,7 +113,8 @@ int main() {
 	int temp;
 	if (checkNull == NULL) {
 
-		printf("Error");
+		printf("Error\n");
+		system("pause");
 		return;
 	}
 	playerInfo.lang = 1;
@@ -445,17 +453,18 @@ line0:
 						playerInfo.itemIndex++;
 
 
-
+						line2:
 						printBar();
 						setColor(SKYBLUE);
 						printSlowly("Tip: 인벤토리와 상점은 선택창에 표시될 때 이용 가능합니다.\n", 30);
 						setColor(WHITE);
-
+						
 						if (selectPro() == 4) {
 							printBar();
-							printSlowly("Game is closed!", 100);
-							playerInfo.startIndex = 1;
+							printSlowly("Game is closed!\n", 100);
+							playerInfo.startIndex = 2;
 							save_game_data();
+							system("pause");
 							return 0;
 						}
 						clear();
@@ -466,7 +475,7 @@ line0:
 						setColor(WHITE);
 						printSlowly("깊은 숲 속에 숨겨진 고대 왕국, '아르카디아'. 한때 번영했던 이 왕국은 어둠의 마법사 \n'말레피센트'의 저주로 인해 멸망하고, 사람들의 기억 속에서 잊혀졌습니다. \n당신은 우연히 아르카디아의 존재를 알게 된 모험가입니다. \n잊혀진 왕국의 비밀을 밝혀내고 말레피센트의 저주를 풀어 아르카디아를 부활시킬 수 있을까요?\n", 30);
 
-					line2:
+	
 						printBar();
 						setColor(SKYBLUE);
 						printSlowly("Tip. 전사와 도적은 전투당 한 번의 스킬을 사용할 수 있고 마법사는 스킬 한 번당 마나 10을 소모합니다.\n", 100);
@@ -542,7 +551,7 @@ line0:
 										else if (use == 2) {
 											printBar();
 											printSlowly("취소되었습니다.\n", 100);
-											printBar();
+									
 											break;
 										}
 										else {
@@ -724,9 +733,10 @@ line0:
 							}
 							else if (charSel == 6) {
 								printBar();
-								printSlowly("Game is closed!", 100);
+								printSlowly("Game is closed!\n", 100);
 								playerInfo.startIndex = 2;
 								save_game_data();
+								system("pause");
 								return 0;
 
 							}
@@ -743,9 +753,10 @@ line0:
 
 						if (selectPro() == 4) {
 							printBar();
-							printSlowly("Game is closed!", 100);
+							printSlowly("Game is closed!\n", 100);
 							playerInfo.startIndex = 3;
 							save_game_data();
+							system("pause");
 							return 0;
 						}
 						clear();
@@ -986,12 +997,13 @@ line0:
 										int fd = fileno(fp);
 										int result = _chsize(fd, 0);
 										if (result != 0) {
-											perror("파일 내용 비우기 실패");
+											perror("파일 내용 비우기 실패\n");
 											fclose(fp);
 
 										}
 
 										fclose(fp);
+										system("pause");
 										return 0;
 									}
 								}
@@ -1011,9 +1023,10 @@ line0:
 							}
 							else if (choice == 5) {
 								printBar();
-								printSlowly("Game is closed!", 100);
+								printSlowly("Game is closed!\n", 100);
 								playerInfo.startIndex = 4;
 								save_game_data();
+								system("pause");
 								return 0;
 							}
 							else {
@@ -1052,9 +1065,10 @@ line0:
 							}
 							else if (option == 3) {
 								printBar();
-								printSlowly("Game is closed!", 100);
+								printSlowly("Game is closed!\n", 100);
 								playerInfo.startIndex = 5;
 								save_game_data();
+								system("pause");
 								return 0;
 							}
 							else if (option == 4) {
@@ -1108,7 +1122,8 @@ line0:
 								while (1) {
 									scanf("%d", &restart);
 									if (restart == 1) {
-										printSlowly("Game is closed!", 50);
+										printSlowly("Game is closed!\n", 50);
+										system("pause");
 										return 0;
 
 									}
@@ -1128,7 +1143,7 @@ line0:
 						}
 
 
-
+						system("pause");
 						return 0;
 
 
@@ -1136,9 +1151,11 @@ line0:
 					}
 					else if (st_ex == 2) {
 						printBar();
-						printSlowly("Game is closed!", 100);
+						printSlowly("Game is closed!\n", 100);
 						playerInfo.startIndex = 1;
 						save_game_data();
+						system("pause");
+
 						return 0;
 					}
 					else {
@@ -1163,12 +1180,13 @@ line0:
 				int fd = fileno(fp);
 				int result = _chsize(fd, 0);
 				if (result != 0) {
-					perror("파일 내용 비우기 실패");
+					perror("파일 내용 비우기 실패\n");
 					fclose(fp);
 
 				}
 
 				fclose(fp);
+				system("pause");
 				return 0;//게임 종료/언어 선택 루프 종료
 			}
 
@@ -1176,7 +1194,7 @@ line0:
 
 
 
-
+			system("pause");
 			return 0; //게임 종료/한국어 부분
 
 			//영어 부분 여기까지 복사
@@ -1419,12 +1437,13 @@ line0:
 						setColor(SKYBLUE);
 						printSlowly("Tip: Inventory and stores are available when displayed in the selection window.\n", 30);
 						setColor(WHITE);
-
+					line12:
 						if (selectPro() == 4) {
 							printBar();
-							printSlowly("Game is closed!", 100);
-							playerInfo.startIndex = 1;
+							printSlowly("Game is closed!\n", 100);
+							playerInfo.startIndex = 2;
 							save_game_data();
+							system("pause");
 							return 0;
 						}
 						clear();
@@ -1435,7 +1454,7 @@ line0:
 						setColor(WHITE);
 						printSlowly("Arcadia, an ancient kingdom hidden in a deep forest. This once prosperous kingdom is a dark wizard \nDestroyed by the curse of Maleficent, forgotten in people's memory. \nYou are an adventurer who happens to know Arcadia's existence. \nCan we uncover the secrets of the forgotten kingdom and unlock the curse of Maleficent to resurrect Arcadia?\n", 30);
 
-					line12:
+			
 						printBar();
 						setColor(SKYBLUE);
 						printSlowly("Tip. Warriors and Rogue can use one skill per battle and the wizard consumes Mana 10 per skill.\n", 100);
@@ -1693,9 +1712,10 @@ line0:
 							}
 							else if (charSel == 6) {
 								printBar();
-								printSlowly("Game is closed!", 100);
+								printSlowly("Game is closed!\n", 100);
 								playerInfo.startIndex = 2;
 								save_game_data();
+								system("pause");
 								return 0;
 
 							}
@@ -1712,9 +1732,10 @@ line0:
 
 						if (selectPro() == 4) {
 							printBar();
-							printSlowly("Game is closed!", 100);
+							printSlowly("Game is closed!\n", 100);
 							playerInfo.startIndex = 3;
 							save_game_data();
+							system("pause");
 							return 0;
 						}
 						clear();
@@ -1956,12 +1977,13 @@ line0:
 										int fd = fileno(fp);
 										int result = _chsize(fd, 0);
 										if (result != 0) {
-											perror("Failed to empty file content");
+											perror("Failed to empty file content\n");
 											fclose(fp);
 
 										}
 
 										fclose(fp);
+										system("pause");
 										return 0;
 									}
 								}
@@ -1981,9 +2003,10 @@ line0:
 							}
 							else if (choice == 5) {
 								printBar();
-								printSlowly("Game is closed!", 100);
+								printSlowly("Game is closed!\n", 100);
 								playerInfo.startIndex = 4;
 								save_game_data();
+								system("pause");
 								return 0;
 							}
 							else {
@@ -2022,9 +2045,10 @@ line0:
 							}
 							else if (option == 3) {
 								printBar();
-								printSlowly("Game is closed!", 100);
+								printSlowly("Game is closed!\n", 100);
 								playerInfo.startIndex = 5;
 								save_game_data();
+								system("pause");
 								return 0;
 							}
 							else if (option == 4) {
@@ -2078,7 +2102,8 @@ line0:
 								while (1) {
 									scanf("%d", &restart);
 									if (restart == 1) {
-										printSlowly("Game is closed!", 50);
+										printSlowly("Game is closed!\n", 50);
+										system("pause");
 										return 0;
 									}
 									else {
@@ -2096,7 +2121,7 @@ line0:
 							}
 						}
 
-
+						system("pause");
 
 						return 0;
 
@@ -2105,9 +2130,10 @@ line0:
 					}
 					else if (st_ex == 2) {
 						printBar();
-						printSlowly("Game is closed!", 100);
+						printSlowly("Game is closed!\n", 100);
 						playerInfo.startIndex = 1;
 						save_game_data();
+						system("pause");
 						return 0;
 					}
 					else {
@@ -2133,19 +2159,20 @@ line0:
 				int fd = fileno(fp);
 				int result = _chsize(fd, 0);
 				if (result != 0) {
-					perror("Failed to empty file content");
+					perror("Failed to empty file content\n");
 					fclose(fp);
 
 				}
 
 				fclose(fp);
+				system("pause");
 				return 0;//게임 종료/언어 선택 루프 종료
 			}
 
 
 
 
-
+			system("pause");
 
 			return 0; //게임 종료/한국어 부분
 
