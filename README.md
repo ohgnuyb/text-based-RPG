@@ -13,11 +13,13 @@
 * **korean.c:** 한국어 언어 지원을 위한 파일. 게임 내에 등장하는 텍스트를 한국어로 출력하기 위해 한국어로 구성된 다양한 함수를 추가함.
 * **stringFunc.h:** 다양한 문자열 처리를 담당하는 함수들을 모아놓은 파일.
 * **rpg_struct.h:** RPG 게임에 필요한 다양한 데이터 구조체를 정의한 헤더 파일.
+* **TermProject.exe:** color.h, english.c, korean.c, stringFunc.h, rpg_struct.h, index.c 파일들을 사용하여 만들어진 RPG 게임 실행 파일입니다.
 
 ### Tech Stack
 
 * **C언어:** 게임의 모든 로직을 구현하기 위한 주요 언어
 * **color.h:** 터미널 컬러 설정을 위한 커스텀 헤더 파일
+* **TermProject.exe:** C언어로 개발되었으며, color.h를 이용하여 터미널에서 색상을 표현하고, english.c와 korean.c를 통해 영어와 한국어를 지원하는 텍스트 기반 RPG 게임 실행 파일입니다.
 
 ### Development process
 
