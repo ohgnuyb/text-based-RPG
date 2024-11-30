@@ -62,7 +62,13 @@ void save_game_data() {
 	}
 	fprintf(fp, "%d, %d\n", playerInfo.startIndex, playerInfo.lang);
 	// 플레이어 정보 저장
-	fprintf(fp, "%s, %d, %d, %d, %d, %d, %c, %d\n", playerInfo.playerName, playerInfo.level, playerInfo.levelPro, playerInfo.money, playerInfo.itemIndex, playerInfo.potionUsed, playerInfo.type, playerInfo.potionAdd);
+	if (strcmp(playerInfo.playerName, "") == 0) {
+		fprintf(fp, "%s, %d, %d, %d, %d, %d, %c, %d\n", "UNKNOWN", playerInfo.level, playerInfo.levelPro, playerInfo.money, playerInfo.itemIndex, playerInfo.potionUsed, playerInfo.type, playerInfo.potionAdd);
+	}
+	else {
+		fprintf(fp, "%s, %d, %d, %d, %d, %d, %c, %d\n", playerInfo.playerName, playerInfo.level, playerInfo.levelPro, playerInfo.money, playerInfo.itemIndex, playerInfo.potionUsed, playerInfo.type, playerInfo.potionAdd);
+	}
+	
 	
 	if (strcmp(playerInfo.playerScharacterInfo.name, "") == 0) {
 		fprintf(fp, "%d, %d, %d, %d, %s, %s, %s\n",

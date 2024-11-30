@@ -261,8 +261,9 @@ void displayInventory_ko() {
 							else if (playerInfo.inventory[selectedIndex - 1].type == 3) {
 								printBar();
 								printSlowly(playerInfo.inventory[selectedIndex - 1].state, 50);
-								printBar();
 								printf("\n");
+								printBar();
+							
 
 							}
 							else if (playerInfo.inventory[selectedIndex - 1].type == 1) {
@@ -637,7 +638,7 @@ void displayInventory_ko() {
 
 				break; // 아이템 장착/사용 후 루프 종료
 
-
+				
 			}
 			else if (selectedIndex == 0) {
 				if (strlen(playerInfo.playerScharacterInfo.name) != 0 && strcmp(playerInfo.playerScharacterInfo.name, "UNDEFINED") != 0) {
@@ -1180,7 +1181,7 @@ void levelUp_ko() {
 	setColor(WHITE);
 	printSlowly("를 넘어 레벨이 올랐습니다! =====\n", 50);
 
-	if (strcmp(playerInfo.playerScharacterInfo.name, "") == 0) {
+	if (strcmp(playerInfo.playerScharacterInfo.name, "") == 0 || strcmp(playerInfo.playerScharacterInfo.name, "UNDEFINED") == 0) {
 
 	}
 	else {
@@ -1264,7 +1265,7 @@ void loadLevelPro_ko(int x, char* reason) {
 	}
 }
 
-struct INVENTORY_SHOP* getShopItems(const char* job) {
+struct INVENTORY_SHOP* getShopItems_ko(const char* job) {
 	if (strcmp(job, "전사") == 0) {
 		static struct INVENTORY_SHOP warriorItems[] = {
 			{"빛나는 검", 1, 1, 0, 12, 0, 0, 0, "빛나는 검입니다. / 공격력 +12", 50},
@@ -1306,7 +1307,7 @@ void shop_ko() {
 		printf("===== 상점 =====\n");
 		setColor(WHITE);
 
-		struct INVENTORY_SHOP* shopItems = getShopItems(playerInfo.playerScharacterInfo.name);
+		struct INVENTORY_SHOP* shopItems = getShopItems_ko(playerInfo.playerScharacterInfo.name);
 		struct INVENTORY_SHOP inventoryItem_shop[3] = {
 			shopItems[0],
 			shopItems[1],
@@ -1340,6 +1341,7 @@ void shop_ko() {
 			if (index == 0) {
 				printBar();
 				printSlowly("상점을 나갑니다.\n", 30);
+	
 				return;
 			}
 			else if (index < 10 && index > 0) {

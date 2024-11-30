@@ -4,7 +4,7 @@
 #define DEFENSE_RATE 0.2
 
 struct INVENTORY_SHOP {
-    char item[20];
+    char item[100];
     int  quantity;
     int type; //1: 무기, 2: 물약, 3: 일반 4: 장비
     int isEquipped;
@@ -17,7 +17,7 @@ struct INVENTORY_SHOP {
 };
 
 struct inventoryItem {
-    char item[20];
+    char item[100];
     int  quantity;
     int type; //1: 무기, 2: 물약, 3: 일반 4: 장비
     int isEquipped;
@@ -29,7 +29,7 @@ struct inventoryItem {
 };
 
 struct character {
-    char name[20];
+    char name[100];
     char skill[50];
     char charState[100];
     int hp;
@@ -40,7 +40,7 @@ struct character {
 
 
 struct inventoryItem_shop {
-    char item[20];
+    char item[100];
     int  quantity;
     int type; 
     int isEquipped;
@@ -59,14 +59,14 @@ struct character characterInfo[3] = {
 };
 
 struct {
-    char name[20];
+    char name[100];
     int hp;
     int attack;
     int defense;
 } monster[100];
 
 struct {
-    char playerName[20];
+    char playerName[100];
     int money;
     int level;
     int levelPro;

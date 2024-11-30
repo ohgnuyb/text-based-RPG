@@ -156,15 +156,55 @@ int main() {
 	}
 	else if (playerInfo.lang == 2) {
 
+		choice = -1;
+		charSel = -1;
+		strcpy(title, "Secret of the Forgotten Kingdom");
+		padding = 46;
+
+		st_ex = -1;
+		playerInfo.type = 'N';
+		playerInfo.startIndex = 0;
+
+		drawWarrior = drawWarrior_en;
+		drawMage = drawMage_en;
+		drawRogue = drawRogue_en;
+		drawChar = drawChar_en;
+		displayInventory = displayInventory_en;
+		printstatus = printstatus_en;
+		useSkill = useSkill_en;
+		battle = battle_en;
+		shop = shop_en;
+		printLevel = printLevel_en;
+		levelUp = levelUp_en;
+		loadLevelPro = loadLevelPro_en;
+		selectPro = selectPro_en;
+		addMoney = addMoney_en;
+		deleteItem = deleteItem_en;
+
+		strcpy(characterInfo[0].name, "Warrior");
+		strcpy(characterInfo[0].skill, "Destructive Strike");
+		strcpy(characterInfo[0].charState, "A warrior with strong endurance and excellent swordsmanship.");
+		strcpy(characterInfo[1].name, "Wizard");
+		strcpy(characterInfo[1].skill, "Million Volt");
+		strcpy(characterInfo[1].charState, "A wizard who uses powerful magic.");
+		strcpy(characterInfo[2].name, "Rogue");
+		strcpy(characterInfo[2].skill, "Stealth");
+		strcpy(characterInfo[2].charState, "A rogue skilled in agile movements and stealthy actions.");
+
+		strcpy(monster[0].name, "Fenrir");
+		monster[0].hp = 80;
+		monster[0].attack = 20;
+		monster[0].defense = 20;
 
 
 
 	}
+	playerInfo.playerScharacterInfo.hp = 1;
 	load_game_data();
 
 	int startIndex = playerInfo.startIndex;
 
-	if (playerInfo.lang == 1 && (startIndex == 0)) {
+	if ((playerInfo.lang == 1 || playerInfo.lang == 2) && (startIndex == 0)) {
 		goto line0;
 	}
 	else if(playerInfo.lang == 1 && startIndex == 1){
@@ -181,6 +221,23 @@ int main() {
 	}
 	else if (playerInfo.lang == 1 && startIndex == 5) {
 		goto line5;
+
+//영어 버전
+	}
+	else if (playerInfo.lang == 2 && startIndex == 1) {
+		goto line11;
+	}
+	else if (playerInfo.lang == 2 && startIndex == 2) {
+		goto line12;
+	}
+	else if (playerInfo.lang == 2 && startIndex == 3) {
+		goto line13;
+	}
+	else if (playerInfo.lang == 2 && startIndex == 4) {
+		goto line14;
+	}
+	else if (playerInfo.lang == 2 && startIndex == 5) {
+		goto line15;
 	}
 
 
@@ -190,7 +247,7 @@ int main() {
 		printf("언어를 선택하세요. / Select a language.\n");
 		printSlowly("1. 한국어 / Korean\n2. 영어 / English\n", 30);
 		printf("Enter: ");
-		playerInfo.playerScharacterInfo.hp = 1;
+
 		while (playerInfo.playerScharacterInfo.hp > 0) {
 			scanf("%d", &playerInfo.lang);
 			printBar();
@@ -201,10 +258,7 @@ int main() {
 				while (playerInfo.playerScharacterInfo.hp > 0) { //영어 부분 여기부터 복사
 					srand(time(NULL));
 					setColor(BLACK);
-					
 
-					
-					//두 번째 몬스터
 
 					for (int i = 0; i < padding; i++) {
 						printf(" ");
@@ -265,7 +319,7 @@ int main() {
 
 					setColor(WHITE);
 				
-			
+				line1:
 					printBar();
 					printf("1. 시작\n2. 게임 종료\n");
 					printBar();
@@ -386,7 +440,7 @@ int main() {
 							playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
 							playerInfo.itemIndex++;
 
-						line1:
+		
 						
 							printBar();
 							setColor(SKYBLUE);
@@ -700,8 +754,9 @@ int main() {
 							printSlowly("\"저주받은 숲을 지나, 잊혀진 신전을 찾아라. \n신전의 수호자를 물리치고, 아르카디아의 문을 열어라.\"\n\n", 20);
 					
 
-
+							
 							while (playerInfo.playerScharacterInfo.hp > 0) {
+								printBar();
 								setColor(RED);
 								printf("선택: \n");
 								setColor(WHITE);
@@ -962,7 +1017,6 @@ int main() {
 									while (getchar() != '\n');
 								}
 
-								break;
 							}
 
 							//스토리 통합:
@@ -1050,8 +1104,9 @@ int main() {
 									while (1) {
 										scanf("%d", &restart);
 										if (restart == 1) {
-											clear();
-											main();
+											printSlowly("Game is closed!", 50);
+											return 0;
+
 										}
 										else {
 											printBar();
@@ -1123,6 +1178,975 @@ int main() {
 				//영어 부분 여기까지 복사
 			}
 			else if (playerInfo.lang == 2) {
+				choice = -1;
+				charSel = -1;
+				strcpy(title, "Secret of the Forgotten Kingdom");
+				padding = 46;
+
+				st_ex = -1;
+				playerInfo.type = 'N';
+				playerInfo.startIndex = 0;
+
+				drawWarrior = drawWarrior_en;
+				drawMage = drawMage_en;
+				drawRogue = drawRogue_en;
+				drawChar = drawChar_en;
+				displayInventory = displayInventory_en;
+				printstatus = printstatus_en;
+				useSkill = useSkill_en;
+				battle = battle_en;
+				shop = shop_en;
+				printLevel = printLevel_en;
+				levelUp = levelUp_en;
+				loadLevelPro = loadLevelPro_en;
+				selectPro = selectPro_en;
+				addMoney = addMoney_en;
+				deleteItem = deleteItem_en;
+
+				strcpy(characterInfo[0].name, "Warrior");
+				strcpy(characterInfo[0].skill, "Destructive Strike");
+				strcpy(characterInfo[0].charState, "A warrior with strong endurance and excellent swordsmanship.");
+				strcpy(characterInfo[1].name, "Wizard");
+				strcpy(characterInfo[1].skill, "Million Volt");
+				strcpy(characterInfo[1].charState, "A wizard who uses powerful magic.");
+				strcpy(characterInfo[2].name, "Rogue");
+				strcpy(characterInfo[2].skill, "Stealth");
+				strcpy(characterInfo[2].charState, "A rogue skilled in agile movements and stealthy actions.");
+
+				strcpy(monster[0].name, "Fenrir");
+				monster[0].hp = 80;
+				monster[0].attack = 20;
+				monster[0].defense = 20;
+
+
+				//여기에 복붙
+				
+				while (playerInfo.playerScharacterInfo.hp > 0) { 
+					srand(time(NULL));
+					setColor(BLACK);
+
+
+
+					//두 번째 몬스터
+
+					for (int i = 0; i < padding; i++) {
+						printf(" ");
+					}
+					setColor(RED);
+					printf("\n");
+					printf("      (\\____/)\n");
+					printf("       (_oo_)\n");
+					printf("        (oo)\n");
+					printf("      /------\\/`\n");
+					printf("     / |    ||\n");
+					printf("    *  /\\---/\\\n");
+					printf("       ~~   ~~\n");
+					setColor(DARK_VOILET);
+					for (int i = 0; i < padding - 15; i++) {
+						printf(" ");
+					}
+					printf("+------------------------------------------------------+\n");
+					for (int i = 0; i < padding-3; i++) {
+						printf(" ");
+					}
+					printSlowly(title, 250);
+					printf("\n");
+					for (int i = 0; i < padding; i++) {
+						printf(" ");
+					}
+					printf("+------------------------------------------------------+\n");
+					for (int i = 0; i < padding + 1; i++) {
+						printf(" ");
+					}
+
+					printf("\n\n");
+					setColor(DARK_GREEN);
+					for (int i = 0; i < padding + 30; i++) {
+						printf(" ");
+					}
+					printf("                               .--\"\"--.\n");
+					for (int i = 0; i < padding + 30; i++) {
+						printf(" ");
+					}
+					printf("                              /        \\\n");
+					for (int i = 0; i < padding + 30; i++) {
+						printf(" ");
+					}
+					printf("                             |   *  *  |\n");
+					for (int i = 0; i < padding + 30; i++) {
+						printf(" ");
+					}
+					printf("                             \\  .--.  /\n");
+					for (int i = 0; i < padding + 30; i++) {
+						printf(" ");
+					}
+					printf("                              '.____.'\n");
+					for (int i = 0; i < padding + 30; i++) {
+						printf(" ");
+					}
+					printf("                                ||||\n\n\n");
+
+					setColor(WHITE);
+
+				line11:
+					printBar();
+					printf("1. Start\n2. Game Over\n");
+					printBar();
+					setColor(SKYBLUE);
+					printSlowly("Tip: The content will be saved at the end of the game.\n", 30);
+					setColor(RED);
+					printSlowly("Warning: Should be terminated with Game Over option.\n", 30);
+					setColor(WHITE);
+					printBar();
+					while (playerInfo.playerScharacterInfo.hp > 0) {
+
+
+
+						printf("Enter: ");
+						scanf("%d", &st_ex);
+						if (st_ex == 1) {
+							playerInfo.level = 0;
+							playerInfo.levelPro = 0;
+							int charExit = 0;
+							printBar();
+							printf("Please enter your name: \n");
+							printf("Enter: ");
+							scanf("%s", playerInfo.playerName);
+							printBar();
+							clear();
+							printBar();
+							for (int i = 0; i < padding; i++) {
+								printf(" ");
+							}
+							setColor(RED);
+							printf("\n");
+							printf("      (\\____/)\n");
+							printf("       (_oo_)\n");
+							printf("        (oo)\n");
+							printf("      /------\\/`\n");
+							printf("     / |    ||\n");
+							printf("    *  /\\---/\\\n");
+							printf("       ~~   ~~\n");
+							setColor(DARK_VOILET);
+							for (int i = 0; i < padding - 15; i++) {
+								printf(" ");
+							}
+							printf("+------------------------------------------------------+\n");
+							for (int i = 0; i < padding + 3; i++) {
+								printf(" ");
+							}
+							printf(title);
+							printf("\n");
+							for (int i = 0; i < padding - 15; i++) {
+								printf(" ");
+							}
+							printf("+------------------------------------------------------+\n");
+							for (int i = 0; i < padding + 1; i++) {
+								printf(" ");
+							}
+
+							printf("\n\n");
+							setColor(DARK_GREEN);
+							for (int i = 0; i < padding + 30; i++) {
+								printf(" ");
+							}
+							printf("                               .--\"\"--.\n");
+							for (int i = 0; i < padding + 30; i++) {
+								printf(" ");
+							}
+							printf("                              /        \\\n");
+							for (int i = 0; i < padding + 30; i++) {
+								printf(" ");
+							}
+							printf("                             |   *  *  |\n");
+							for (int i = 0; i < padding + 30; i++) {
+								printf(" ");
+							}
+							printf("                             \\  .--.  /\n");
+							for (int i = 0; i < padding + 30; i++) {
+								printf(" ");
+							}
+							printf("                              '.____.'\n");
+							for (int i = 0; i < padding + 30; i++) {
+								printf(" ");
+							}
+							printf("                                ||||\n\n\n");
+							setColor(WHITE);
+							printBar();
+							printSlowly("Hello, ", 30);
+							printSlowly(playerInfo.playerName, 200);
+							printf("\'s choice!\n");
+							printBar();
+							loadLevelPro(100, "Game on");
+							printBar();
+							printLevel();
+							printBar();
+							addMoney(50);
+							printBar();
+							printSlowly("\'Empty Paper\' and \'a low-level Health Potion\' were given.\n", 100);
+							printBar();
+							loadLevelPro(30, "Acquire item");
+							printLevel();
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "Empty Paper");
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "It's just Empty paper.");
+							playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+							playerInfo.inventory[playerInfo.itemIndex].type = 3;
+							playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
+							playerInfo.itemIndex++;
+
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "a low-level Health Potion");
+							strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
+							playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+							playerInfo.inventory[playerInfo.itemIndex].type = 2;
+							playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
+							playerInfo.inventory[playerInfo.itemIndex].addHp = 5;
+							playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
+							playerInfo.itemIndex++;
+
+					
+
+							printBar();
+							setColor(SKYBLUE);
+							printSlowly("Tip: Inventory and stores are available when displayed in the selection window.\n", 30);
+							setColor(WHITE);
+
+							if (selectPro() == 4) {
+								printBar();
+								printSlowly("Game is closed!", 100);
+								playerInfo.startIndex = 1;
+								save_game_data();
+								return 0;
+							}
+							clear();
+							printBar();
+							setColor(RED);
+							printSlowly("Start...\n", 300);
+
+							setColor(WHITE);
+							printSlowly("Arcadia, an ancient kingdom hidden in a deep forest. This once prosperous kingdom is a dark wizard \nDestroyed by the curse of Maleficent, forgotten in people's memory. \nYou are an adventurer who happens to know Arcadia's existence. \nCan we uncover the secrets of the forgotten kingdom and unlock the curse of Maleficent to resurrect Arcadia?\n", 30);
+
+						line12:
+							printBar();
+							setColor(SKYBLUE);
+							printSlowly("Tip. Warriors and Rogue can use one skill per battle and the wizard consumes Mana 10 per skill.\n", 100);
+							while (playerInfo.playerScharacterInfo.hp > 0) {
+								setColor(WHITE);
+								printBar();
+								printSlowly("Select a character: \n", 200);
+
+								for (int i = 0; i < 3; i++) {
+									setColor(i == 0 ? SKYBLUE : i == 1 ? YELLOW : RED);
+									printSlowly(i == 0 ? "1. " : i == 1 ? "2. " : "3. ", 200);
+									printSlowly(characterInfo[i].name, 200);
+									printf(": ");
+									setColor(WHITE);
+									printSlowly(characterInfo[i].charState, 30);
+									printf("\n");
+								}
+
+								printBar();
+								printSlowly("4. Inventory\n5. Shop\n6. Game Over\n", 30);
+								printBar();
+								printf("Enter: ");
+								scanf("%d", &charSel);
+								int use = -1;
+
+								if (charSel == 1) {
+									printBar();
+									printSlowly("Really ", 50);
+									printSlowly(characterInfo[charSel - 1].name, 50);
+									printSlowly("Would you like to select?\n", 50);
+									printSlowly("1. select\n2. cancel\n", 50);
+
+
+									printf("Enter: ");
+									scanf("%d", &charExit);
+									if (charExit == 1) {
+										strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+										strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+										strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+										playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+										playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+										playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+										playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+										printBar();
+										loadLevelPro(100, "Select a character");
+										printBar();
+										printLevel();
+										printBar();
+										printSlowly("\'Wooden Sword\' has been given for warriors.\n", 30);
+										printBar();
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "Wooden Sword");
+										playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+										playerInfo.inventory[playerInfo.itemIndex].type = 1;
+										playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addAttack = 5;
+										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
+										playerInfo.itemIndex++;
+										printstatus();
+										printBar();
+										printSlowly("1. Inventory\n2. cancel\n", 100);
+										while (playerInfo.playerScharacterInfo.hp > 0) {
+
+
+											printf("Enter: ");
+											scanf("%d", &use);
+											if (use == 1) {
+												displayInventory();
+												break;
+											}
+											else if (use == 2) {
+												printBar();
+												printSlowly("It has been canceled .\n", 100);
+												printBar();
+												break;
+											}
+											else {
+												printBar();
+												printSlowly("Invalid choice, please re-select.\n", 100);
+												while (getchar() != '\n');
+											}
+
+										}
+										break;
+									}
+									else if (charExit == 2) {
+										printBar();
+										printSlowly("It has been canceled.\n", 100);
+										while (getchar() != '\n');
+									}
+									else {
+										printBar();
+										printSlowly("Invalid choice, please re-select.\n", 100);
+										while (getchar() != '\n');
+									}
+
+
+								}
+								else if (charSel == 2) {
+									printBar();
+									printSlowly("Really ", 50);
+									printSlowly(characterInfo[charSel - 1].name, 50);
+									printSlowly("Do you want to select ?\n", 50);
+									printSlowly("1. Select\n2. Cancel\n", 50);
+									printf("Enter: ");
+									scanf("%d", &charExit);
+									if (charExit == 1) {
+										strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+										strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+										strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+										playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+										playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+										playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+										playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+
+										printBar();
+										loadLevelPro(100, "Select a character");
+										printBar();
+										printLevel();
+										printBar();
+										printSlowly("\'Wizard's Necklace\' has been given for the wizard.\n", 100);
+										printBar();
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "The Wizard's Necklace");
+										playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+										playerInfo.inventory[playerInfo.itemIndex].type = 4;
+										playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addMana = 10;
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
+										playerInfo.itemIndex++;
+										printstatus();
+										printBar();
+										printSlowly("1. Inventory\n2. Cancel\n", 100);
+										while (playerInfo.playerScharacterInfo.hp > 0) {
+
+
+											printf("Enter: ");
+											scanf("%d", &use);
+											if (use == 1) {
+												displayInventory();
+												break;
+											}
+											else if (use == 2) {
+												printBar();
+												printSlowly("It has been canceled.\n", 100);
+												printBar();
+												break;
+											}
+											else {
+												printBar();
+												printSlowly("Invalid choice, please re-select.\n", 100);
+												while (getchar() != '\n');
+											}
+
+										}
+										break;
+									}
+									else if (charExit == 2) {
+										printBar();
+										printSlowly("It has been canceled.\n", 100);
+
+										while (getchar() != '\n');
+									}
+									else {
+										printBar();
+										printSlowly("Invalid choice, please re-select.\n", 100);
+										while (getchar() != '\n');
+									}
+
+								}
+								else if (charSel == 3) {
+									printBar();
+									printSlowly("Really ", 50);
+									printSlowly(characterInfo[charSel - 1].name, 50);
+									printSlowly("Would you like to select?\n", 50);
+									printSlowly("1.Select\n2. Cancel\n", 50);
+									printf("Enter: ");
+									scanf("%d", &charExit);
+									if (charExit == 1) {
+										strcpy(playerInfo.playerScharacterInfo.name, characterInfo[charSel - 1].name);
+										strcpy(playerInfo.playerScharacterInfo.skill, characterInfo[charSel - 1].skill);
+										strcpy(playerInfo.playerScharacterInfo.charState, characterInfo[charSel - 1].charState);
+										playerInfo.playerScharacterInfo.hp = characterInfo[charSel - 1].hp;
+										playerInfo.playerScharacterInfo.attack = characterInfo[charSel - 1].attack;
+										playerInfo.playerScharacterInfo.defense = characterInfo[charSel - 1].defense;
+										playerInfo.playerScharacterInfo.mana = characterInfo[charSel - 1].mana;
+
+										printBar();
+										loadLevelPro(100, "Select a character");
+										printBar();
+										printLevel();
+										printBar();
+										printSlowly("\'The Cloak of the Rouge' was given for the Rouge.\n", 100);
+										printBar();
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "The Cloak of the Rouge");
+										playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+										playerInfo.inventory[playerInfo.itemIndex].type = 4;
+										playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addHp = 10;
+										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
+										playerInfo.itemIndex++;
+										printstatus();
+										printBar();
+										printSlowly("1. Inventory\n2. Cancel\n", 100);
+										while (playerInfo.playerScharacterInfo.hp > 0) {
+
+
+											printf("Enter: ");
+											scanf("%d", &use);
+											if (use == 1) {
+												displayInventory();
+												break;
+											}
+											else if (use == 2) {
+												printBar();
+												printSlowly("It has been canceled.\n", 100);
+												printBar();
+												break;
+											}
+											else {
+												printBar();
+												printSlowly("Invalid choice, please re-select.\n", 100);
+												while (getchar() != '\n');
+											}
+
+										}
+										break;
+									}
+									else if (charExit == 2) {
+										printBar();
+										printSlowly("It has been canceled .\n", 100);
+
+										while (getchar() != '\n');
+									}
+									else {
+										printBar();
+										while (getchar() != '\n');
+									}
+								}
+								else if (charSel == 4) {
+									displayInventory();
+									while (getchar() != '\n');
+								}
+								else if (charSel == 5) {
+									printBar();
+									shop();
+									while (getchar() != '\n');
+								}
+								else if (charSel == 6) {
+									printBar();
+									printSlowly("Game is closed!", 100);
+									playerInfo.startIndex = 2;
+									save_game_data();
+									return 0;
+
+								}
+								else {
+									printBar();
+									printSlowly("Invalid choice, please re-select.\n", 100);
+									while (getchar() != '\n');
+								}
+
+							}
+						line13:
+
+							setColor(WHITE);
+
+							if (selectPro() == 4) {
+								printBar();
+								printSlowly("Game is closed!", 100);
+								playerInfo.startIndex = 3;
+								save_game_data();
+								return 0;
+							}
+							clear();
+							printBar();
+						line14:
+							setColor(RED);
+							printSlowly("the road to Arcadia...\n", 200);
+							setColor(WHITE);
+							printSlowly("Lost in the dense forest, you find an old lithograph.\n[Voiceover] There's a faint inscription on the stone tablet about the way to Arcadia.\n", 20);
+							printSlowly("\"Through the cursed forest, find a forgotten temple. \nDefeat the guardian of the temple, open the door of Arcadia.\"\n\n", 20);
+
+
+
+							while (playerInfo.playerScharacterInfo.hp > 0) {
+								printBar();
+								setColor(RED);
+								printf("선택: \n");
+								setColor(WHITE);
+								printSlowly("1. Heading into the Cursed Forest.\n", 100);
+								printSlowly("2. Ignoring the lithographs and finding a different path.\n", 100);
+								printBar();
+								printSlowly("3. Inventory\n", 100);
+								printSlowly("4. Inventory\n", 100);
+								printSlowly("5. Game Over\n", 100);
+								printBar();
+								printf("Enter: ");
+								scanf("%d", &choice);
+								if (choice == 1) { //1번 스토리
+									printBar();
+									setColor(YELLOW);
+									printSlowly("the treasure of the forest\n", 50);
+									setColor(WHITE);
+									printSlowly("You have entered the deep forest following the instructions of the lithograph.\nCursed forests are full of dreary energy...\nThe trees are grotesquely twisted, and there are calls of unknown creatures in the forest.\n", 20);
+									printSlowly("While moving through the deep forest, an old historical site suddenly appeared in view. This place certainly seems to have been untouched by humans.\n", 20);
+									printSlowly("A small altar is placed in the middle of the ruins, and a box is placed on top of it that you don't know what it is.\n", 20);
+									printBar();
+									setColor(YELLOW);
+									printSlowly("60% : Armor, 40 % : Potion\n", 100);
+									setColor(WHITE);
+									printBar();
+									int use = -1;
+
+									// 아이템 획득 확률 계산
+									int itemChance = rand() % 100; // 0에서 99 사이의 랜덤 숫자
+									if (itemChance < 60) { // 60% 확률로 갑옷 획득
+										printSlowly("I opened the box and found the armor.\nIt looks old, but it still looks solid.\n", 30);
+										printBar();
+										addMoney(50);
+										printBar();
+										loadLevelPro(50, "Acquire item");
+										printLevel();
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "old armor");
+										playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+										playerInfo.inventory[playerInfo.itemIndex].type = 4;
+										playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addAttack = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addDefense = 5;
+										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
+										playerInfo.itemIndex++;
+										printBar();
+										printSlowly("1. Inventory\n2. Cancel\n", 100);
+										while (playerInfo.playerScharacterInfo.hp > 0) {
+
+
+											printf("Enter: ");
+											scanf("%d", &use);
+											if (use == 1) {
+												displayInventory();
+												break;
+											}
+											else if (use == 2) {
+												printBar();
+												printSlowly("It has been canceled .\n", 100);
+												break;
+											}
+											else {
+												printBar();
+												printSlowly("Invalid choice, please re-select.\n", 100);
+												while (getchar() != '\n');
+											}
+
+										}
+
+									}
+									else { // 40% 확률로 공격력 증가 포션 획득
+										printSlowly("I opened the box and found a glowing potion.\n", 70);
+										printBar();
+										addMoney(50);
+										printBar();
+										loadLevelPro(50, "Acquire item");
+										printLevel();
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].item, "shining potion");
+										playerInfo.inventory[playerInfo.itemIndex].quantity = 1;
+										playerInfo.inventory[playerInfo.itemIndex].type = 2;
+										playerInfo.inventory[playerInfo.itemIndex].isEquipped = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addAttack = 10;
+										playerInfo.inventory[playerInfo.itemIndex].addDefense = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addHp = 0;
+										playerInfo.inventory[playerInfo.itemIndex].addMana = 0;
+										strcpy(playerInfo.inventory[playerInfo.itemIndex].state, "UNDEFINED");
+										playerInfo.itemIndex++;
+										printBar();
+										printSlowly("1. Inventory\n2. Cancel", 100);
+											while (playerInfo.playerScharacterInfo.hp > 0) {
+
+
+												printf("Enter: ");
+												scanf("%d", &use);
+												if (use == 1) {
+													displayInventory();
+													break;
+												}
+												else if (use == 2) {
+													printBar();
+													printSlowly(".\n", 100);
+													break;
+												}
+												else {
+													printBar();
+													printSlowly("Invalid choice, please re-select.\n", 100);
+													while (getchar() != '\n');
+												}
+
+											}
+
+
+									}
+
+									printBar();
+									printSlowly("Having acquired the item, you try to escape from the woods, but there is still a dreary energy surrounding you...\n", 20);
+									printSlowly("I can hear something moving in the forest. You decide to rush your steps out of here.\n", 20);
+
+
+
+
+								}
+								else if (choice == 2) { //2번 스토리
+									printBar();
+									setColor(VIOLET);
+									printSlowly("Guardian of the Forest\n", 50);
+									setColor(WHITE);
+									//몬스터 마주침
+									printSlowly("Doubting the teachings of the lithographs, you choose a different path, and while wandering through the woods, you encounter a giant monster, 'Penrir.' \nPenrir is the guardian of the forest, blocking the way to Arcadia.\n", 20);
+									setColor(YELLOW);
+									printSlowly("전투 후 승리하세요 .\n\n", 20);
+									setColor(WHITE);
+									printMonster1();
+									printSlowly("Name: ", 50);
+									printSlowly(monster[0].name, 50);
+									printf("\n");
+									setColor(RED);
+									printSlowly(" - HP: ", 50);
+									printSlowly(StringvalueOf(monster[0].hp), 50);
+									setColor(WHITE);
+									printf("\n");
+									setColor(DARK_RED);
+									printSlowly(" - ATK: ", 50);
+									printSlowly(StringvalueOf(monster[0].attack), 50);
+									setColor(WHITE);
+									printf("\n");
+									setColor(SKYBLUE);
+									printSlowly(" - DEF: ", 50);
+									printSlowly(StringvalueOf(monster[0].defense), 50);
+									setColor(WHITE);
+									printf("\n\n");
+
+									drawChar();
+									printSlowly(playerInfo.playerName, 200);
+									printSlowly("’s choice: ", 200);
+									printSlowly(playerInfo.playerScharacterInfo.name, 200);
+									printf("!\n");
+
+									setColor(GREEN);
+									printSlowly(" - Lv. ", 100);
+									printSlowly(StringvalueOf(playerInfo.level), 100);
+									printf("\n");
+
+									setColor(RED);
+									printSlowly(" - HP: ", 100);
+									printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.hp), 100);
+									printf("\n");
+
+									setColor(WHITE);
+									printSlowly(" - Skill: ", 100);
+									printSlowly(playerInfo.playerScharacterInfo.skill, 100);
+									printf("\n");
+									setColor(DARK_RED);
+									printSlowly(" - ATK: ", 100);
+									printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.attack), 100);
+									setColor(WHITE);
+									printf("\n");
+									setColor(SKYBLUE);
+									printSlowly(" - DEF: ", 100);
+									printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.defense), 100);
+									setColor(WHITE);
+									printf("\n");
+									if (strcmp(playerInfo.playerScharacterInfo.name, "Wizard") == 0) {
+										setColor(BLUE);
+										printSlowly(" - Mana: ", 100);
+										printSlowly(StringvalueOf(playerInfo.playerScharacterInfo.mana), 100);
+										printf("\n");
+										setColor(WHITE);
+									}
+
+									//원래 체력, 공격력, 방어력, 마나 기록
+									int tempH = playerInfo.playerScharacterInfo.hp;
+									int tempA = playerInfo.playerScharacterInfo.attack;
+									int tempD = playerInfo.playerScharacterInfo.defense;
+									int tempM = playerInfo.playerScharacterInfo.mana;
+
+									if (battle(0) == true) { //0 = 몬스터 인덱스
+										playerInfo.playerScharacterInfo.hp = tempH;
+										playerInfo.playerScharacterInfo.attack = tempA;
+										playerInfo.playerScharacterInfo.defense = tempD;
+										playerInfo.playerScharacterInfo.mana = tempM;
+										//전투에서 변경된 능력치 복구
+										loadLevelPro(100, "a battle victory");
+										printLevel();
+										//승리일 경우 스토리 지속
+										printBar();
+										addMoney(60);
+										printBar();
+										printSlowly("After defeating Penrir, you finally make your way out of the woods to Arcadia.\n", 30);
+
+
+									}
+									else {
+										if (playerInfo.playerScharacterInfo.hp < 1) {
+				
+											printSlowly("Player died.\nPlease start again from the beginning..\n", 100);
+											printSlowly("Game is closed!", 100);
+											FILE* fp = fopen("save_data.txt", "r+");
+											if (fp == NULL) {
+												perror("Failed to open file");
+
+											}
+											int fd = fileno(fp);
+											int result = _chsize(fd, 0);
+											if (result != 0) {
+												perror("Failed to empty file content");
+												fclose(fp);
+
+											}
+
+											fclose(fp);
+											return 0;
+										}
+									}
+
+									break;
+
+								}
+								else if (choice == 3) {
+									displayInventory();
+									while (getchar() != '\n');
+								}
+
+								else if (choice == 4) {
+									printBar();
+									shop();
+									while (getchar() != '\n');
+								}
+								else if (choice == 5) {
+									printBar();
+									printSlowly("Game is closed!", 100);
+									playerInfo.startIndex = 4;
+									save_game_data();
+									return 0;
+								}
+								else {
+									printSlowly("Invalid choice, please re-select.\n", 100);
+									while (getchar() != '\n');
+								}
+
+							}
+
+							//스토리 통합:
+							printBar();
+							printSlowly("Out of the woods, you face a new world, the beauty of Arcadia.\n", 30);
+							printSlowly("A golden field and clear sky unfold, and a city that you've only heard of as a faint legend appears in front of your eyes.\n", 30);
+							printSlowly("After overcoming hardship and adversity, now you finally get here.\n", 30);
+
+						line15:
+							printBar();
+							setColor(SKYBLUE);
+
+							printSlowly("Real peace in Arcadia has begun...\n", 30);
+							setColor(WHITE);
+
+							int option = 0;
+							while (1) {
+								printBar();
+								printSlowly("1. Inventory\n2. Shop\n3. Game Over\n4. Start from the beginning\n", 50);
+								printf("Enter: ");
+								scanf("%d", &option);
+								if (option == 1) {
+									displayInventory_ko();
+									while (getchar() != '\n');
+								}
+								else if (option == 2) {
+									shop_ko();
+									while (getchar() != '\n');
+								}
+								else if (option == 3) {
+									printBar();
+									printSlowly("Game is closed!", 100);
+									playerInfo.startIndex = 5;
+									save_game_data();
+									return 0;
+								}
+								else if (option == 4) {
+									clear();
+									setColor(SKYBLUE);
+									for (int i = 0; i < padding - 10; i++) {
+										printf(" ");
+									}
+									printf("  _______ _            ______           _ \n");
+									for (int i = 0; i < padding - 10; i++) {
+										printf(" ");
+									}
+									printf(" |__   __| |          |  ____|         | |\n");
+									for (int i = 0; i < padding - 10; i++) {
+										printf(" ");
+									}
+									printf("    | |  | |__   ___  | |__   _ __   __| |\n");
+									for (int i = 0; i < padding - 10; i++) {
+										printf(" ");
+									}
+									printf("    | |  | '_ \\ / _ \\ |  __| | '_ \\ / _` |\n");
+									for (int i = 0; i < padding - 10; i++) {
+										printf(" ");
+									}
+									printf("    | |  | | | |  __/ | |____| | | | (_| |\n");
+									for (int i = 0; i < padding - 10; i++) {
+										printf(" ");
+									}
+									printf("    |_|  |_| |_|\\___| |______|_| |_|\\__,_|\n");
+									setColor(WHITE);
+
+									FILE* fp = fopen("save_data.txt", "r+");
+									if (fp == NULL) {
+										perror("Failed to open file");
+
+									}
+									int fd = fileno(fp);
+									int result = _chsize(fd, 0);
+									if (result != 0) {
+										perror("Failed to empty file content");
+										fclose(fp);
+
+									}
+
+									fclose(fp);
+									printBar();
+									int restart = 0;
+									printSlowly("Do you want to restart?\n", 50);
+									printSlowly("1. Yes\n2. Cancel\n", 50);
+									printf("Enter: ");
+									while (1) {
+										scanf("%d", &restart);
+										if (restart == 1) {
+											printSlowly("Game is closed!", 50);
+											return 0;
+										}
+										else {
+											printBar();
+											printSlowly(".\n", 50);
+											break;
+										}
+									}
+
+								}
+								else {
+									printBar();
+									printSlowly("Invalid choice, please re-select.\n", 100);
+									while (getchar() != '\n');
+								}
+							}
+
+
+
+							return 0;
+
+
+							break;
+						}
+						else if (st_ex == 2) {
+							printBar();
+							printSlowly("Game is closed!", 100);
+							playerInfo.startIndex = 1;
+							save_game_data();
+							return 0;
+						}
+						else {
+							printBar();
+							printSlowly("Invalid choice, please re-select.\n", 100);
+							printBar();
+							while (getchar() != '\n');
+						}
+
+					}
+
+				}
+
+				if (playerInfo.playerScharacterInfo.hp < 1) {
+		
+					printSlowly("Player died.\nPlease start again from the beginning.\n", 100);
+					printSlowly("Game is closed!", 100);
+					FILE* fp = fopen("save_data.txt", "r+");
+					if (fp == NULL) {
+						perror("   Failed to open file");
+
+					}
+					int fd = fileno(fp);
+					int result = _chsize(fd, 0);
+					if (result != 0) {
+						perror("Failed to empty file content");
+						fclose(fp);
+
+					}
+
+					fclose(fp);
+					return 0;//게임 종료/언어 선택 루프 종료
+				}
+
+
+
+
+
+
+				return 0; //게임 종료/한국어 부분
+
+
+
 
 			}
 			
