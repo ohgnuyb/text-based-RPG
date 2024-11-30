@@ -88,7 +88,7 @@ int main() {
 	if (checkNull == NULL) {
 		FILE* createFILE = fopen("save_data.txt", "w");
 		fprintf(createFILE, "%d, %d\n", 0, 1);
-		printf("다시 시작하세요. / Please restarting");
+		printf("다시 시작하세요. / Please restart.");
 		fclose(createFILE);
 		return;
 	}
