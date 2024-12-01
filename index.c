@@ -2183,6 +2183,7 @@ line0:
 
 		else {
 			printSlowly("잘못된 선택입니다. 다시 선택해주세요. / It\'s a wrong choice. Please select again.\n", 100);
+			printf("Enter: ");
 			while (getchar() != '\n');
 		}
 
