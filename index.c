@@ -1354,10 +1354,10 @@ line0:
 							printf(" ");
 						}
 						printf("+------------------------------------------------------+\n");
-						for (int i = 0; i < padding + 3; i++) {
+						for (int i = 0; i < padding - 4; i++) {
 							printf(" ");
 						}
-						printf(title);
+						printSlowly(title, 250);
 						printf("\n");
 						for (int i = 0; i < padding - 15; i++) {
 							printf(" ");
