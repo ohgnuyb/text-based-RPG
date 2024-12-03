@@ -1758,7 +1758,7 @@ line0:
 							printSlowly("2. Ignoring the lithographs and finding a different path.\n", 100);
 							printBar();
 							printSlowly("3. Inventory\n", 100);
-							printSlowly("4. Inventory\n", 100);
+							printSlowly("4. Shop\n", 100);
 							printSlowly("5. Game Over\n", 100);
 							printBar();
 							printf("Enter: ");
