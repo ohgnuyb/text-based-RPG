@@ -2036,11 +2036,11 @@ line0:
 							printf("Enter: ");
 							scanf("%d", &option);
 							if (option == 1) {
-								displayInventory_ko();
+								displayInventory();
 								while (getchar() != '\n');
 							}
 							else if (option == 2) {
-								shop_ko();
+								shop();
 								while (getchar() != '\n');
 							}
 							else if (option == 3) {
