@@ -902,7 +902,7 @@ bool battle_en(int monsterIndex) {
 			}
 			setColor(WHITE);
 			con = 0;
-			printSlowly("1. Attacks\n2. Defensive & Attacking\n3. Skill \n. Inventory\n", 100);
+			printSlowly("1. Attacks\n2. Defensive & Attacking\n3. Skill \n4. Inventory\n", 100);
 			printf("Enter: ");
 			scanf("%d", &playerChoice);
 			int damage = playerInfo.playerScharacterInfo.attack - (monster[monsterIndex].defense * DEFENSE_RATE);
