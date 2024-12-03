@@ -1036,7 +1036,7 @@ bool battle_en(int monsterIndex) {
 					setColor(VIOLET);
 					printSlowly(monster[monsterIndex].name, 100);
 					setColor(WHITE);
-					printSlowly("attacks ", 100);
+					printSlowly(" attacks ", 100);
 					printSlowly(playerInfo.playerName, 100);
 					printSlowly("!\nDamage: ", 100);
 					setColor(DARK_RED);
