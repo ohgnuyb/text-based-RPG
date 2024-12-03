@@ -892,7 +892,7 @@ line0:
 								printSlowly("숲 속에서 무언가가 움직이는 소리가 들린다. 당신은 발걸음을 재촉해 이곳을 빠져나가기로 한다.\n", 20);
 
 
-
+								break;
 
 							}
 							else if (choice == 2) { //2번 스토리
@@ -1870,7 +1870,7 @@ line0:
 								printSlowly("Having acquired the item, you try to escape from the woods, but there is still a dreary energy surrounding you...\n", 20);
 								printSlowly("I can hear something moving in the forest. You decide to rush your steps out of here.\n", 20);
 
-
+								break;
 
 
 							}
